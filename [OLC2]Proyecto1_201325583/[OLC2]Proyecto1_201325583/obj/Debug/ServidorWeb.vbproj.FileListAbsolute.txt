@@ -1,0 +1,11 @@
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\bin\Debug\[OLC2]Proyecto1_201325583.exe.config
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\bin\Debug\[OLC2]Proyecto1_201325583.exe
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\bin\Debug\[OLC2]Proyecto1_201325583.pdb
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\bin\Debug\[OLC2]Proyecto1_201325583.xml
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\obj\Debug\ServidorWeb.vbprojAssemblyReference.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\obj\Debug\_OLC2_Proyecto1_201325583.Resources.resources
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\obj\Debug\ServidorWeb.vbproj.GenerateResource.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\obj\Debug\ServidorWeb.vbproj.CoreCompileInputs.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\obj\Debug\[OLC2]Proyecto1_201325583.exe
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\obj\Debug\[OLC2]Proyecto1_201325583.xml
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\[OLC2]Proyecto1_201325583\obj\Debug\[OLC2]Proyecto1_201325583.pdb

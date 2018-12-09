@@ -1,0 +1,13 @@
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\bin\Debug\ServidorDB.exe.config
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\bin\Debug\ServidorDB.exe
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\bin\Debug\ServidorDB.pdb
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\bin\Debug\Irony.dll
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\bin\Debug\Irony.Interpreter.dll
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.csprojAssemblyReference.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.Properties.Resources.resources
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.csproj.GenerateResource.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.csproj.CoreCompileInputs.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.csproj.CopyComplete
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.exe
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.pdb
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.Form1.resources
