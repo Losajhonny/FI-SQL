@@ -10,4 +10,4 @@ C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\
 C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.csproj.CopyComplete
 C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.exe
 C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.pdb
-C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.Form1.resources
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.ServidorDb.resources

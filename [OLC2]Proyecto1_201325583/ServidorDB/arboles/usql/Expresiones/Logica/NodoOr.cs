@@ -25,6 +25,31 @@ namespace ServidorDB.arboles.usql.Expresiones.Logica
                 int v2 = Convert.ToInt32(r2.Valor);
                 return new Resultado(tipo, getBooleano(v1 + v2).ToString());
             }
+            else if (r1.Tipo == Constante.INTEGER && r2.Tipo == Constante.INTEGER)
+            {
+                int v1 = Convert.ToInt32(r1.Valor);
+                int v2 = Convert.ToInt32(r2.Valor);
+                if ((v1 == 1 || v1 == 0) && (v2 == 1 || v2 == 0))
+                {
+                    return new Resultado(tipo, getBooleano(v1 + v2).ToString());
+                }
+                else
+                {
+                    if(v1 > 1)
+                    {
+                        string descripcion = "El tipo de dato bool no permite el valor " + r1.Valor
+                        + " unicamente acepta 0 o 1";
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    }
+                    else
+                    {
+                        string descripcion = "El tipo de dato bool no permite el valor " + r2.Valor
+                        + " unicamente acepta 0 o 1";
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    }
+                    return new Resultado(Constante.ERROR, "");
+                }
+            }
             else
             {
                 if (!(r1.Tipo == Constante.ERROR || r2.Tipo == Constante.ERROR))

@@ -495,16 +495,17 @@ namespace ServidorDB.analizadores.usql
             #endregion
 
             #region PRECEDENCIA Y ASOCIATIVIDAD
-            RegisterOperators(1, Associativity.Left, mas, menos);
-            RegisterOperators(2, Associativity.Left, por, div);
-            RegisterOperators(3, Associativity.Right, pot);
-            RegisterOperators(5, Associativity.Neutral, digual, diferente, mayor, menor, mayigual, menigual);
-            RegisterOperators(6, Associativity.Left, or);
-            RegisterOperators(7, Associativity.Left, and);
-            RegisterOperators(8, Associativity.Right, not);
+            RegisterOperators(10, Associativity.Left, and);
+            RegisterOperators(20, Associativity.Left, or);
+            RegisterOperators(30, Associativity.Right, not);
+            RegisterOperators(40, Associativity.Left, digual, diferente, mayor, menor,
+                mayigual, menigual);
+            RegisterOperators(50, Associativity.Left, mas, menos);
+            RegisterOperators(60, Associativity.Left, por, div);
+            RegisterOperators(70, Associativity.Right, pot);
             #endregion
 
-            this.Root = SSL;
+            this.Root = SENTENCIAS;
         }
     }
 }

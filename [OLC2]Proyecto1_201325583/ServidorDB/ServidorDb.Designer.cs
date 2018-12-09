@@ -1,6 +1,6 @@
 ﻿namespace ServidorDB
 {
-    partial class Form1
+    partial class ServidorDb
     {
         /// <summary>
         /// Variable del diseñador necesaria.
@@ -43,7 +43,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 408);
+            this.button1.Location = new System.Drawing.Point(12, 649);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 30);
             this.button1.TabIndex = 1;
@@ -53,21 +53,21 @@
             // 
             // richTextBox2
             // 
-            this.richTextBox2.Location = new System.Drawing.Point(12, 314);
+            this.richTextBox2.Location = new System.Drawing.Point(12, 327);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.Size = new System.Drawing.Size(776, 88);
             this.richTextBox2.TabIndex = 2;
             this.richTextBox2.Text = "";
             // 
-            // Form1
+            // ServidorDb
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 691);
             this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.richTextBox1);
-            this.Name = "Form1";
+            this.Name = "ServidorDb";
             this.Text = "Form1";
             this.ResumeLayout(false);
 

@@ -1,0 +1,24 @@
+digraph grafo{
+node [shape = egg];
+58000584[label="SENTENCIAS", style = filled, color = lightblue];
+52243212[label="SENTENCIA", style = filled, color = lightblue];
+58000584->52243212;
+426867[label="SSL", style = filled, color = lightblue];
+52243212->426867;
+3841804[label="IMPRIMIR", style = filled, color = lightblue];
+426867->3841804;
+34576242[label="imprimir (Keyword)", style = filled, color = lightblue];
+3841804->34576242;
+42750725[label="( (Key symbol)", style = filled, color = lightblue];
+3841804->42750725;
+49212206[label="EXP", style = filled, color = lightblue];
+3841804->49212206;
+40256670[label="PRIMITIVOS", style = filled, color = lightblue];
+49212206->40256670;
+26765710[label="3 (integer)", style = filled, color = lightblue];
+40256670->26765710;
+39564799[label=") (Key symbol)", style = filled, color = lightblue];
+3841804->39564799;
+20538874[label="; (Key symbol)", style = filled, color = lightblue];
+426867->20538874;
+}

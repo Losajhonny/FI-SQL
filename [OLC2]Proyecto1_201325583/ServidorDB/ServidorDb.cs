@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace ServidorDB
 {
-    public partial class Form1 : Form
+    public partial class ServidorDb : Form
     {
-        public Form1()
+        public ServidorDb()
         {
             InitializeComponent();
         }
@@ -36,17 +36,21 @@ namespace ServidorDB
             {
                 //por el momento solo ejecuto expresion suma
                 tabla_simbolos.Entorno ent = new tabla_simbolos.Entorno(null);
-                arboles.usql.Expresiones.NodoExp ne = arboles.usql.uArbol.EXPRESION(raiz);
-                arboles.usql.Expresiones.Resultado res = (arboles.usql.Expresiones.Resultado)ne.ejecutar(ent);
+                List<arboles.usql.uInstruccion> inst = arboles.usql.uArbol.SENTENCIAS(raiz);
 
-                string msg = (res != null) ? res.Tipo.ToString() + " -> " + res.Valor : "";
+                for(int i = 0; i < inst.Count; i++)
+                {
+                    inst[i].ejecutar(ent);
+                }
+
                 string msg1 = "";
                 for (int i = 0; i < uSintactico.uerrores.Count; i++)
                 {
                     msg1 += "Descripcion: " + uSintactico.uerrores[i].Descripcion + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
                 }
-                richTextBox2.Text = msg + "\n<< Mostrando errores >>\n" + msg1;
+                richTextBox2.Text = "\n<< Mostrando errores >>\n" + msg1;
             }
         }
+        
     }
 }

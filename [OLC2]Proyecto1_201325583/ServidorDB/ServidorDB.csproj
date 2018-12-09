@@ -55,6 +55,11 @@
     <Compile Include="analizadores\usql\uError.cs" />
     <Compile Include="analizadores\usql\uGramatica.cs" />
     <Compile Include="analizadores\usql\uSintactico.cs" />
+    <Compile Include="arboles\usql\SSL\Asignacion.cs" />
+    <Compile Include="arboles\usql\SSL\Declarar.cs" />
+    <Compile Include="arboles\usql\SSL\Imprimir.cs" />
+    <Compile Include="arboles\usql\SSL\Si.cs" />
+    <Compile Include="arboles\usql\SSL\Sino.cs" />
     <Compile Include="arboles\usql\uArbol.cs" />
     <Compile Include="arboles\usql\Expresiones\Aritmetica\NodoDiv.cs" />
     <Compile Include="arboles\usql\Expresiones\Logica\NodoAnd.cs" />
@@ -76,19 +81,19 @@
     <Compile Include="arboles\usql\Expresiones\Relacional\NodoMenIgual.cs" />
     <Compile Include="arboles\usql\Expresiones\Relacional\NodoMenor.cs" />
     <Compile Include="arboles\usql\uInstruccion.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="ServidorDb.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ServidorDb.Designer.cs">
+      <DependentUpon>ServidorDb.cs</DependentUpon>
     </Compile>
     <Compile Include="otros\Constante.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tabla_simbolos\Entorno.cs" />
     <Compile Include="tabla_simbolos\Simbolo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="ServidorDb.resx">
+      <DependentUpon>ServidorDb.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
