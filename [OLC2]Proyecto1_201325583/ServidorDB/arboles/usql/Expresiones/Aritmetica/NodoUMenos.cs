@@ -33,7 +33,7 @@ namespace ServidorDB.arboles.usql.Expresiones.Aritmetica
             }
             else
             {
-                if(r1.Tipo == Constante.ERROR)
+                if(!(r1.Tipo == Constante.ERROR))
                 {
                     string descripcion = "Tipo de operando incorrecto para el operador '-'";
                     uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));

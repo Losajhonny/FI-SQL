@@ -504,7 +504,7 @@ namespace ServidorDB.analizadores.usql
             RegisterOperators(8, Associativity.Right, not);
             #endregion
 
-            this.Root = EXP;
+            this.Root = SSL;
         }
     }
 }

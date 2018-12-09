@@ -19,6 +19,7 @@ namespace ServidorDB.otros
         public const int DATETIME = 4;
         public const int TEXT = 5;
         public const int ERROR = 6;
+        public const int NONE = 7;
 
         public static string getTipo(int tipo)
         {
