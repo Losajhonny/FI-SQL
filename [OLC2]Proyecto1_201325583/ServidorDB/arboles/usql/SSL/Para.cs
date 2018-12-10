@@ -108,10 +108,20 @@ namespace ServidorDB.arboles.usql.SSL
                     {   //en caso de que sea true la condicion : ejecutar inst
                         for(int i = 0; i < inst.Count; i++)
                         {   //ejecutando inst con el entorno para estas
-                            inst[i].ejecutar(nuevo);
+                            object obj = inst[i].ejecutar(nuevo);
+                            if (obj is Detener) return null;
+                            if (obj is Retornar) return obj;
                         }
                         //falta ejecutar la operacion "--" o "++"
                         asignar.ejecutar(nuevo);
+                    }
+                }
+                else
+                {
+                    if (res.Tipo != Constante.ERROR)
+                    {
+                        string descripcion = "Tipos incompatibles: " + Constante.getTipo(res.Tipo) + " no puede ser convertido a " + Constante.getTipo(Constante.BOOL);
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
                     }
                 }
             }

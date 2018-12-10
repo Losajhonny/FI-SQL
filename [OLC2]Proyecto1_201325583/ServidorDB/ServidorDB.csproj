@@ -55,8 +55,12 @@
     <Compile Include="analizadores\usql\uError.cs" />
     <Compile Include="analizadores\usql\uGramatica.cs" />
     <Compile Include="analizadores\usql\uSintactico.cs" />
+    <Compile Include="arboles\usql\Detener.cs" />
+    <Compile Include="arboles\usql\Retornar.cs" />
     <Compile Include="arboles\usql\SSL\Asignacion.cs" />
+    <Compile Include="arboles\usql\SSL\Caso.cs" />
     <Compile Include="arboles\usql\SSL\Declarar.cs" />
+    <Compile Include="arboles\usql\SSL\Defecto.cs" />
     <Compile Include="arboles\usql\SSL\Imprimir.cs" />
     <Compile Include="arboles\usql\SSL\Mientras.cs" />
     <Compile Include="arboles\usql\SSL\Para.cs" />

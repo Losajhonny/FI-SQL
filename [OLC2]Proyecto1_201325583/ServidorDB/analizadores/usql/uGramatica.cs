@@ -373,7 +373,7 @@ namespace ServidorDB.analizadores.usql
                            | SSL
                            | BACKUP
                            | RESTORE
-                           | LLAMADA
+                           | LLAMADA + ptcoma
                            ;
 
             /*------------------------ INSTRUCCIONES -------------------------*/

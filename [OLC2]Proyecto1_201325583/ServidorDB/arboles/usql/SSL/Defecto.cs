@@ -7,19 +7,19 @@ using ServidorDB.tabla_simbolos;
 
 namespace ServidorDB.arboles.usql.SSL
 {
-    class Sino : uInstruccion
+    class Defecto : uInstruccion
     {
         private List<uInstruccion> inst;
 
-        public Sino(List<uInstruccion> inst)
+        public Defecto(List<uInstruccion> inst)
         {
             this.inst = inst;
         }
-
+        
         public List<uInstruccion> Inst { get => inst; set => inst = value; }
 
         public object ejecutar(Entorno ent)
-        {
+        {   //ejecutar solo las instrucciones
             for (int i = 0; i < inst.Count; i++)
             {
                 object obj = inst[i].ejecutar(ent);

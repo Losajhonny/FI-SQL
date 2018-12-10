@@ -43,47 +43,50 @@ namespace ServidorDB.arboles.usql.SSL
         public int Colm { get => colm; set => colm = value; }
         internal Sino Sino { get => sino; set => sino = value; }
 
-        public void ejecutar(Entorno ent, Resultado res)
-        {
-            int val = Convert.ToInt32(res.Valor);
-            if (val == 1)
-            {
-                Entorno nuevo = new Entorno(ent);
-                for (int i = 0; i < inst.Count; i++)
-                {
-                    inst[i].ejecutar(nuevo);
-                }
-            }
-            else
-            {
-                Entorno nuevo = new Entorno(ent);
-                if (sino != null)
-                {
-                    sino.ejecutar(nuevo);
-                }
-            }
-        }
-
         public object ejecutar(Entorno ent)
         {
             Resultado res = (Resultado)exp.ejecutar(ent);
-            if (res.Tipo == Constante.BOOL)
+            int estado_condicion = 0;
+            if(res.Tipo == Constante.BOOL || res.Tipo == Constante.INTEGER)
             {
-                ejecutar(ent, res);
-            }
-            else if (res.Tipo == Constante.INTEGER)
-            {
-                int v1 = Convert.ToInt32(res.Valor);
-                if (v1 == 1 || v1 == 0)
+                if(res.Tipo == Constante.INTEGER)
                 {
-                    ejecutar(ent, res);
+                    if (Convert.ToInt32(res.Valor) == 1
+                            || Convert.ToInt32(res.Valor) == 0)
+                    {
+                        estado_condicion = Convert.ToInt32(res.Valor);
+                    }
+                    else
+                    {
+                        string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
+                        + " unicamente acepta 0 o 1";
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    }
                 }
                 else
                 {
-                    string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
-                        + " unicamente acepta 0 o 1";
-                    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
-                    return new Resultado(Constante.ERROR, "");
+                    estado_condicion = Convert.ToInt32(res.Valor);
+                }
+
+                if(estado_condicion == 1)
+                {
+                    Entorno nuevo = new Entorno(ent);
+                    for (int i = 0; i < inst.Count; i++)
+                    {
+                        object obj = inst[i].ejecutar(nuevo);
+                        if (obj is Detener) return obj;
+                        if (obj is Retornar) return obj;
+                    }
+                }
+                else
+                {
+                    Entorno nuevo = new Entorno(ent);
+                    if (sino != null)
+                    {
+                        object obj = sino.ejecutar(nuevo);
+                        if (obj is Detener) return obj;
+                        if (obj is Retornar) return obj;
+                    }
                 }
             }
             else
