@@ -131,7 +131,7 @@ namespace ServidorDB.arboles.usql.SSL
             {
                 //instancias de objeto
                 //buscar el objeto
-                Simbolo sobjeto = ent.getSimbolo(id_objeto);
+                Simbolo sobjeto = ent.getSimbolo_Entorno(id_objeto);
                 if (sobjeto != null)
                 {
                     if (!ent.existe(id))

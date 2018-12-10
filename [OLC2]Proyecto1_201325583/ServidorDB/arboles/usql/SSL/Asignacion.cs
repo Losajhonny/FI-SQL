@@ -53,7 +53,7 @@ namespace ServidorDB.arboles.usql.SSL
             if (id == null)
             {//entonces solo es asignacion de variable
                 Resultado res = (Resultado) exp.ejecutar(ent);
-                Simbolo s = ent.getSimbolo(var);
+                Simbolo s = ent.getSimbolo_Entorno(var);
 
                 if(s != null)
                 {
@@ -73,6 +73,7 @@ namespace ServidorDB.arboles.usql.SSL
                             string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
                                 + " unicamente acepta 0 o 1";
                             uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                            return new Resultado(Constante.ERROR, "");
                         }
                     }
                     else

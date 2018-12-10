@@ -58,6 +58,9 @@
     <Compile Include="arboles\usql\SSL\Asignacion.cs" />
     <Compile Include="arboles\usql\SSL\Declarar.cs" />
     <Compile Include="arboles\usql\SSL\Imprimir.cs" />
+    <Compile Include="arboles\usql\SSL\Mientras.cs" />
+    <Compile Include="arboles\usql\SSL\Para.cs" />
+    <Compile Include="arboles\usql\SSL\Selecciona.cs" />
     <Compile Include="arboles\usql\SSL\Si.cs" />
     <Compile Include="arboles\usql\SSL\Sino.cs" />
     <Compile Include="arboles\usql\uArbol.cs" />

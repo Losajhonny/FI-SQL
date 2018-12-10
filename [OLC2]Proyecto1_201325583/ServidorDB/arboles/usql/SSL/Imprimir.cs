@@ -32,7 +32,7 @@ namespace ServidorDB.arboles.usql.SSL
             Resultado res = (Resultado)exp.ejecutar(ent);
             if(res.Tipo == Constante.TEXT)
             {
-                //imprimir en la consola
+                Constante.rtb_consola.Text += res.Valor;
             }
             else
             {

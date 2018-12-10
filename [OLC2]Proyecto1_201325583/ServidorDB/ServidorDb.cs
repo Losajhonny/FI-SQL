@@ -1,5 +1,6 @@
 ﻿using Irony.Parsing;
 using ServidorDB.analizadores.usql;
+using ServidorDB.otros;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,12 +17,20 @@ namespace ServidorDB
     {
         public ServidorDb()
         {
+            Constante.rtb_consola.AcceptsTab = true;
+            Constante.rtb_consola.Location = new System.Drawing.Point(12, 422);
+            Constante.rtb_consola.Name = "rtb_consola";
+            Constante.rtb_consola.Size = new System.Drawing.Size(776, 221);
+            Constante.rtb_consola.TabIndex = 3;
+            Constante.rtb_consola.Text = "";
+            this.Controls.Add(Constante.rtb_consola);
             InitializeComponent();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             ParseTreeNode raiz = uSintactico.analizar(richTextBox1.Text);
+            Constante.rtb_consola.Text = "";
             uSintactico.uerrores.Clear();
             if (raiz == null)
             {

@@ -43,27 +43,47 @@ namespace ServidorDB.arboles.usql.SSL
         public int Colm { get => colm; set => colm = value; }
         internal Sino Sino { get => sino; set => sino = value; }
 
+        public void ejecutar(Entorno ent, Resultado res)
+        {
+            int val = Convert.ToInt32(res.Valor);
+            if (val == 1)
+            {
+                Entorno nuevo = new Entorno(ent);
+                for (int i = 0; i < inst.Count; i++)
+                {
+                    inst[i].ejecutar(nuevo);
+                }
+            }
+            else
+            {
+                Entorno nuevo = new Entorno(ent);
+                if (sino != null)
+                {
+                    sino.ejecutar(nuevo);
+                }
+            }
+        }
+
         public object ejecutar(Entorno ent)
         {
             Resultado res = (Resultado)exp.ejecutar(ent);
             if (res.Tipo == Constante.BOOL)
             {
-                int val = Convert.ToInt32(res.Valor);
-                if(val == 1)
+                ejecutar(ent, res);
+            }
+            else if (res.Tipo == Constante.INTEGER)
+            {
+                int v1 = Convert.ToInt32(res.Valor);
+                if (v1 == 1 || v1 == 0)
                 {
-                    Entorno nuevo = new Entorno(ent);
-                    for(int i = 0; i < inst.Count; i++)
-                    {
-                        inst[i].ejecutar(nuevo);
-                    }
+                    ejecutar(ent, res);
                 }
                 else
                 {
-                    Entorno nuevo = new Entorno(ent);
-                    if(sino != null)
-                    {
-                        sino.ejecutar(nuevo);
-                    }
+                    string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
+                        + " unicamente acepta 0 o 1";
+                    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    return new Resultado(Constante.ERROR, "");
                 }
             }
             else

@@ -82,13 +82,37 @@ namespace ServidorDB.arboles.usql
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("PARA"))
             {
-
+                return PARA(padre.ChildNodes[0]);
             }
             else
             {
-                //MIENTRAS
+                return MIENTRAS(padre.ChildNodes[0]);
             }
             return null;
+        }
+
+        public static Para PARA(ParseTreeNode padre)
+        {
+            List<string> lista = new List<string>();
+            lista.Add(padre.ChildNodes[3].Token.Text);
+            Declarar dec = new Declarar(lista, Constante.INTEGER,
+                EXPRESION(padre.ChildNodes[6]), padre.ChildNodes[2].Token.Location.Line,
+                padre.ChildNodes[2].Token.Location.Column);
+
+            return new Para(SENTENCIAS(padre.ChildNodes[13]), dec,
+                EXPRESION(padre.ChildNodes[8]),
+                padre.ChildNodes[10].ChildNodes[0].Token.Text,
+                padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Line);
+
+        }
+
+        public static Mientras MIENTRAS(ParseTreeNode padre)
+        {
+            return new Mientras(EXPRESION(padre.ChildNodes[2]),
+                SENTENCIAS(padre.ChildNodes[5]),
+                padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Column);
         }
 
         public static Imprimir IMPRIMIR(ParseTreeNode padre)
@@ -103,15 +127,15 @@ namespace ServidorDB.arboles.usql
             if(padre.ChildNodes.Count == 7)
             {
                 return new Si(EXPRESION(padre.ChildNodes[2]),
-                    new List<uInstruccion>(),
+                    SENTENCIAS(padre.ChildNodes[5]),
                     padre.ChildNodes[0].Token.Location.Line,
                     padre.ChildNodes[0].Token.Location.Column);
             }
             else
             {
-                Sino sino = new Sino(new List<uInstruccion>());
+                Sino sino = new Sino(SENTENCIAS(padre.ChildNodes[9]));
                 return new Si(EXPRESION(padre.ChildNodes[2]),
-                    new List<uInstruccion>(), sino,
+                    SENTENCIAS(padre.ChildNodes[5]), sino,
                     padre.ChildNodes[0].Token.Location.Line,
                     padre.ChildNodes[0].Token.Location.Column);
             }

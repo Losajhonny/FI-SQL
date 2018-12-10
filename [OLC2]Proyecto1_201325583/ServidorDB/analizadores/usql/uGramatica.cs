@@ -302,7 +302,11 @@ namespace ServidorDB.analizadores.usql
             MIENTRAS.Rule = pr_mientras + pari + EXP + pard + llai + INSTRUCCIONES + llad;
 
             /*------------------------------- PARA -------------------------*/
-            PARA.Rule = pr_para + pari + pr_declarar + variable + pr_integer + igual + EXP + ptcoma + EXP + ptcoma + OPERACION + pard + llai + INSTRUCCIONES + llad
+            PARA.Rule = pr_para + pari + 
+                pr_declarar + variable + pr_integer + igual + EXP + ptcoma + 
+                EXP + 
+                ptcoma + OPERACION + pard + 
+                llai + INSTRUCCIONES + llad
                       ;
 
             OPERACION.Rule = incremento

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ServidorDB.otros
 {
     public class Constante
     {
+        public static RichTextBox rtb_consola = new System.Windows.Forms.RichTextBox();
         public static string LEXICO = "Lexico";
         public static string SINTACTICO = "Sintactico";
         public static string SEMANTICO = "Semantico";

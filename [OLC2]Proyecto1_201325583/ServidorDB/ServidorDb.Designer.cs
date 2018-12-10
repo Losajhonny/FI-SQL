@@ -31,6 +31,7 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            //this.rtb_consola = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -59,16 +60,26 @@
             this.richTextBox2.TabIndex = 2;
             this.richTextBox2.Text = "";
             // 
+            // rtb_consola
+            // 
+            //this.rtb_consola.AcceptsTab = true;
+            //this.rtb_consola.Location = new System.Drawing.Point(12, 422);
+            //this.rtb_consola.Name = "rtb_consola";
+            //this.rtb_consola.Size = new System.Drawing.Size(776, 221);
+            //this.rtb_consola.TabIndex = 3;
+            //this.rtb_consola.Text = "";
+            // 
             // ServidorDb
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 691);
+            //this.Controls.Add(this.rtb_consola);
             this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.richTextBox1);
             this.Name = "ServidorDb";
-            this.Text = "Form1";
+            this.Text = "ServidorDb";
             this.ResumeLayout(false);
 
         }
@@ -78,6 +89,7 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RichTextBox richTextBox2;
+        //private System.Windows.Forms.RichTextBox rtb_consola;
     }
 }
 

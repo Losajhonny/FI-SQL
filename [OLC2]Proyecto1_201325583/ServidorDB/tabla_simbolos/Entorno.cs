@@ -29,6 +29,9 @@ namespace ServidorDB.tabla_simbolos
         private Entorno ant;
         private Hashtable tabla;
 
+        public Entorno Ant { get => ant; set => ant = value; }
+        public Hashtable Tabla { get => tabla; set => tabla = value; }
+
         public Entorno(Entorno ant)
         {
             this.ant = ant;
@@ -40,19 +43,27 @@ namespace ServidorDB.tabla_simbolos
             tabla.Add(id, s);
         }
 
-        public Simbolo getSimbolo(string id)
+        public Simbolo getSimbolo_Entorno(string id)
         {
-            for(Entorno e = this; e != null; e = e.ant)
+            for(Entorno e = this; e != null; e = e.Ant)
             {
-                Simbolo find = (Simbolo)tabla[id];
+                Simbolo find = (Simbolo)e.Tabla[id];
                 if (find != null) return find;
             }
             return null;
         }
 
+        public Simbolo getSimbolo_Entorno_Actual(string id)
+        {
+            Entorno e = this;
+            Simbolo find = (Simbolo)e.Tabla[id];
+            if (find != null) return find;
+            return null;
+        }
+
         public bool existe(string id)
         {
-            return getSimbolo(id) != null;
+            return getSimbolo_Entorno_Actual(id) != null;
         }
     }
 }
