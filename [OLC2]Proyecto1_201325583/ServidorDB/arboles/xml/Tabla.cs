@@ -15,6 +15,9 @@ namespace ServidorDB.arboles.xml
         private List<Atributo> atributos;
         private List<string> usuarios;
 
+        private int line;
+        private int colm;
+
         private DataTable registros;
 
         private List<string[]> regs;
@@ -67,6 +70,8 @@ namespace ServidorDB.arboles.xml
         public string Ruta { get => ruta; set => ruta = value; }
         public List<string> Usuarios { get => usuarios; set => usuarios = value; }
         public DataTable Registros { get => registros; set => registros = value; }
+        public int Line { get => line; set => line = value; }
+        public int Colm { get => colm; set => colm = value; }
 
         public string generar_xml()
         {
@@ -92,6 +97,7 @@ namespace ServidorDB.arboles.xml
             //la tabla ya tiene cargado
             //la ruta de los registros y atributos
             //y usuarios ademas de tener creada el datatable
+            //tambien tiene configurado sus atributos
 
             //verifico si la ruta existe para los registros
             if (Constante.existe_archivo(ruta))
@@ -115,38 +121,24 @@ namespace ServidorDB.arboles.xml
                             bool hayError = false;
                             for (int i = 0; i < atributos.Count; i++)
                             {
-                                //necesito verificar si en el registro el tipo de dato son
-                                //iguales por motivo de que en el xml estaban de la siguiente
-                                //manera <tipo>dato</tipo>
-                                atrs[i].Tipo = -1;
-                                for (int j = 0; j < Constante.TIPOS.Length; j++)
-                                {
-                                    string t1 = atrs[i].Ti1;
-                                    string t2 = atrs[i].Ti2;
-                                    if (Constante.TIPOS[j].Equals(t1) &&
-                                        Constante.TIPOS[j].Equals(t2))
-                                    {
-                                        atrs[i].Tipo = j;
-                                        break;
-                                    }
-                                }
+                                //devuelve un error si los tipos no son iguales
+                                object retorno = atrs[i].cargar();
 
-                                
-                                if (atrs[i].Tipo == -1)
+                                if (retorno != null)
                                 {
-                                    string msg = "El tipo de dato no es primitivo o no coinciden el de " +
-                                "las etiquetas";
+                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                        xSintactico.ERRORES_XML[xSintactico.ERROR_REG] + " : " + retorno.ToString(), "", atrs[i].Line,
+                                        atrs[i].Colm));
                                     hayError = true;
-                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO, msg, "", atrs[i].Line, atrs[i].Colm));
                                     break;
                                 }
-                                else if (atrs[i].Tipo != atributos[i].Tipo)
+                                else if (atrs[i].Tipo == Constante.ID)
                                 {
-                                    if (atributos[i].Tipo != Constante.VOID)
-                                    {
-                                        string msg = "El tipo de dato debe ser " + Constante.TIPOS[atributos[i].Tipo];
-                                        xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO, msg, "", atrs[i].Line, atrs[i].Colm));
-                                    }
+
+                                    string msg = "El atributo en la tabla " + nombre + " debe ser de tipo primitivo";
+                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                        xSintactico.ERRORES_XML[xSintactico.ERROR_REG] + " : " + msg, "", atrs[i].Line,
+                                        atrs[i].Colm));
                                     hayError = true;
                                     break;
                                 }
@@ -161,7 +153,8 @@ namespace ServidorDB.arboles.xml
                         {
                             string msg = "El tamaño de las columnas del registro no " +
                                 "coincide con el tamaño de las columnas";
-                            xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO, msg, nombre, 0, 0));
+                            xSintactico.errores.Add(new analizadores.usql.uError(Constante.LOGICO,
+                                xSintactico.ERRORES_XML[xSintactico.ERROR_REG] + " : " + msg, "", 0, 0));
                         }
                     }
                 }

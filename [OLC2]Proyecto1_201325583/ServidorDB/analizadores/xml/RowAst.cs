@@ -20,7 +20,10 @@ namespace ServidorDB.analizadores.xml
                 {
                     atr.Nombre = atr.Nombre.Trim('~');
                 }
-                l.Add(atrs);
+                if(atrs.Count > 0)
+                {
+                    l.Add(atrs);
+                }
             }
             return l;
         }

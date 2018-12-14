@@ -44,9 +44,10 @@ namespace ServidorDB.analizadores.xml
                 tc = ToTerm("/");
 
             LISTA.Rule = MakeStarRule(LISTA, FUNCION)
-                | SyntaxError + ti + tc + fun + tf;
+                ;
 
             FUNCION.Rule = ti + fun + tf + LFUNCION + ti + tc + fun + tf
+                | SyntaxError + ti + tc + fun + tf
                 ;
 
             LFUNCION.Rule = MakePlusRule(LFUNCION, CFUNCION);

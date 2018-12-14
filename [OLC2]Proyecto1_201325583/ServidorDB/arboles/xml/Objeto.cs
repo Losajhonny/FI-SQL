@@ -14,6 +14,8 @@ namespace ServidorDB.arboles.xml
          * @nombre      identificador del objeto
          * @atributos   lista de atributos de un objeto
          */
+        protected int line;
+        protected int colm;
 
         protected string nombre;
         protected string ruta;
@@ -32,5 +34,7 @@ namespace ServidorDB.arboles.xml
         public List<Atributo> Parametros { get => parametros; set => parametros = value; }
         public List<string> Usuarios { get => usuarios; set => usuarios = value; }
         public string Ruta { get => ruta; set => ruta = value; }
+        public int Line { get => line; set => line = value; }
+        public int Colm { get => colm; set => colm = value; }
     }
 }

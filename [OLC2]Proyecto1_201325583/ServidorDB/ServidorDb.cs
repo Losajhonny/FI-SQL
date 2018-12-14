@@ -235,9 +235,14 @@ namespace ServidorDB
             dt.Columns.Add("a");*/
 
 
-            Constante.sistema_archivo.cargar();
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
 
-
+                string msg1 = "";
+                for (int i = 0; i < xSintactico.errores.Count; i++)
+                {
+                    msg1 += "Descripcion: " + xSintactico.errores[i].Descripcion + " " + xSintactico.errores[i].Line.ToString() + ":" + xSintactico.errores[i].Colm + "\n";
+                }
+                richTextBox2.Text = msg1;
 
             //ParseTreeNode root = analizar(Constante.leer_archivo("C://DBMS//DBS//db1.usac"));
             //if(root == null)

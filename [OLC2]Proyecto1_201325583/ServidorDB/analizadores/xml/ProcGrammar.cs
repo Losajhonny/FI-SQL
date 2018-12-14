@@ -42,11 +42,11 @@ namespace ServidorDB.analizadores.xml
                 tf = ToTerm(">"),
                 tc = ToTerm("/");
 
-            LISTA.Rule = MakeStarRule(LISTA, PROC)
-                | SyntaxError + ti + tc + proc + tf;
+            LISTA.Rule = MakeStarRule(LISTA, PROC);
 
             PROC.Rule = ti + proc + tf + LPROC + ti + tc + proc + tf
-                    ;
+                | SyntaxError + ti + tc + proc + tf
+            ;
 
             LPROC.Rule = MakePlusRule(LPROC, CPROC);
 

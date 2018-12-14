@@ -39,11 +39,11 @@ namespace ServidorDB.analizadores.xml
                 tf = ToTerm(">"),
                 tc = ToTerm("/");
 
-            LISTA.Rule = MakeStarRule(LISTA, OBJ)
-                | SyntaxError + ti + tc + obj + tf;
+            LISTA.Rule = MakeStarRule(LISTA, OBJ);
 
             OBJ.Rule = ti + obj + tf + LOBJ + ti + tc + obj + tf
-                ;
+                | SyntaxError + ti + tc + obj + tf
+            ;
 
             LOBJ.Rule = MakePlusRule(LOBJ, COBJ);
 

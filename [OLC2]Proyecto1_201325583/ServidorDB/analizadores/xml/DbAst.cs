@@ -121,6 +121,9 @@ namespace ServidorDB.analizadores.xml
             t.Atributos = rows;
             t.Usuarios = usuarios;
             t.crearDataTable();
+
+            t.Line = padre.ChildNodes[1].Token.Location.Line;
+            t.Colm = padre.ChildNodes[1].Token.Location.Column;
             return t;
         }
 
@@ -224,8 +227,8 @@ namespace ServidorDB.analizadores.xml
             if (t1 == t2 && t1 != -1)
             {*/
             Atributo at = new Atributo(id1, id2, nombre);
-            at.Line = padre.ChildNodes[0].Token.Location.Line;
-            at.Colm = padre.ChildNodes[0].Token.Location.Column;
+            at.Line = padre.ChildNodes[1].Token.Location.Line;
+            at.Colm = padre.ChildNodes[1].Token.Location.Column;
             return at;
             /*}
             else

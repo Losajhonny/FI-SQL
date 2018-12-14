@@ -10,65 +10,78 @@ namespace ServidorDB.analizadores.xml
 {
     class FunAst
     {
+        private static List<int> lines = new List<int>();
+        private static List<int> colms = new List<int>();
+
         public static List<Funcion> LISTA(ParseTreeNode padre)
         {
             List<Funcion> lf = new List<Funcion>();
             for (int i = 0; i < padre.ChildNodes.Count; i++)
             {
-                lf.Add(FUNCION(padre.ChildNodes[i]));
+                Funcion obj = FUNCION(padre.ChildNodes[i]);
+                if(obj != null) { lf.Add(obj); }
             }
             return lf;
         }
 
         public static Funcion FUNCION(ParseTreeNode padre)
         {
-            string nombre = "";
-            string tipo = "";
-            string src = "";
-            List<Atributo> param = null;
-            List<string> usuarios = null;
-
-            List<object> lfuncion = LFUNCION(padre.ChildNodes[3]);
-
-            for(int i = 0; i < lfuncion.Count; i++)
+            if(padre.ChildNodes.Count == 8)
             {
-                if(lfuncion[i] is List<string>)
+                string nombre = "";
+                string tipo = "";
+                string src = "";
+                List<Atributo> param = null;
+                List<string> usuarios = null;
+
+                List<object> lfuncion = LFUNCION(padre.ChildNodes[3]);
+
+                for (int i = 0; i < lfuncion.Count; i++)
                 {
-                    usuarios = (List<string>)lfuncion[i];
-                }
-                else if (lfuncion[i] is List<Atributo>)
-                {
-                    param = (List<Atributo>)lfuncion[i];
-                }
-                else if (lfuncion[i] is string[])
-                {
-                    string[] val = (string[])lfuncion[i];
-                    if (val[0].Equals("nombre"))
+                    if (lfuncion[i] is List<string>)
                     {
-                        nombre = val[1];
+                        usuarios = (List<string>)lfuncion[i];
                     }
-                    else if (val[0].Equals("tipo"))
+                    else if (lfuncion[i] is List<Atributo>)
                     {
-                        tipo = val[1];
+                        param = (List<Atributo>)lfuncion[i];
                     }
-                    else
+                    else if (lfuncion[i] is string[])
                     {
-                        src = val[1];
+                        string[] val = (string[])lfuncion[i];
+                        if (val[0].Equals("nombre"))
+                        {
+                            nombre = val[1];
+                        }
+                        else if (val[0].Equals("tipo"))
+                        {
+                            tipo = val[1];
+                        }
+                        else
+                        {
+                            src = val[1];
+                        }
                     }
                 }
+
+                Funcion f = new Funcion(-1, nombre);
+                f.Tipo_ = tipo;
+                f.Src = src;
+                f.Parametros = param;
+                f.Usuarios = usuarios;
+
+                f.Line = padre.ChildNodes[1].Token.Location.Line;
+                f.Colm = padre.ChildNodes[1].Token.Location.Column;
+
+                return f;
             }
-
-            Funcion f = new Funcion(-1, nombre);
-            f.Tipo_ = tipo;
-            f.Src = src;
-            f.Parametros = param;
-            f.Usuarios = usuarios;
-
-            return f;
+            return null;
         }
 
         public static List<object> LFUNCION(ParseTreeNode padre)
         {
+            lines.Clear();
+            colms.Clear();
             List<object> lf = new List<object>();
             for (int i = 0; i < padre.ChildNodes.Count; i++)
             {
@@ -114,6 +127,8 @@ namespace ServidorDB.analizadores.xml
 
         public static string RETORNO(ParseTreeNode padre)
         {
+            lines.Add(padre.ChildNodes[3].Token.Location.Line);
+            colms.Add(padre.ChildNodes[3].Token.Location.Column);
             return MasterAst.NOMBRE(padre);
         }
 

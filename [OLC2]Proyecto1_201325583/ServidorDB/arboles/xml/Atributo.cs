@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServidorDB.otros;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Atributo
+    public class Atributo : xInstruccion
     {
         /**
          * No me genera nada solo hace referencia a un atributo
@@ -87,5 +88,39 @@ namespace ServidorDB.arboles.xml
         public string Ti2 { get => ti2; set => ti2 = value; }
         public int Line { get => line; set => line = value; }
         public int Colm { get => colm; set => colm = value; }
+
+        public object cargar()
+        {
+            //verificar si las etiqueta ti1 y ti2 son iguales
+            if (ti1.Equals(ti2))
+            {
+                //bandera para encontrar el tipo de dato
+                bool encontrado = false;
+                for (int i = 0; i < Constante.TIPOS.Length; i++)
+                {   //verificar si existe entre los tipos que existen
+                    if (Constante.TIPOS[i].Equals(ti1))
+                    {   //cuando se encontro la posicion es el numero al que pertenece el tipo
+                        tipo = i;
+                        encontrado = true;
+                        break;
+                    }
+                }
+                //si no se encontro definirlo como tipo de dato id
+                if (!encontrado) { tipo = Constante.ID; }
+            }
+            else
+            {
+                string msg = "El tipo de dato no coniciden con las etiquetas (" + ti1 + ");(" + ti2 + ")";
+                return msg;
+            }
+            /*Retorna el mensaje de error para saber en que analizador se analizo
+             en caso de no tener error retornara null*/
+            return null;
+        }
+
+        public string generar_xml()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

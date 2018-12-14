@@ -15,40 +15,48 @@ namespace ServidorDB.analizadores.xml
             List<Objeto> lf = new List<Objeto>();
             for (int i = 0; i < padre.ChildNodes.Count; i++)
             {
-                lf.Add(OBJ(padre.ChildNodes[i]));
+                Objeto obj = OBJ(padre.ChildNodes[i]);
+                if(obj != null) { lf.Add(obj); }
             }
             return lf;
         }
 
         public static Objeto OBJ(ParseTreeNode padre)
         {
-            string nombre = "";
-            List<Atributo> attr = null;
-            List<string> usuarios = null;
-
-            List<object> lfuncion = LOBJ(padre.ChildNodes[3]);
-
-            for (int i = 0; i < lfuncion.Count; i++)
+            if(padre.ChildNodes.Count == 8)
             {
-                if (lfuncion[i] is List<string>)
-                {
-                    usuarios = (List<string>)lfuncion[i];
-                }
-                else if (lfuncion[i] is List<Atributo>)
-                {
-                    attr = (List<Atributo>)lfuncion[i];
-                }
-                else if (lfuncion[i] is string[])
-                {
-                    string[] val = (string[])lfuncion[i];
-                        nombre = val[1];
-                }
-            }
+                string nombre = "";
+                List<Atributo> attr = null;
+                List<string> usuarios = null;
 
-            Objeto f = new Objeto(nombre);
-            f.Parametros = attr;
-            f.Usuarios = usuarios;
-            return f;
+                List<object> lfuncion = LOBJ(padre.ChildNodes[3]);
+
+                for (int i = 0; i < lfuncion.Count; i++)
+                {
+                    if (lfuncion[i] is List<string>)
+                    {
+                        usuarios = (List<string>)lfuncion[i];
+                    }
+                    else if (lfuncion[i] is List<Atributo>)
+                    {
+                        attr = (List<Atributo>)lfuncion[i];
+                    }
+                    else if (lfuncion[i] is string[])
+                    {
+                        string[] val = (string[])lfuncion[i];
+                        nombre = val[1];
+                    }
+                }
+
+                Objeto f = new Objeto(nombre);
+                f.Parametros = attr;
+                f.Usuarios = usuarios;
+
+                f.Line = padre.ChildNodes[1].Token.Location.Line;
+                f.Colm = padre.ChildNodes[1].Token.Location.Column;
+                return f;
+            }
+            return null;
         }
 
         public static List<object> LOBJ(ParseTreeNode padre)

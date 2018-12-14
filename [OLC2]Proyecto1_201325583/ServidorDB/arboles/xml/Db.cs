@@ -235,83 +235,52 @@ namespace ServidorDB.arboles.xml
                             //los registros en esta tabla
                             for (int y = 0; y < t.Atributos.Count; y++)
                             {
-                                for (int j = 0; j < Constante.TIPOS.Length; j++)
+                                //carga las variables donde deben ser
+                                //El erro que trae es que las etiquetas no son iguales
+                                object retorno = t.Atributos[y].cargar();
+                                if(retorno != null)
                                 {
-                                    string t1 = t.Atributos[y].Ti1;
-                                    string t2 = t.Atributos[y].Ti2;
-                                    if (Constante.TIPOS[j].Equals(t1) &&
-                                        Constante.TIPOS[j].Equals(t2))
-                                    {
-                                        t.Atributos[y].Tipo = j;
-                                        break;
-                                    }
-                                    //solo para diferenciar
-                                    t.Atributos[y].Tipo = Constante.VOID;
+                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                        xSintactico.ERRORES_XML[xSintactico.ERROR_DB] + " : " + retorno.ToString(), "", t.Atributos[y].Line,
+                                        t.Atributos[y].Colm));
                                 }
-                                if (t.Atributos[y].Tipo == Constante.VOID)
+                                else if (t.Atributos[y].Tipo == Constante.ID)
                                 {
-                                    string msg = "El tipo de dato debe ser primitivo";
-                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO, msg, "", t.Atributos[y].Line, t.Atributos[y].Colm));
+
+                                    string msg = "El atributo en la tabla "+t.Nombre+" debe ser de tipo primitivo";
+                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                        xSintactico.ERRORES_XML[xSintactico.ERROR_DB] + " : " + msg, "", t.Atributos[y].Line,
+                                        t.Atributos[y].Colm));
                                 }
                             }
-                            //verificar los tipos encaso de no ser primitivos su valor sera el -2;
                             t.cargar();
-                            //agregar la tabla a la base de datos
-                            tablas.Add(t.Nombre, t);
+                            if (!tablas.ContainsKey(t.Nombre))
+                            {
+                                tablas.Add(t.Nombre, t);
+                            }
+                            else
+                            {
+                                string msg = "La tabla ya existe en la base de datos: " + nombre;
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_DB] + " : " + msg, "", t.Line,
+                                    t.Colm));
+                            }
                         }
                         else if (lob[i] is string[])
                         {
-                            //aqui me viene el path de los procedimiento
-                            //funciones, objetos
-                            //aqui valido si es un
-                            /*=============================
-                                    aqui voy        
-                            ===============================*/
                             string[] proceso = (string[])lob[i];
-                            string cad = "";
 
                             if (proceso[0].Equals("proc"))
                             {
-                                //como es procedimiento entonces
-                                //leer el archivo
-                                cad = Constante.leer_archivo(proceso[1]);
-                                List<Procedimiento> procs = xSintactico.analizarProc(cad);
-                                //ya tengo la lista entonces ir al los atributos
-                                //para controlar el tipo de dato
-                                for(int j = 0; j < procs.Count; j++)
-                                {
-                                    bool hay_error = false;
-                                    //estoy recorriendo los procedimientos
-                                    for(int k = 0; k < procs[j].Parametros.Count; k++)
-                                    {
-                                        //aqui estoy en los atributos de un procedimiento
-                                        //aqui solo tiene atributos primitivos
-                                        string t1 = procs[j].Parametros[k].Ti1;
-                                        string t2 = procs[j].Parametros[k].Ti2;
-                                        //ahora verificar si son iguales
-                                        if (t1.Equals(t2))
-                                        {
-                                            //ahora verificar si son primitivos
-                                            for(int y = 0; y < Constante.TIPOS.Length; y++)
-                                            {
-                                                if (Constante.TIPOS[y].Equals(t1))
-                                                {
-                                                    procs[j].Parametros[k].Tipo = y;
-                                                    this.procedimientos.Add(procs[j].Nombre ,procs[j]);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                proceso_proc(proceso[1]);
                             }
                             else if (proceso[0].Equals("func"))
                             {
-
+                                proceso_func(proceso[1]);
                             }
                             else
                             {   //object
-
+                                proceso_obj(proceso[1]);
                             }
                             
                         }
@@ -320,5 +289,170 @@ namespace ServidorDB.arboles.xml
             }
             return null;
         }
+
+        public void proceso_proc(string path)
+        {
+            //aqui debo analizar los procedimientos
+            if (Constante.existe_archivo(path))
+            {
+                //tengo que leer el archivo
+                string cadena = Constante.leer_archivo(path);
+                List<Procedimiento> procs = xSintactico.analizarProc(cadena);
+                //ya cargue los procedimientos
+                //bien entonces hay que recorrer los atributos para cargar
+                //las variables necesarias
+                if(procs != null)
+                {
+                    for (int i = 0; i < procs.Count; i++)
+                    {
+                        bool banError = false;
+                        for (int j = 0; j < procs[i].Parametros.Count; j++)
+                        {
+                            //cargar los atributos
+                            object retorno = procs[i].Parametros[j].cargar();
+                            if (retorno != null)
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_PROC] + " : " + retorno.ToString(), "", procs[i].Parametros[j].Line,
+                                    procs[i].Parametros[j].Colm));
+                                banError = true;
+                                break;
+                            }
+                        }
+
+                        if (!banError)
+                        {   //quiere decir que no se encontro errores durante la carga de variables
+                            if (!procedimientos.ContainsKey(procs[i].Nombre))
+                            {
+                                this.procedimientos.Add(procs[i].Nombre, procs[i]);
+                            }
+                            else
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_PROC] + " : " + "El procedimiento ya existe en la base de datos: " + nombre, "", procs[i].Line,
+                                    procs[i].Colm));
+                            }
+                            
+                        }
+                        //sino entonces el msg error ya fue reportado seguir con los demas procs
+                    }
+                }
+            }
+
+
+        }
+
+        public void proceso_func(string path)
+        {
+            //aqui debo analizar las funciones
+            if (Constante.existe_archivo(path))
+            {
+                //tengo que leer el archivo
+                string cadena = Constante.leer_archivo(path);
+                List<Funcion> funcs = xSintactico.analizaarFunc(cadena);
+                //ya cargue las funciones
+                //bien entonces hay que recorrer los atributos para cargar
+                //las variables necesarias
+                if(funcs != null)
+                {
+                    for (int i = 0; i < funcs.Count; i++)
+                    {
+                        bool banError = false;
+                        for (int j = 0; j < funcs[i].Parametros.Count; j++)
+                        {
+                            //cargar los atributos
+                            object retorno = funcs[i].Parametros[j].cargar();
+                            if (retorno != null)
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_FUN] + " : " + retorno.ToString(), "", funcs[i].Parametros[j].Line,
+                                    funcs[i].Parametros[j].Colm));
+                                banError = true;
+                                break;
+                            }
+                        }
+
+                        if (!banError)
+                        {   //quiere decir que no se encontro errores durante la carga de variables
+                            //verificar el tipo
+                            object ret = funcs[i].cargar();
+
+                            if (ret != null)
+                            {
+                                if (!funciones.ContainsKey(funcs[i].Nombre))
+                                {
+                                    this.funciones.Add(funcs[i].Nombre, funcs[i]);
+                                }
+                                else
+                                {
+                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                        xSintactico.ERRORES_XML[xSintactico.ERROR_FUN] + " : " + "La funcion ya existe en la base de datos: " + nombre, "", funcs[i].Line,
+                                        funcs[i].Colm));
+                                }
+                            }
+                            else
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                       xSintactico.ERRORES_XML[xSintactico.ERROR_FUN] + " : " + "Tipo de Retorno incorrecto"
+                                       + "en la funcion: " + nombre, "", 0, 0));
+                            }
+                        }
+                        //sino entonces el msg error ya fue reportado seguir con los demas procs
+                    }
+                }
+            }
+
+
+        }
+
+        public void proceso_obj(string path)
+        {
+            //aqui debo analizar los objetos
+            if (Constante.existe_archivo(path))
+            {
+                //tengo que leer el archivo
+                string cadena = Constante.leer_archivo(path);
+                List<Objeto> objs = xSintactico.analizarObj(cadena);
+                //ya cargue los objetos
+                //bien entonces hay que recorrer los atributos para cargar
+                //las variables necesarias
+                if (objs != null)
+                {
+                    for (int i = 0; i < objs.Count; i++)
+                    {
+                        bool banError = false;
+                        for (int j = 0; j < objs[i].Parametros.Count; j++)
+                        {
+                            //cargar los atributos
+                            object retorno = objs[i].Parametros[j].cargar();
+                            if (retorno != null)
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_OBJ] + " : " + retorno.ToString(), "", objs[i].Parametros[j].Line,
+                                    objs[i].Parametros[j].Colm));
+                                banError = true;
+                                break;
+                            }
+                        }
+
+                        if (!banError)
+                        {   //quiere decir que no se encontro errores durante la carga de variables
+                            if (!objetos.ContainsKey(objs[i].Nombre))
+                            {
+                                this.objetos.Add(objs[i].Nombre, objs[i]);
+                            }
+                            else
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_OBJ] + " : " + "El objeto ya existe en la base de datos: " + nombre, "", objs[i].Line,
+                                    objs[i].Colm));
+                            }
+                        }
+                        //sino entonces el msg error ya fue reportado seguir con los demas procs
+                    }
+                }
+            }
+        }
+        
     }
 }

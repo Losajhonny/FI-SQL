@@ -15,6 +15,8 @@ namespace ServidorDB.otros
         public static string LEXICO = "Lexico";
         public static string SINTACTICO = "Sintactico";
         public static string SEMANTICO = "Semantico";
+        public static string LOGICO = "Logico";
+        public static string PARSER = "Analizador";
 
         public static string[] TIPOS = { "bool", "integer", "double", "date", "datetime", "text", "error", "id", "void" };
         public const int BOOL = 0;

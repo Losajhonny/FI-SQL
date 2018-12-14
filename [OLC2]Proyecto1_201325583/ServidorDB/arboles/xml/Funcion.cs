@@ -37,5 +37,30 @@ namespace ServidorDB.arboles.xml
         public string Src { get => src; set => src = value; }
         public int Tipo { get => tipo; set => tipo = value; }
         public string Tipo_ { get => tipo_; set => tipo_ = value; }
+
+        public object cargar()
+        {
+            //cargo la variable del tipo de dato de retorno
+            if(Tipo_ != null)
+            {
+                tipo = -1;
+                for (int i = 0; i < Constante.TIPOS.Length; i++)
+                {
+                    if (Tipo_.Equals(Constante.TIPOS[i]))
+                    {
+                        tipo = i;
+                        return i;
+                    }
+                }
+
+                if(tipo == -1)
+                {
+                    //no encontro el tipo especificado
+                    tipo = Constante.ID;
+                    return tipo;
+                }
+            }
+            return null;
+        }
     }
 }

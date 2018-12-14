@@ -16,50 +16,58 @@ namespace ServidorDB.analizadores.xml
             List<Procedimiento> lf = new List<Procedimiento>();
             for (int i = 0; i < padre.ChildNodes.Count; i++)
             {
-                lf.Add(FUNCION(padre.ChildNodes[i]));
+                Procedimiento pr = FUNCION(padre.ChildNodes[i]);
+                if (pr != null) { lf.Add(pr); }
             }
             return lf;
         }
 
         public static Procedimiento FUNCION(ParseTreeNode padre)
         {
-            string nombre = "";
-            string src = "";
-            List<Atributo> param = null;
-            List<string> usuarios = null;
-
-            List<object> lfuncion = LPROC(padre.ChildNodes[3]);
-
-            for (int i = 0; i < lfuncion.Count; i++)
+            if(padre.ChildNodes.Count == 8)
             {
-                if (lfuncion[i] is List<string>)
+                string nombre = "";
+                string src = "";
+                List<Atributo> param = null;
+                List<string> usuarios = null;
+
+                List<object> lfuncion = LPROC(padre.ChildNodes[3]);
+
+                for (int i = 0; i < lfuncion.Count; i++)
                 {
-                    usuarios = (List<string>)lfuncion[i];
-                }
-                else if (lfuncion[i] is List<Atributo>)
-                {
-                    param = (List<Atributo>)lfuncion[i];
-                }
-                else if (lfuncion[i] is string[])
-                {
-                    string[] val = (string[])lfuncion[i];
-                    if (val[0].Equals("nombre"))
+                    if (lfuncion[i] is List<string>)
                     {
-                        nombre = val[1];
+                        usuarios = (List<string>)lfuncion[i];
                     }
-                    else
+                    else if (lfuncion[i] is List<Atributo>)
                     {
-                        src = val[1];
+                        param = (List<Atributo>)lfuncion[i];
+                    }
+                    else if (lfuncion[i] is string[])
+                    {
+                        string[] val = (string[])lfuncion[i];
+                        if (val[0].Equals("nombre"))
+                        {
+                            nombre = val[1];
+                        }
+                        else
+                        {
+                            src = val[1];
+                        }
                     }
                 }
+
+                Procedimiento f = new Procedimiento(Constante.VOID, nombre);
+                f.Src = src;
+                f.Parametros = param;
+                f.Usuarios = usuarios;
+
+                f.Line = padre.ChildNodes[1].Token.Location.Line;
+                f.Colm = padre.ChildNodes[1].Token.Location.Column;
+
+                return f;
             }
-
-            Procedimiento f = new Procedimiento(Constante.VOID, nombre);
-            f.Src = src;
-            f.Parametros = param;
-            f.Usuarios = usuarios;
-
-            return f;
+            return null;
         }
 
         public static List<object> LPROC(ParseTreeNode padre)
