@@ -399,16 +399,15 @@ namespace ServidorDB.analizadores.usql
             /*------------- CAMPOS Y COMPLEMENTOS DE UNA TABLA --------------------*/
             CAMPOS_TABLA.Rule = MakePlusRule(CAMPOS_TABLA, coma, CAMPO_TABLA);
 
-            CAMPO_TABLA.Rule = TIPO_DATO + id + COMPLEMENTO
-                            | TIPO_DATO + id
+            CAMPO_TABLA.Rule = TIPO_DATO_PR + id + COMPLEMENTO
+                            | TIPO_DATO_PR + id
                             ;
 
             COMPLEMENTO.Rule = pr_no + pr_nulo
                             | pr_nulo
                             | pr_autoincrementable
-                            | pr_llave_primaria + pr_autoincrementable
                             | pr_llave_primaria
-                            | pr_llave_foranea + id
+                            | pr_llave_foranea + id + id
                             | pr_unico
                             ;
             #endregion

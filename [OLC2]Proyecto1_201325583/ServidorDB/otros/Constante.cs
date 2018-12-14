@@ -12,6 +12,16 @@ namespace ServidorDB.otros
     public class Constante
     {
         public static RichTextBox rtb_consola = new System.Windows.Forms.RichTextBox();
+
+
+        public const int tBASE_DATOS = 0;
+        public const int tTABLA = 1;
+        public const int tOBJETO = 2;
+        public const int tPROCEDIMIENTO = 3;
+        public const int tFUNCION = 4;
+        public const int tUSUARIO = 5;
+        public const int tUSAR = 6;
+
         public static string LEXICO = "Lexico";
         public static string SINTACTICO = "Sintactico";
         public static string SEMANTICO = "Semantico";

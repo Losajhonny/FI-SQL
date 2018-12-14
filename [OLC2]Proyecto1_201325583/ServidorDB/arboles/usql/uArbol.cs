@@ -1,10 +1,12 @@
 ﻿using Irony.Parsing;
+using ServidorDB.arboles.usql.DDL;
 using ServidorDB.arboles.usql.DDL.Crear;
 using ServidorDB.arboles.usql.Expresiones;
 using ServidorDB.arboles.usql.Expresiones.Aritmetica;
 using ServidorDB.arboles.usql.Expresiones.Logica;
 using ServidorDB.arboles.usql.Expresiones.Relacional;
 using ServidorDB.arboles.usql.SSL;
+using ServidorDB.arboles.xml;
 using ServidorDB.otros;
 using System;
 using System.Collections.Generic;
@@ -96,34 +98,77 @@ namespace ServidorDB.arboles.usql
             {//creando funcion
                 List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
                 List<uInstruccion> inst = SENTENCIAS(padre.ChildNodes[8]);
-                Funcion fun = new Funcion(padre.ChildNodes[2].Token.Text,
-                    TIPO_DATO(padre.ChildNodes[6]), paramss, inst,
-                    padre.ChildNodes[0].Token.Location.Line,
-                    padre.ChildNodes[0].Token.Location.Column);
-                return fun;
+
+                int linei, linef, colmi, colmf, line, colm;
+
+                line = padre.ChildNodes[1].Token.Location.Line;
+                colm = padre.ChildNodes[1].Token.Location.Column;
+
+                linei = padre.ChildNodes[0].Token.Location.Line;
+                colmi = padre.ChildNodes[0].Token.Location.Column;
+
+                linef = padre.ChildNodes[9].Token.Location.Line;
+                colmf = padre.ChildNodes[9].Token.Location.Column;
+
+                Crear_Ddl cddl = new Crear_Ddl(Constante.tFUNCION, TIPO_DATO(padre.ChildNodes[6]),
+                    padre.ChildNodes[2].Token.Text, paramss, inst,
+                    linei, linef, colmi, colmf);
+
+                cddl.Line = line;
+                cddl.Colm = colm;
+                return cddl;
             }
             else if (padre.ChildNodes.Count == 9)
             {//creando procedimiento
                 List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
                 List<uInstruccion> inst = SENTENCIAS(padre.ChildNodes[7]);
-                Procedimiento proc = new Procedimiento(padre.ChildNodes[2].Token.Text,
-                    Constante.VOID, paramss, inst,
-                    padre.ChildNodes[0].Token.Location.Line,
-                    padre.ChildNodes[0].Token.Location.Column);
-                return proc;
+
+                int linei, linef, colmi, colmf, line, colm;
+
+                line = padre.ChildNodes[1].Token.Location.Line;
+                colm = padre.ChildNodes[1].Token.Location.Column;
+
+                linei = padre.ChildNodes[0].Token.Location.Line;
+                colmi = padre.ChildNodes[0].Token.Location.Column;
+
+                linef = padre.ChildNodes[8].Token.Location.Line;
+                colmf = padre.ChildNodes[8].Token.Location.Column;
+
+                Crear_Ddl cddl = new Crear_Ddl(Constante.tPROCEDIMIENTO, Constante.VOID,
+                    padre.ChildNodes[2].Token.Text, paramss, inst,
+                    linei, linef, colmi, colmf);
+                return cddl;
             }
             else if (padre.ChildNodes.Count == 8)
             {
                 NodoExp ne = EXPRESION(padre.ChildNodes[6]);
-                return new Usuario(padre.ChildNodes[2].Token.Text,
-                    ne, padre.ChildNodes[0].Token.Location.Line,
-                    padre.ChildNodes[0].Token.Location.Column);
+
+                int line, colm;
+                line = padre.ChildNodes[1].Token.Location.Line;
+                colm = padre.ChildNodes[1].Token.Location.Column;
+
+                Crear_Ddl cddl = new Crear_Ddl(Constante.tUSUARIO,
+                    padre.ChildNodes[2].Token.Text, ne, line, colm);
+                return cddl;
             }
             else if (padre.ChildNodes.Count == 7)
             {
                 if (padre.ChildNodes[1].Token.Text.ToLower().Equals("objeto"))
                 {
+                    //como para obtener las declaraciones (parametros) de un objeto
+                    //tiene la misma posicion que las declaraciones que un proc
+                    //o funcion solo que cambia el token que se esta analizando
+                    //id  |  variable
+                    //en este caso seria solo id
+                    List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
+                    int line, colm;
 
+                    line = padre.ChildNodes[1].Token.Location.Line;
+                    colm = padre.ChildNodes[1].Token.Location.Column;
+
+                    Crear_Ddl cddl = new Crear_Ddl(Constante.tOBJETO,
+                        padre.ChildNodes[2].Token.Text, paramss, line, colm);
+                    return cddl;
                 }
                 else
                 {//tabla
@@ -133,15 +178,30 @@ namespace ServidorDB.arboles.usql
             return null;
         }
 
-        public static List<uInstruccion> PARAMETROS(ParseTreeNode padre)
+        public static Atributo CAMPO_TABLA(ParseTreeNode padre)
         {
-            List<uInstruccion> inst = new List<uInstruccion>();
-            for(int i = 0; i < padre.ChildNodes.Count; i++)
+            if(padre.ChildNodes.Count == 3)
             {
-                inst.Add(PARAMETRO(padre.ChildNodes[i]));
+                //tiene complemento
             }
-            return inst;
+            else
+            {
+                //Atributo at = new Atributo()
+                //atributo sin complemento
+                //le asignamos nulo por defecto
+            }
+            return null;
         }
+
+        //public static List<uInstruccion> PARAMETROS(ParseTreeNode padre)
+        //{
+        //    List<uInstruccion> inst = new List<uInstruccion>();
+        //    for(int i = 0; i < padre.ChildNodes.Count; i++)
+        //    {
+        //        inst.Add(PARAMETRO(padre.ChildNodes[i]));
+        //    }
+        //    return inst;
+        //}
 
         public static Declarar PARAMETRO(ParseTreeNode padre)
         {

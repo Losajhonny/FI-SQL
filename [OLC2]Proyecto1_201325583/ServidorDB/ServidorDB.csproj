@@ -75,6 +75,7 @@
     <Compile Include="arboles\usql\DDL\Crear\Tabla.cs" />
     <Compile Include="arboles\usql\DDL\Crear\Usar.cs" />
     <Compile Include="arboles\usql\DDL\Crear\Usuario.cs" />
+    <Compile Include="arboles\usql\DDL\Crear_Ddl.cs" />
     <Compile Include="arboles\usql\Detener.cs" />
     <Compile Include="arboles\usql\Retornar.cs" />
     <Compile Include="arboles\usql\SSL\Asignacion.cs" />
