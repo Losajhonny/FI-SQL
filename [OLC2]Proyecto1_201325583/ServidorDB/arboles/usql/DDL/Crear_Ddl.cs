@@ -173,11 +173,11 @@ namespace ServidorDB.arboles.usql.DDL
             }
             else if (tipo_crear == Constante.tUSUARIO)
             {
-                ejecutar_usuario();
+                ejecutar_usuario(ent);
             }
             else if (tipo_crear == Constante.tOBJETO)
             {
-
+                ejecutar_objeto();
             }
             return null;
         }
@@ -204,7 +204,7 @@ namespace ServidorDB.arboles.usql.DDL
             }
         }
 
-        public void ejecutar_usuario()
+        public void ejecutar_usuario(Entorno ent)
         {
             if (Constante.usuario_actual.Equals(Constante.usuario_admin))
             {
@@ -230,7 +230,12 @@ namespace ServidorDB.arboles.usql.DDL
 
         public void ejecutar_objeto()
         {
+            //creo un nuevo objeto
+            Objeto obj = new Objeto(id);
 
+            /*En este caso los atributos de esta son la lista de declaraciones
+             que se guardaron en esta clase por lo tanto tengo que transformar
+             la declaracion en atributos*/
         }
     }
 }
