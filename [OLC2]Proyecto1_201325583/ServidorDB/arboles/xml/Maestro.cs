@@ -56,7 +56,7 @@ namespace ServidorDB.arboles.xml
             {
                 cadena += "<usuario>\n" +
                     "\t<nombre>" + usr.Nombre + "</nombre>\n" +
-                    "\t<password>" + usr.Password + "</password>\n" +
+                    "\t<password>~" + usr.Password + "~</password>\n" +
                     "</usuario>\n";
             }
             Constante.crear_archivo(ruta, cadena);
@@ -131,6 +131,8 @@ namespace ServidorDB.arboles.xml
         {
             if (Constante.existe_archivo(ruta))
             {
+                dbs.Clear();
+                usuarios.Clear();
                 string cadena = Constante.leer_archivo(ruta);
                 List<object> lob = xSintactico.analizarMaestro(cadena);
                 //verificar si se genero el arbol

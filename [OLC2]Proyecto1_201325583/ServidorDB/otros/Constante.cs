@@ -11,6 +11,12 @@ namespace ServidorDB.otros
 {
     public class Constante
     {
+        public static string usuario_actual = "admin";
+        public static string db_actual = "";
+
+        public static string usuario_admin = "admin";
+        public static string password_admin = "admin";
+
         public static RichTextBox rtb_consola = new System.Windows.Forms.RichTextBox();
 
 

@@ -45,7 +45,7 @@ namespace ServidorDB.analizadores.xml
         public static Usuario USUARIO(ParseTreeNode padre)
         {
             string nombre = NOMBRE(padre.ChildNodes[3]);
-            string password = NOMBRE(padre.ChildNodes[4]);
+            string password = PATH(padre.ChildNodes[4]);
             return new Usuario(nombre, password);
         }
 

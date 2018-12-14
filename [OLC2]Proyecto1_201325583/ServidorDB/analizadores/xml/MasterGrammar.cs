@@ -49,7 +49,7 @@ namespace ServidorDB.analizadores.xml
 
             NOMBRE.Rule = ti + nombre + tf + id + ti + tc + nombre + tf;
 
-            PASSWORD.Rule = ti + password + tf + id + ti + tc + password + tf;
+            PASSWORD.Rule = ti + password + tf + texto + ti + tc + password + tf;
 
             this.Root = LISTA;
         }

@@ -119,6 +119,7 @@
     <Compile Include="arboles\xml\Usuario.cs" />
     <Compile Include="arboles\xml\xInstruccion.cs" />
     <Compile Include="arboles\xml\xSintactico.cs" />
+    <Compile Include="otros\Peticion.cs" />
     <Compile Include="ServidorDb.cs">
       <SubType>Form</SubType>
     </Compile>

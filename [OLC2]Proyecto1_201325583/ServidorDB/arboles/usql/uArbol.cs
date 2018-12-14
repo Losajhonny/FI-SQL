@@ -23,7 +23,8 @@ namespace ServidorDB.arboles.usql
             List<uInstruccion> sents = new List<uInstruccion>();
             for(int i = 0; i < padre.ChildNodes.Count; i++)
             {
-                sents.Add(SENTENCIA(padre.ChildNodes[i]));
+                object obj = SENTENCIA(padre.ChildNodes[i]);
+                if(obj != null) { sents.Add((uInstruccion)obj); }
             }
             return sents;
         }
@@ -96,7 +97,7 @@ namespace ServidorDB.arboles.usql
         {
             if(padre.ChildNodes.Count == 10)
             {//creando funcion
-                List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
+                List<Declarar> paramss = PARAMETROS(padre.ChildNodes[4]);
                 List<uInstruccion> inst = SENTENCIAS(padre.ChildNodes[8]);
 
                 int linei, linef, colmi, colmf, line, colm;
@@ -120,7 +121,7 @@ namespace ServidorDB.arboles.usql
             }
             else if (padre.ChildNodes.Count == 9)
             {//creando procedimiento
-                List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
+                List<Declarar> paramss = PARAMETROS(padre.ChildNodes[4]);
                 List<uInstruccion> inst = SENTENCIAS(padre.ChildNodes[7]);
 
                 int linei, linef, colmi, colmf, line, colm;
@@ -160,7 +161,7 @@ namespace ServidorDB.arboles.usql
                     //o funcion solo que cambia el token que se esta analizando
                     //id  |  variable
                     //en este caso seria solo id
-                    List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
+                    List<Declarar> paramss = CAMPOS_OBJETO(padre.ChildNodes[4]);
                     int line, colm;
 
                     line = padre.ChildNodes[1].Token.Location.Line;
@@ -172,10 +173,39 @@ namespace ServidorDB.arboles.usql
                 }
                 else
                 {//tabla
-
+                    List<Atributo> atributos = CAMPOS_TABLA(padre.ChildNodes[4]);
+                    Crear_Ddl cddl = new Crear_Ddl(Constante.tTABLA,
+                        padre.ChildNodes[2].Token.Text, atributos,
+                        padre.ChildNodes[1].Token.Location.Line,
+                        padre.ChildNodes[1].Token.Location.Column);
+                    return cddl;
                 }
             }
+            else if (padre.ChildNodes.Count == 4)
+            {
+                Crear_Ddl cddl = new Crear_Ddl(Constante.tBASE_DATOS, padre.ChildNodes[2].Token.Text,
+                    padre.ChildNodes[1].Token.Location.Line,
+                    padre.ChildNodes[1].Token.Location.Column);
+                return cddl;
+            }
+            else if (padre.ChildNodes.Count == 3)
+            {
+                Crear_Ddl cddl = new Crear_Ddl(Constante.tUSAR, padre.ChildNodes[1].Token.Text,
+                    padre.ChildNodes[0].Token.Location.Line,
+                    padre.ChildNodes[0].Token.Location.Column);
+                return cddl;
+            }
             return null;
+        }
+
+        public static List<Atributo> CAMPOS_TABLA(ParseTreeNode padre)
+        {
+            List<Atributo> inst = new List<Atributo>();
+            for (int i = 0; i < padre.ChildNodes.Count; i++)
+            {
+                inst.Add(CAMPO_TABLA(padre.ChildNodes[i]));
+            }
+            return inst;
         }
 
         public static Atributo CAMPO_TABLA(ParseTreeNode padre)
@@ -183,28 +213,97 @@ namespace ServidorDB.arboles.usql
             if(padre.ChildNodes.Count == 3)
             {
                 //tiene complemento
+                //validar si es una llave foranea
+                object obj = COMPLEMENTO(padre.ChildNodes[2]);
+                int tipo = TIPO_DATO_PR(padre.ChildNodes[0]);
+
+                if(obj is string[])
+                {
+                    string[] comp = (string[])obj;
+                    Atributo atr = new Atributo(tipo, padre.ChildNodes[1].Token.Text,
+                        comp[0], comp[1]);
+                    atr.Line = padre.ChildNodes[1].Token.Location.Line;
+                    atr.Colm = padre.ChildNodes[1].Token.Location.Column;
+                    return atr;
+                }
+                else
+                {
+                    Atributo atr = new Atributo(tipo, padre.ChildNodes[1].Token.Text,
+                        obj.ToString());
+                    atr.Line = padre.ChildNodes[1].Token.Location.Line;
+                    atr.Colm = padre.ChildNodes[1].Token.Location.Column;
+                    return atr;
+                }
             }
             else
             {
-                //Atributo at = new Atributo()
                 //atributo sin complemento
                 //le asignamos nulo por defecto
+                string complemento = "no nulo";
+                int tipo = TIPO_DATO_PR(padre.ChildNodes[0]);
+
+                Atributo atr = new Atributo(tipo, padre.ChildNodes[1].Token.Text);
+                atr.Complemento = complemento;
+                atr.Line = padre.ChildNodes[1].Token.Location.Line;
+                atr.Colm = padre.ChildNodes[1].Token.Location.Column;
+                return atr;
             }
-            return null;
         }
 
-        //public static List<uInstruccion> PARAMETROS(ParseTreeNode padre)
-        //{
-        //    List<uInstruccion> inst = new List<uInstruccion>();
-        //    for(int i = 0; i < padre.ChildNodes.Count; i++)
-        //    {
-        //        inst.Add(PARAMETRO(padre.ChildNodes[i]));
-        //    }
-        //    return inst;
-        //}
+        public static object COMPLEMENTO(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 2)
+            {   //retornara "no nulo"
+                string val = "";
+                val += padre.ChildNodes[0].Token.Text + " " + padre.ChildNodes[1].Token.Text;
+                return val;
+            }
+            else if(padre.ChildNodes.Count == 3)
+            {   //retornara la llave foranea
+                                //      tabla,      id
+                string[] val = { padre.ChildNodes[1].Token.Text, padre.ChildNodes[2].Token.Text };
+                return val;
+            }
+            else
+            {   //retornara los demas
+                return padre.ChildNodes[0].Token.Text;
+            }
+        }
+
+        public static List<Declarar> PARAMETROS(ParseTreeNode padre)
+        {
+            List<Declarar> inst = new List<Declarar>();
+            for (int i = 0; i < padre.ChildNodes.Count; i++)
+            {
+                inst.Add(PARAMETRO(padre.ChildNodes[i]));
+            }
+            return inst;
+        }
+
+        public static List<Declarar> CAMPOS_OBJETO(ParseTreeNode padre)
+        {
+            List<Declarar> inst = new List<Declarar>();
+            for (int i = 0; i < padre.ChildNodes.Count; i++)
+            {
+                inst.Add(PARAMETRO(padre.ChildNodes[i]));
+            }
+            return inst;
+        }
 
         public static Declarar PARAMETRO(ParseTreeNode padre)
         {
+            //solo acepta tipos de datos primitivos
+            List<string> vars = new List<string>();
+            vars.Add(padre.ChildNodes[1].Token.Text);
+            Declarar dec = new Declarar(vars, TIPO_DATO_PR(padre.ChildNodes[0]),
+                padre.ChildNodes[1].Token.Location.Line,
+                padre.ChildNodes[1].Token.Location.Column);
+            return dec;
+        }
+
+        public static Declarar PARAMETRO_ID(ParseTreeNode padre)
+        {
+            //acepta tipos primitivos y de objetos
             List<string> vars = new List<string>();
             vars.Add(padre.ChildNodes[1].Token.Text);
             Declarar dec = new Declarar(vars, TIPO_DATO(padre.ChildNodes[0]),

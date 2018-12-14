@@ -19,6 +19,15 @@ namespace ServidorDB
     {
         public ServidorDb()
         {
+            //Tomar en cuenta para general servidorDb
+            //necesito crear el usuario de administrador
+            Usuario usr = new Usuario(Constante.usuario_admin, Constante.password_admin);
+            Peticion.crearUsuario(usr);
+            //Finalizando la insercion de crear usuario
+            //si existe no notificar que existe
+
+
+
             Constante.rtb_consola.AcceptsTab = true;
             Constante.rtb_consola.Location = new System.Drawing.Point(12, 422);
             Constante.rtb_consola.Name = "rtb_consola";
@@ -31,46 +40,46 @@ namespace ServidorDB
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //ParseTreeNode raiz = uSintactico.analizar(richTextBox1.Text);
-            //Constante.rtb_consola.Text = "";
-            //uSintactico.uerrores.Clear();
-            //if (raiz == null)
-            //{
-            //    string msg = "<< raiz null Mostrando errores >>\n";
-            //    for(int i = 0; i < uSintactico.uerrores.Count; i++)
-            //    {
-            //        msg += "Descripcion: " + uSintactico.uerrores[i].Descripcion + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
-            //    }
-            //    richTextBox2.Text = msg;
-            //}
-            //else
-            //{
-            //    //por el momento solo ejecuto expresion suma
-            //    tabla_simbolos.Entorno ent = new tabla_simbolos.Entorno(null);
-            //    List<arboles.usql.uInstruccion> inst = arboles.usql.uArbol.SENTENCIAS(raiz);
+            ParseTreeNode raiz = uSintactico.analizar(richTextBox1.Text);
+            Constante.rtb_consola.Text = "";
+            uSintactico.uerrores.Clear();
+            if (raiz == null)
+            {
+                string msg = "<< raiz null Mostrando errores >>\n";
+                for (int i = 0; i < uSintactico.uerrores.Count; i++)
+                {
+                    msg += "Descripcion: " + uSintactico.uerrores[i].Descripcion + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
+                }
+                richTextBox2.Text = msg;
+            }
+            else
+            {
+                //por el momento solo ejecuto expresion suma
+                tabla_simbolos.Entorno ent = new tabla_simbolos.Entorno(null);
+                List<arboles.usql.uInstruccion> inst = arboles.usql.uArbol.SENTENCIAS(raiz);
 
-            //    //esto colocarlo en la otra pc
-            //    /*Si estoy en el ultimo ambito en este caso necesito mostrar el error de detener
-            //     */
-            //    for(int i = 0; i < inst.Count; i++)
-            //    {
-            //        object obj = inst[i].ejecutar(ent);
-            //        if(obj is arboles.usql.Detener)
-            //        {
-            //            arboles.usql.Detener dt = (arboles.usql.Detener)obj;
-            //            String msg = "La sentencia detener no pertenece al ambito";
-            //            uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
+                //esto colocarlo en la otra pc
+                /*Si estoy en el ultimo ambito en este caso necesito mostrar el error de detener
+                 */
+                for (int i = 0; i < inst.Count; i++)
+                {
+                    object obj = inst[i].ejecutar(ent);
+                    if (obj is arboles.usql.Detener)
+                    {
+                        arboles.usql.Detener dt = (arboles.usql.Detener)obj;
+                        String msg = "La sentencia detener no pertenece al ambito";
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
 
-            //        }
-            //    }
+                    }
+                }
 
-            //    string msg1 = "";
-            //    for (int i = 0; i < uSintactico.uerrores.Count; i++)
-            //    {
-            //        msg1 += "Descripcion: " + uSintactico.uerrores[i].Descripcion + "\n";// + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
-            //    }
-            //    richTextBox2.Text = "\n<< Mostrando errores >>\n" + msg1;
-            //}
+                string msg1 = "";
+                for (int i = 0; i < uSintactico.uerrores.Count; i++)
+                {
+                    msg1 += "Descripcion: " + uSintactico.uerrores[i].Descripcion + "\n";// + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
+                }
+                richTextBox2.Text = "\n<< Mostrando errores >>\n" + msg1;
+            }
 
 
             /*
@@ -235,14 +244,14 @@ namespace ServidorDB
             dt.Columns.Add("a");*/
 
 
-            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            //Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
 
-                string msg1 = "";
-                for (int i = 0; i < xSintactico.errores.Count; i++)
-                {
-                    msg1 += "Descripcion: " + xSintactico.errores[i].Descripcion + " " + xSintactico.errores[i].Line.ToString() + ":" + xSintactico.errores[i].Colm + "\n";
-                }
-                richTextBox2.Text = msg1;
+            //    string msg1 = "";
+            //    for (int i = 0; i < xSintactico.errores.Count; i++)
+            //    {
+            //        msg1 += "Descripcion: " + xSintactico.errores[i].Descripcion + " " + xSintactico.errores[i].Line.ToString() + ":" + xSintactico.errores[i].Colm + "\n";
+            //    }
+            //    richTextBox2.Text = msg1;
 
             //ParseTreeNode root = analizar(Constante.leer_archivo("C://DBMS//DBS//db1.usac"));
             //if(root == null)

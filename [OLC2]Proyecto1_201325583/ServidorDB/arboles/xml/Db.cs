@@ -318,6 +318,14 @@ namespace ServidorDB.arboles.xml
                                 banError = true;
                                 break;
                             }
+                            else if (procs[i].Parametros[j].Tipo == Constante.ID)
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_PROC] + " : Solo se aceptan tipos primitivos", "", procs[i].Parametros[j].Line,
+                                    procs[i].Parametros[j].Colm));
+                                banError = true;
+                                break;
+                            }
                         }
 
                         if (!banError)
@@ -370,13 +378,21 @@ namespace ServidorDB.arboles.xml
                                 banError = true;
                                 break;
                             }
+                            else if (funcs[i].Parametros[j].Tipo == Constante.ID)
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_FUN] + " : Solo se aceptan tipos primitivos", "", funcs[i].Parametros[j].Line,
+                                    funcs[i].Parametros[j].Colm));
+                                banError = true;
+                                break;
+                            }
                         }
 
                         if (!banError)
                         {   //quiere decir que no se encontro errores durante la carga de variables
                             //verificar el tipo
                             object ret = funcs[i].cargar();
-
+                            //validado el tipo de retorno de la funcion
                             if (ret != null)
                             {
                                 if (!funciones.ContainsKey(funcs[i].Nombre))
@@ -394,7 +410,7 @@ namespace ServidorDB.arboles.xml
                             {
                                 xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
                                        xSintactico.ERRORES_XML[xSintactico.ERROR_FUN] + " : " + "Tipo de Retorno incorrecto"
-                                       + "en la funcion: " + nombre, "", 0, 0));
+                                       + " en la funcion: " + nombre, "", 0, 0));
                             }
                         }
                         //sino entonces el msg error ya fue reportado seguir con los demas procs
@@ -429,6 +445,14 @@ namespace ServidorDB.arboles.xml
                             {
                                 xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
                                     xSintactico.ERRORES_XML[xSintactico.ERROR_OBJ] + " : " + retorno.ToString(), "", objs[i].Parametros[j].Line,
+                                    objs[i].Parametros[j].Colm));
+                                banError = true;
+                                break;
+                            }
+                            else if (objs[i].Parametros[j].Tipo == Constante.ID)
+                            {
+                                xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                    xSintactico.ERRORES_XML[xSintactico.ERROR_OBJ] + " : Solo se aceptan tipos primitivos", "", objs[i].Parametros[j].Line,
                                     objs[i].Parametros[j].Colm));
                                 banError = true;
                                 break;

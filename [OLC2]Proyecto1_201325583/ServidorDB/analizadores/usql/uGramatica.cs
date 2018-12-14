@@ -389,12 +389,12 @@ namespace ServidorDB.analizadores.usql
             /*---------- PARAMETROS PARA PROCEDIMIENTOS Y FUNCIONES ---------------*/
             PARAMETROS.Rule = MakeStarRule(PARAMETROS, coma, PARAMETRO);
 
-            PARAMETRO.Rule = TIPO_DATO + variable;
+            PARAMETRO.Rule = TIPO_DATO_PR + variable;
 
             /*------------- CAMPOS Y COMPLEMENTOS DE UN OBJETO --------------------*/
             CAMPOS_OBJETO.Rule = MakePlusRule(CAMPOS_OBJETO, coma, CAMPO_OBJETO);
 
-            CAMPO_OBJETO.Rule = TIPO_DATO + id;
+            CAMPO_OBJETO.Rule = TIPO_DATO_PR + id;
 
             /*------------- CAMPOS Y COMPLEMENTOS DE UNA TABLA --------------------*/
             CAMPOS_TABLA.Rule = MakePlusRule(CAMPOS_TABLA, coma, CAMPO_TABLA);
