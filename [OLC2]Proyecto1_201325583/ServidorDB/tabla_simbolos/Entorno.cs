@@ -28,9 +28,11 @@ namespace ServidorDB.tabla_simbolos
 
         private Entorno ant;
         private Hashtable tabla;
+        private string tent;
 
         public Entorno Ant { get => ant; set => ant = value; }
         public Hashtable Tabla { get => tabla; set => tabla = value; }
+        public string Tent { get => tent; set => tent = value; }
 
         public Entorno(Entorno ant)
         {

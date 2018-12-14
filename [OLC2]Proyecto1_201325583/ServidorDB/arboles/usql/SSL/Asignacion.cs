@@ -72,7 +72,7 @@ namespace ServidorDB.arboles.usql.SSL
                         {
                             string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
                                 + " unicamente acepta 0 o 1";
-                            uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                            uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                             return new Resultado(Constante.ERROR, "");
                         }
                     }
@@ -81,14 +81,14 @@ namespace ServidorDB.arboles.usql.SSL
                         if (res.Tipo != Constante.ERROR)
                         {
                             string descripcion = "Tipos incompatibles: " + Constante.getTipo(res.Tipo) + " no puede ser convertido a " + Constante.getTipo(s.Tipo);
-                            uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                            uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                         }
                     }
                 }
                 else
                 {
                     string descripcion = "Variable " + var + " no existe";
-                    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                 }
             }
             else

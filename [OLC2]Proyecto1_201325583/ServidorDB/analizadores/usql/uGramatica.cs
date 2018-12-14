@@ -40,11 +40,10 @@ namespace ServidorDB.analizadores.usql
             CAMPOS_OBJETO = new NonTerminal("CAMPOS_OBJETO"),
             CAMPO_OBJETO = new NonTerminal("CAMPO_OBJETO"),
             TIPO_DATO = new NonTerminal("TIPO_DATO"),
+            TIPO_DATO_PR = new NonTerminal("TIPO_DATO_PR"),
             COMPLEMENTO = new NonTerminal("COMPLEMENTO"),
             PARAMETROS = new NonTerminal("PARAMETROS"),
             PARAMETRO = new NonTerminal("PARAMETRO"),
-            INSTRUCCIONES = new NonTerminal("INSTRUCCIONES"),
-            INSTRUCCION = new NonTerminal("INSTRUCCION"),
             LLAMADA = new NonTerminal("LLAMADA"),
             ARITMETICA = new NonTerminal("ARITMETICA"),
             RELACIONAL = new NonTerminal("RELACIONAL"),
@@ -228,9 +227,9 @@ namespace ServidorDB.analizadores.usql
                 //CREAR UN OBJETO
                 | pr_crear + pr_objeto + id + pari + CAMPOS_OBJETO + pard + ptcoma
                 //CREAR UN PROCEDIMIENTO
-                | pr_crear + pr_procedimiento + id + pari + PARAMETROS + pard + llai + INSTRUCCIONES + llad
+                | pr_crear + pr_procedimiento + id + pari + PARAMETROS + pard + llai + SENTENCIAS + llad
                 //CREAR UNA FUNCION
-                | pr_crear + pr_funcion + id + pari + PARAMETROS + pard + TIPO_DATO + llai + INSTRUCCIONES + llad
+                | pr_crear + pr_funcion + id + pari + PARAMETROS + pard + TIPO_DATO + llai + SENTENCIAS + llad
                 //CREAR UN USUARIO
                 | pr_crear + pr_usuario + id + pr_colocar + pr_password + igual + EXP + ptcoma
                 //USAR BASE DE DATOS
@@ -299,14 +298,14 @@ namespace ServidorDB.analizadores.usql
             IMPRIMIR.Rule = pr_imprimir + pari + EXP + pard;
 
             /*------------------------------- MIENTRAS -------------------------*/
-            MIENTRAS.Rule = pr_mientras + pari + EXP + pard + llai + INSTRUCCIONES + llad;
+            MIENTRAS.Rule = pr_mientras + pari + EXP + pard + llai + SENTENCIAS + llad;
 
             /*------------------------------- PARA -------------------------*/
             PARA.Rule = pr_para + pari + 
                 pr_declarar + variable + pr_integer + igual + EXP + ptcoma + 
                 EXP + 
                 ptcoma + OPERACION + pard + 
-                llai + INSTRUCCIONES + llad
+                llai + SENTENCIAS + llad
                       ;
 
             OPERACION.Rule = incremento
@@ -319,13 +318,13 @@ namespace ServidorDB.analizadores.usql
 
             CASOS.Rule = MakePlusRule(CASOS, CASO);
 
-            CASO.Rule = pr_caso + EXP + dospuntos + INSTRUCCIONES;
+            CASO.Rule = pr_caso + EXP + dospuntos + SENTENCIAS;
 
-            DEFECTO.Rule = pr_defecto + dospuntos + INSTRUCCIONES;
+            DEFECTO.Rule = pr_defecto + dospuntos + SENTENCIAS;
 
             /*------------------------------- SI ------------------------------*/
-            SI.Rule = pr_si + pari + EXP + pard + llai + INSTRUCCIONES + llad
-                    | pr_si + pari + EXP + pard + llai + INSTRUCCIONES + llad + pr_sino + llai + INSTRUCCIONES + llad
+            SI.Rule = pr_si + pari + EXP + pard + llai + SENTENCIAS + llad
+                    | pr_si + pari + EXP + pard + llai + SENTENCIAS + llad + pr_sino + llai + SENTENCIAS + llad
                     ;
 
             /*----------------------- ASIGNACION ---------------------------*/
@@ -374,22 +373,9 @@ namespace ServidorDB.analizadores.usql
                            | BACKUP
                            | RESTORE
                            | LLAMADA + ptcoma
+                           | pr_retorno + EXP + ptcoma
+                           | pr_detener + ptcoma
                            ;
-
-            /*------------------------ INSTRUCCIONES -------------------------*/
-            INSTRUCCIONES.Rule = MakeStarRule(INSTRUCCIONES, INSTRUCCION);
-
-            INSTRUCCION.Rule =
-                  //INSTRUCCIONES DML
-                  DML
-                //INSTRUCCIONES SSL
-                | SSL
-                //LLAMADA A PROCEDIMIENTOS Y FUNCIONES
-                | LLAMADA + ptcoma
-                //RETORNO
-                | pr_retorno + EXP + ptcoma
-                //DETENER
-                | pr_detener + ptcoma;
             #endregion
 
             #region OTROS
@@ -429,7 +415,12 @@ namespace ServidorDB.analizadores.usql
 
             #region TIPO DE DATO
             /*---------------------- TIPO DE DATO ----------------------------------*/
-            TIPO_DATO.Rule = pr_text
+            TIPO_DATO.Rule = TIPO_DATO_PR
+                            | id
+                            ;
+
+            //tipo de dato primitivos
+            TIPO_DATO_PR.Rule = pr_text
                             | pr_integer
                             | pr_double
                             | pr_bool

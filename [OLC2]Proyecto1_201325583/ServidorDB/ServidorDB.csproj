@@ -55,6 +55,26 @@
     <Compile Include="analizadores\usql\uError.cs" />
     <Compile Include="analizadores\usql\uGramatica.cs" />
     <Compile Include="analizadores\usql\uSintactico.cs" />
+    <Compile Include="analizadores\xml\DbAst.cs" />
+    <Compile Include="analizadores\xml\DbGrammar.cs" />
+    <Compile Include="analizadores\xml\FunAst.cs" />
+    <Compile Include="analizadores\xml\FunGrammar.cs" />
+    <Compile Include="analizadores\xml\MasterAst.cs" />
+    <Compile Include="analizadores\xml\MasterGrammar.cs" />
+    <Compile Include="analizadores\xml\ObjAst.cs" />
+    <Compile Include="analizadores\xml\ObjGrammar.cs" />
+    <Compile Include="analizadores\xml\ProcAst.cs" />
+    <Compile Include="analizadores\xml\ProcGrammar.cs" />
+    <Compile Include="analizadores\xml\RegGrammar.cs" />
+    <Compile Include="analizadores\xml\RowAst.cs" />
+    <Compile Include="analizadores\xml\xGramatica.cs" />
+    <Compile Include="arboles\usql\DDL\Crear\BaseDatos.cs" />
+    <Compile Include="arboles\usql\DDL\Crear\Funcion.cs" />
+    <Compile Include="arboles\usql\DDL\Crear\Objeto.cs" />
+    <Compile Include="arboles\usql\DDL\Crear\Procedimiento.cs" />
+    <Compile Include="arboles\usql\DDL\Crear\Tabla.cs" />
+    <Compile Include="arboles\usql\DDL\Crear\Usar.cs" />
+    <Compile Include="arboles\usql\DDL\Crear\Usuario.cs" />
     <Compile Include="arboles\usql\Detener.cs" />
     <Compile Include="arboles\usql\Retornar.cs" />
     <Compile Include="arboles\usql\SSL\Asignacion.cs" />
@@ -88,6 +108,16 @@
     <Compile Include="arboles\usql\Expresiones\Relacional\NodoMenIgual.cs" />
     <Compile Include="arboles\usql\Expresiones\Relacional\NodoMenor.cs" />
     <Compile Include="arboles\usql\uInstruccion.cs" />
+    <Compile Include="arboles\xml\Atributo.cs" />
+    <Compile Include="arboles\xml\Db.cs" />
+    <Compile Include="arboles\xml\Funcion.cs" />
+    <Compile Include="arboles\xml\Maestro.cs" />
+    <Compile Include="arboles\xml\Objeto.cs" />
+    <Compile Include="arboles\xml\Procedimiento.cs" />
+    <Compile Include="arboles\xml\Tabla.cs" />
+    <Compile Include="arboles\xml\Usuario.cs" />
+    <Compile Include="arboles\xml\xInstruccion.cs" />
+    <Compile Include="arboles\xml\xSintactico.cs" />
     <Compile Include="ServidorDb.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,6 +154,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="arboles\xml\Readme.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

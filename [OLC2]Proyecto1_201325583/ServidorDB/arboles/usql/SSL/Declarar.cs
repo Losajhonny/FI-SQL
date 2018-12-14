@@ -78,7 +78,7 @@ namespace ServidorDB.arboles.usql.SSL
 
         public object ejecutar(Entorno ent)
         {
-            if (tipo != Constante.NONE)
+            if (tipo != Constante.ID)
             {
                 //variables normales
                 Resultado res = (exp != null) ? (Resultado)exp.ejecutar(ent) : null;
@@ -100,7 +100,7 @@ namespace ServidorDB.arboles.usql.SSL
                         {
                             string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
                                 + " unicamente acepta 0 o 1";
-                            uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                            uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                         }
                     }
                     else
@@ -108,7 +108,7 @@ namespace ServidorDB.arboles.usql.SSL
                         if (res.Tipo != Constante.ERROR)
                         {
                             string descripcion = "Tipos incompatibles: " + Constante.getTipo(res.Tipo) + " no puede ser convertido a " + Constante.getTipo(tipo);
-                            uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                            uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                         }
                     }
                 }
@@ -123,7 +123,7 @@ namespace ServidorDB.arboles.usql.SSL
                     else
                     {
                         string descripcion = "Variable " + variables[i] + " ya esta definida en este ambito";
-                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                     }
                 }
             }
@@ -142,13 +142,13 @@ namespace ServidorDB.arboles.usql.SSL
                     else
                     {
                         string descripcion = "Variable " + id + " ya esta definida en este ambito";
-                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                     }
                 }
                 else
                 {
                     string descripcion = "El objeto '" + id_objeto + "' no existe";
-                    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                 }
             }
             return null;

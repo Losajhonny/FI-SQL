@@ -1,4 +1,5 @@
 ﻿using Irony.Parsing;
+using ServidorDB.arboles.usql.DDL.Crear;
 using ServidorDB.arboles.usql.Expresiones;
 using ServidorDB.arboles.usql.Expresiones.Aritmetica;
 using ServidorDB.arboles.usql.Expresiones.Logica;
@@ -25,51 +26,11 @@ namespace ServidorDB.arboles.usql
             return sents;
         }
 
-        public static List<uInstruccion> INSTRUCCIONES(ParseTreeNode padre)
-        {
-            List<uInstruccion> ints = new List<uInstruccion>();
-            for (int i = 0; i < padre.ChildNodes.Count; i++)
-            {
-                ints.Add(INSTRUCCION(padre.ChildNodes[i]));
-            }
-            return ints;
-        }
-
-        public static uInstruccion INSTRUCCION(ParseTreeNode padre)
-        {
-            if (padre.ChildNodes[0].Term.Name.Equals("DML"))
-            {
-
-            }
-            else if (padre.ChildNodes[0].Term.Name.Equals("SSL"))
-            {
-                return SSL(padre.ChildNodes[0]);
-            }
-            else if (padre.ChildNodes.Count == 2)
-            {
-                if (padre.ChildNodes[0].Term.Name.Equals("LLAMADA"))
-                {
-
-                }
-                else
-                { // detener
-                    return new Detener();
-                }
-            }
-            else
-            { // retorno
-                return new Retornar(EXPRESION(padre.ChildNodes[1]),
-                    padre.ChildNodes[0].Token.Location.Line,
-                    padre.ChildNodes[0].Token.Location.Column);
-            }
-            return null;
-        }
-
         public static uInstruccion SENTENCIA(ParseTreeNode padre)
         {
             if (padre.ChildNodes[0].Term.Name.Equals("DDL"))
             {
-
+                return DDL(padre.ChildNodes[0]);
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("DML"))
             {
@@ -91,13 +52,109 @@ namespace ServidorDB.arboles.usql
             {
 
             }
-            else
+            else if (padre.ChildNodes.Count == 2)
             {
-                //Llamada
+                if (padre.ChildNodes[0].Term.Name.Equals("LLAMADA"))
+                {
+
+                }
+                else
+                { // detener
+                    return new Detener();
+                }
+            }
+            else
+            { // retorno
+                return new Retornar(EXPRESION(padre.ChildNodes[1]),
+                    padre.ChildNodes[0].Token.Location.Line,
+                    padre.ChildNodes[0].Token.Location.Column);
             }
             return null;
         }
 
+        #region DDL
+        public static uInstruccion DDL(ParseTreeNode padre)
+        {
+            if (padre.ChildNodes[0].Term.Name.Equals("CREATE"))
+            {
+                return CREATE(padre.ChildNodes[0]);
+            }
+            else if (padre.ChildNodes[0].Term.Name.Equals("ALTER"))
+            {
+
+            }
+            else
+            {
+
+            }
+            return null;
+        }
+
+        public static uInstruccion CREATE(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 10)
+            {//creando funcion
+                List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
+                List<uInstruccion> inst = SENTENCIAS(padre.ChildNodes[8]);
+                Funcion fun = new Funcion(padre.ChildNodes[2].Token.Text,
+                    TIPO_DATO(padre.ChildNodes[6]), paramss, inst,
+                    padre.ChildNodes[0].Token.Location.Line,
+                    padre.ChildNodes[0].Token.Location.Column);
+                return fun;
+            }
+            else if (padre.ChildNodes.Count == 9)
+            {//creando procedimiento
+                List<uInstruccion> paramss = PARAMETROS(padre.ChildNodes[4]);
+                List<uInstruccion> inst = SENTENCIAS(padre.ChildNodes[7]);
+                Procedimiento proc = new Procedimiento(padre.ChildNodes[2].Token.Text,
+                    Constante.VOID, paramss, inst,
+                    padre.ChildNodes[0].Token.Location.Line,
+                    padre.ChildNodes[0].Token.Location.Column);
+                return proc;
+            }
+            else if (padre.ChildNodes.Count == 8)
+            {
+                NodoExp ne = EXPRESION(padre.ChildNodes[6]);
+                return new Usuario(padre.ChildNodes[2].Token.Text,
+                    ne, padre.ChildNodes[0].Token.Location.Line,
+                    padre.ChildNodes[0].Token.Location.Column);
+            }
+            else if (padre.ChildNodes.Count == 7)
+            {
+                if (padre.ChildNodes[1].Token.Text.ToLower().Equals("objeto"))
+                {
+
+                }
+                else
+                {//tabla
+
+                }
+            }
+            return null;
+        }
+
+        public static List<uInstruccion> PARAMETROS(ParseTreeNode padre)
+        {
+            List<uInstruccion> inst = new List<uInstruccion>();
+            for(int i = 0; i < padre.ChildNodes.Count; i++)
+            {
+                inst.Add(PARAMETRO(padre.ChildNodes[i]));
+            }
+            return inst;
+        }
+
+        public static Declarar PARAMETRO(ParseTreeNode padre)
+        {
+            List<string> vars = new List<string>();
+            vars.Add(padre.ChildNodes[1].Token.Text);
+            Declarar dec = new Declarar(vars, TIPO_DATO(padre.ChildNodes[0]),
+                padre.ChildNodes[1].Token.Location.Line,
+                padre.ChildNodes[1].Token.Location.Column);
+            return dec;
+        }
+        #endregion
+
+        #region SSL
         public static uInstruccion SSL(ParseTreeNode padre)
         {
             if (padre.ChildNodes[0].Term.Name.Equals("DECLARACION"))
@@ -133,7 +190,7 @@ namespace ServidorDB.arboles.usql
         public static Mientras MIENTRAS(ParseTreeNode padre)
         {
             return new Mientras(EXPRESION(padre.ChildNodes[2]),
-                INSTRUCCIONES(padre.ChildNodes[5]),
+                SENTENCIAS(padre.ChildNodes[5]),
                 padre.ChildNodes[0].Token.Location.Line,
                 padre.ChildNodes[0].Token.Location.Column);
         }
@@ -146,7 +203,7 @@ namespace ServidorDB.arboles.usql
                 EXPRESION(padre.ChildNodes[6]), padre.ChildNodes[2].Token.Location.Line,
                 padre.ChildNodes[2].Token.Location.Column);
 
-            return new Para(INSTRUCCIONES(padre.ChildNodes[13]), dec,
+            return new Para(SENTENCIAS(padre.ChildNodes[13]), dec,
                 EXPRESION(padre.ChildNodes[8]),
                 padre.ChildNodes[10].ChildNodes[0].Token.Text,
                 padre.ChildNodes[0].Token.Location.Line,
@@ -159,15 +216,15 @@ namespace ServidorDB.arboles.usql
             if(padre.ChildNodes.Count == 7)
             {
                 return new Si(EXPRESION(padre.ChildNodes[2]),
-                    INSTRUCCIONES(padre.ChildNodes[5]),
+                    SENTENCIAS(padre.ChildNodes[5]),
                     padre.ChildNodes[0].Token.Location.Line,
                     padre.ChildNodes[0].Token.Location.Column);
             }
             else
             {
-                Sino sino = new Sino(INSTRUCCIONES(padre.ChildNodes[9]));
+                Sino sino = new Sino(SENTENCIAS(padre.ChildNodes[9]));
                 return new Si(EXPRESION(padre.ChildNodes[2]),
-                    INSTRUCCIONES(padre.ChildNodes[5]), sino,
+                    SENTENCIAS(padre.ChildNodes[5]), sino,
                     padre.ChildNodes[0].Token.Location.Line,
                     padre.ChildNodes[0].Token.Location.Column);
             }
@@ -204,14 +261,14 @@ namespace ServidorDB.arboles.usql
 
         public static Caso CASO(ParseTreeNode padre)
         {
-            return new Caso(EXPRESION(padre.ChildNodes[1]), INSTRUCCIONES(padre.ChildNodes[3]),
+            return new Caso(EXPRESION(padre.ChildNodes[1]), SENTENCIAS(padre.ChildNodes[3]),
                 padre.ChildNodes[0].Token.Location.Line,
                 padre.ChildNodes[0].Token.Location.Column);
         }
 
         public static Defecto DEFECTO(ParseTreeNode padre)
         {
-            return new Defecto(INSTRUCCIONES(padre.ChildNodes[2]));
+            return new Defecto(SENTENCIAS(padre.ChildNodes[2]));
         }
 
         public static Imprimir IMPRIMIR(ParseTreeNode padre)
@@ -264,13 +321,27 @@ namespace ServidorDB.arboles.usql
                 {
                     return new Declarar(padre.ChildNodes[1].Token.Text,
                         padre.ChildNodes[2].Token.Text,
-                        Constante.NONE, padre.ChildNodes[0].Token.Location.Line,
+                        Constante.ID, padre.ChildNodes[0].Token.Location.Line,
                         padre.ChildNodes[0].Token.Location.Column);
                 }
             }
         }
-        
+        #endregion
+
+        #region Otros
         public static int TIPO_DATO(ParseTreeNode padre)
+        {
+            if (padre.ChildNodes[0].Term.Name.Equals("TIPO_DATO_PR"))
+            {
+                return TIPO_DATO_PR(padre.ChildNodes[0]);
+            }
+            else
+            {
+                return Constante.ID;
+            }
+        }
+
+        public static int TIPO_DATO_PR(ParseTreeNode padre)
         {
             if (padre.ChildNodes[0].Token.Text.ToLower().Equals("text"))
             {
@@ -307,6 +378,7 @@ namespace ServidorDB.arboles.usql
             }
             return lv;
         }
+        #endregion
 
         #region EXPRESIONES
         public static NodoExp EXPRESION(ParseTreeNode padre)

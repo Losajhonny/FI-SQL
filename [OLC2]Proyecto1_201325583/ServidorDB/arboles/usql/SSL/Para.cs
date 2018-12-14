@@ -69,12 +69,14 @@ namespace ServidorDB.arboles.usql.SSL
                 if (bandera == 0)
                 {
                     tmp = new Entorno(tmp);
+                    tmp.Tent = Constante.PARA;
                     //creo mi nuevo entorno para la declaracion
                     declarar.ejecutar(tmp);
                     //ejecutamos la declaracion solo una vez
                     bandera = 1;
                 }
                 Entorno nuevo = new Entorno(tmp);
+                nuevo.Tent = Constante.PARA;
                 //el tmp es el entorno actual
                 //como no quiero que se realicen declaraciones
                 //con la misma variable que la declaracion inicial del para
@@ -96,7 +98,7 @@ namespace ServidorDB.arboles.usql.SSL
                         {
                             string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
                             + " unicamente acepta 0 o 1";
-                            uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                            uSintactico.uerrores.Add(new uError(nuevo.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                         }
                     }
                     else
@@ -121,7 +123,7 @@ namespace ServidorDB.arboles.usql.SSL
                     if (res.Tipo != Constante.ERROR)
                     {
                         string descripcion = "Tipos incompatibles: " + Constante.getTipo(res.Tipo) + " no puede ser convertido a " + Constante.getTipo(Constante.BOOL);
-                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                        uSintactico.uerrores.Add(new uError(nuevo.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                     }
                 }
             }

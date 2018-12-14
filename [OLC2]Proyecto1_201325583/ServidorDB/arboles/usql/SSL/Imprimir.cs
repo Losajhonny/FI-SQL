@@ -37,7 +37,7 @@ namespace ServidorDB.arboles.usql.SSL
             else
             {
                 string descripcion = "Tipos incompatibles: " + Constante.getTipo(res.Tipo) + " no puede ser convertido a text";
-                uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
             }
             return null;
         }

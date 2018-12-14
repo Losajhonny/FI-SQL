@@ -1,0 +1,6 @@
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\DBMS\bin\Debug\DBMS.dll
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\DBMS\bin\Debug\DBMS.pdb
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\DBMS\obj\Debug\DBMS.csprojAssemblyReference.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\DBMS\obj\Debug\DBMS.csproj.CoreCompileInputs.cache
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\DBMS\obj\Debug\DBMS.dll
+C:\Users\Jhona\Documents\Visual Studio\[OLC2]Proyecto1_201325583\DBMS\obj\Debug\DBMS.pdb

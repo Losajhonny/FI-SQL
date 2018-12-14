@@ -52,7 +52,7 @@ namespace ServidorDB.arboles.usql.SSL
                 if (res.Tipo != Constante.ERROR)
                 {
                     string descripcion = "Tipos incompatibles: " + Constante.getTipo(res.Tipo) + " no puede ser convertido a " + Constante.getTipo(comp.Tipo);
-                    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                 }
             }
             return null;

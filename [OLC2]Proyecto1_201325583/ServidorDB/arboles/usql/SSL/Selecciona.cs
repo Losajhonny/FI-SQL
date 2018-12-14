@@ -46,6 +46,7 @@ namespace ServidorDB.arboles.usql.SSL
         {   //debo crear un nuevo entorno para este ambito
             Resultado res = (Resultado)exp.ejecutar(ent);
             Entorno nuevo = new Entorno(ent);
+            nuevo.Tent = Constante.SELECCIONA;
 
             if(res.Tipo == Constante.TEXT
                 || res.Tipo == Constante.INTEGER
@@ -71,7 +72,7 @@ namespace ServidorDB.arboles.usql.SSL
                 if (res.Tipo != Constante.ERROR)
                 {
                     string descripcion = "Tipo de dato no permitido: " + Constante.getTipo(res.Tipo) + ". unicamente text, integer, double";
-                    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                    uSintactico.uerrores.Add(new uError(nuevo.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                 }
             }
             return null;
