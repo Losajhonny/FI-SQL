@@ -242,15 +242,15 @@ namespace ServidorDB.analizadores.xml
         {
             if(padre.ChildNodes.Count == 10)
             {
-                string comp = padre.ChildNodes[3].Token.Text;
-                string[] val = { null, comp };
+                string tabla = padre.ChildNodes[3].Token.Text;
+                string id = padre.ChildNodes[5].Token.Text;
+                string[] val = { tabla, id };
                 return val;
             }
             else
             {
-                string tabla = padre.ChildNodes[3].Token.Text;
-                string id = padre.ChildNodes[5].Token.Text;
-                string[] val = { tabla, id };
+                string comp = padre.ChildNodes[3].Token.Text;
+                string[] val = { null, comp };
                 return val;
             }
         }

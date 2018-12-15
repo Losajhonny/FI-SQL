@@ -132,11 +132,11 @@ namespace ServidorDB.arboles.usql.DDL
             {
                 if(tipo_alteracion == Constante.tAGREGAR)
                 {
-
+                    agregarTabla();
                 }
                 else
                 {
-                    //Constante.tQUITAR
+                    quitarTabla();
                 }
             }
             else if (tipo_alterar == Constante.tOBJETO)
@@ -159,6 +159,16 @@ namespace ServidorDB.arboles.usql.DDL
             }
 
             return null;
+        }
+
+        public void quitarTabla()
+        {
+            Peticion.quitarTabla(lista_id, id, line, colm);
+        }
+
+        public void agregarTabla()
+        {
+            Peticion.agregarTabla(id, atributos, line, colm);
         }
 
         public void quitarObjeto()

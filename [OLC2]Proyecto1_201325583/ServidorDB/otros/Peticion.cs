@@ -2,6 +2,7 @@
 using ServidorDB.arboles.xml;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace ServidorDB.otros
 {
     class Peticion
     {
+        #region CREAR DDL
         public static bool crearDb(Db db)
         {
             bool estado_aceptacion = false;
@@ -229,7 +231,231 @@ namespace ServidorDB.otros
             master.generar_xml();
             return estado_aceptacion;
         }
+        #endregion
 
+        #region ALTER DDL
+
+        public static bool quitarTabla(List<string> ids, string nombre, int line, int colm)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para modificar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tengo permisos entonces buscar el objeto
+                        if (master.Dbs[Constante.db_actual].Tablas.ContainsKey(nombre))
+                        {
+                            Tabla t = master.Dbs[Constante.db_actual].Tablas[nombre];
+                            //verificar si el objeto tiene permisos de usuario
+                            usr = null;
+                            foreach (string user in t.Usuarios)
+                            {
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                            }
+                            //verifico si el usuario actual tiene permisos para el objeto
+                            if (usr != null)
+                            {
+                                List<string> si_existen = new List<string>();
+                                //verificar que existen las columnas
+                                for (int i = 0; i < ids.Count; i++)
+                                {
+                                    bool existe = false;
+                                    foreach (Atributo atr in t.Atributos)
+                                    {
+                                        if (atr.Nombre.Equals(ids[i]))
+                                        {
+                                            t.Atributos.Remove(atr);
+                                            si_existen.Add(ids[i]);
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!existe)
+                                    {
+                                        string msg = "El atributo: " + ids[i] + " no existe en la tabla: " + t.Nombre;
+                                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                    }
+                                }
+
+                                //ahora necesito eliminar las columnas asociadas al de los atributos
+                                for(int i = 0; i < si_existen.Count; i++)
+                                {
+                                    t.Registros.Columns.Remove(si_existen[i]);
+                                }
+                                estado_aceptacion = true;
+                            }
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar la tabla " + t.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
+                        }
+                        else
+                        {
+                            string msg = "El objeto: " + nombre + " no existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de agregar atributos a una Tabla";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+            }
+            Constante.db_actual = "";
+            Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+
+        public static bool agregarTabla(string nombre, List<Atributo> atrs, int line, int colm)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para modificar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tengo permisos entonces buscar el objeto
+                        if (master.Dbs[Constante.db_actual].Tablas.ContainsKey(nombre))
+                        {
+                            Tabla t = master.Dbs[Constante.db_actual].Tablas[nombre];
+                            //verificar si el objeto tiene permisos de usuario
+                            usr = null;
+                            foreach (string user in t.Usuarios)
+                            {
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                            }
+                            //verifico si el usuario actual tiene permisos para el objeto
+                            if (usr != null)
+                            {
+                                List<Atributo> agregar = new List<Atributo>();
+                                //sirve para verificar si se agrego mas de algun atributo
+                                bool agrego_atri = false;
+                                //verificar si existe
+                                for (int i = 0; i < atrs.Count; i++)
+                                {   
+                                    bool existe = false;
+
+                                    foreach (Atributo atributo in t.Atributos)
+                                    {
+                                        if (atributo.Nombre.Equals(atrs[i].Nombre))
+                                        {
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (existe)
+                                    {
+                                        string msg = "El atributo: " + atrs[i].Nombre + " ya existe en la tabla: " + t.Nombre;
+                                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                    }
+                                    else
+                                    {
+                                        agregar.Add(atrs[i]);
+                                        t.Atributos.Add(atrs[i]);
+                                        agrego_atri = true;
+                                    }
+                                }
+
+                                if (agrego_atri)
+                                {
+                                    //logica para cambiar DataTable si perder registros
+                                    //Crear un DataTable temporal
+                                    //Le inserto las columnas
+                                    DataTable dt = t.Registros;
+                                    for (int i = 0; i < agregar.Count; i++)
+                                    {
+                                        //inserto columna por atributo
+                                        //para simular la tabla con sus registros
+                                        DataColumn dc = new DataColumn(agregar[i].Nombre);
+                                        dt.Columns.Add(dc);
+                                    }
+                                }
+                                estado_aceptacion = true;
+                            }
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar la tabla " + t.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
+                        }
+                        else
+                        {
+                            string msg = "El objeto: " + nombre + " no existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de agregar atributos a una Tabla";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+            }
+            Constante.db_actual = "";
+            Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return estado_aceptacion;
+        }
 
         public static bool quitarObjeto(List<string> ids, string nombre, int line, int colm)
         {
@@ -259,29 +485,44 @@ namespace ServidorDB.otros
                         if (master.Dbs[Constante.db_actual].Objetos.ContainsKey(nombre))
                         {
                             Objeto obj = master.Dbs[Constante.db_actual].Objetos[nombre];
-                            //debo verificar si existen los atributos
 
-                            //aqui debo de eliminar atributos
-                            for (int i = 0; i < ids.Count; i++)
+                            usr = null;
+                            foreach (string user in obj.Usuarios)
                             {
-                                bool existe = false;
-                                foreach (Atributo atr in obj.Parametros)
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                            }
+
+                            if(usr != null)
+                            {
+                                //debo verificar si existen los atributos
+
+                                //aqui debo de eliminar atributos
+                                for (int i = 0; i < ids.Count; i++)
                                 {
-                                    if (atr.Nombre.Equals(ids[i]))
+                                    bool existe = false;
+                                    foreach (Atributo atr in obj.Parametros)
                                     {
-                                        obj.Parametros.Remove(atr);
-                                        existe = true;
-                                        break;
+                                        if (atr.Nombre.Equals(ids[i]))
+                                        {
+                                            obj.Parametros.Remove(atr);
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!existe)
+                                    {
+                                        string msg = "El atributo: " + ids[i] + " no existe en el objeto: " + obj.Nombre;
+                                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                     }
                                 }
-
-                                if (!existe)
-                                {
-                                    string msg = "El atributo: " + ids[i] + " no existe en el objeto: " + obj.Nombre;
-                                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
-                                }
+                                estado_aceptacion = true;
                             }
-                            estado_aceptacion = true;
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar el objeto " + obj.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
                         }
                         else
                         {
@@ -304,7 +545,7 @@ namespace ServidorDB.otros
             else
             {
                 //error por no haber utilizado la instruccion usar
-                string msg = "Se debe usar la instruccion 'usar' antes de quitar un Objeto";
+                string msg = "Se debe usar la instruccion 'usar' antes de quitar atributos un Objeto";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
             Constante.db_actual = "";
@@ -341,11 +582,46 @@ namespace ServidorDB.otros
                         if (master.Dbs[Constante.db_actual].Objetos.ContainsKey(nombre))
                         {
                             Objeto obj = master.Dbs[Constante.db_actual].Objetos[nombre];
-                            for(int i = 0; i < atrs.Count; i++)
+                            //verificar si el objeto tiene permisos de usuario
+                            usr = null;
+                            foreach (string user in obj.Usuarios)
                             {
-                                obj.Parametros.Add(atrs[i]);
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
                             }
-                            estado_aceptacion = true;
+                            //verifico si el usuario actual tiene permisos para el objeto
+                            if(usr != null)
+                            {
+                                //verificar si existe
+                                for (int i = 0; i < atrs.Count; i++)
+                                {
+                                    bool existe = false;
+
+                                    foreach (Atributo atributo in obj.Parametros)
+                                    {
+                                        if (atributo.Nombre.Equals(atrs[i].Nombre))
+                                        {
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (existe)
+                                    {
+                                        string msg = "El atributo: " + atrs[i].Nombre + " ya existe en el objeto: " + obj.Nombre;
+                                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                    }
+                                    else
+                                    {
+                                        obj.Parametros.Add(atrs[i]);
+                                    }
+                                }
+                                estado_aceptacion = true;
+                            }
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar el objeto " + obj.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
                         }
                         else
                         {
@@ -368,7 +644,7 @@ namespace ServidorDB.otros
             else
             {
                 //error por no haber utilizado la instruccion usar
-                string msg = "Se debe usar la instruccion 'usar' antes de crear un Objeto";
+                string msg = "Se debe usar la instruccion 'usar' antes de agregar atributos a un Objeto";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
             Constante.db_actual = "";
@@ -433,5 +709,6 @@ namespace ServidorDB.otros
             master.generar_xml();
             return estado_aceptacion;
         }
+        #endregion
     }
 }

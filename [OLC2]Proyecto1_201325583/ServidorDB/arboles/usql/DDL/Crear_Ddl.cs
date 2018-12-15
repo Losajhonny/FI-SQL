@@ -263,16 +263,19 @@ namespace ServidorDB.arboles.usql.DDL
 
         public void ejecutar_Tabla()
         {
+            /*validar que nohaya atributos iguales*/
             //creo la tabla
             //le coloco los atributos
             Tabla t = new Tabla(id);
             t.Atributos = atributos;
-            //ahora como ya lo agregue necesita
-            //actualizar el datatable de la tabla
-            t.crearDataTable();
+
             //realizar la peticion
             t.Line = line;
             t.Colm = colm;
+
+            //ahora como ya lo agregue necesita
+            //actualizar el datatable de la tabla
+            t.crearDataTable();
 
             Peticion.crearTabla(t);
         }

@@ -1,0 +1,44 @@
+﻿								List<Atributo> agregar = new List<Atributo>();
+                                //sirve para verificar si se agrego mas de algun atributo
+                                bool agrego_atri = false;
+                                //verificar si existe
+                                for (int i = 0; i < atrs.Count; i++)
+                                {
+                                    bool existe = false;
+
+                                    foreach (Atributo atributo in t.Atributos)
+                                    {
+                                        if (atributo.Nombre.Equals(atrs[i].Nombre))
+                                        {
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (existe)
+                                    {
+                                        string msg = "El atributo: " + atrs[i].Nombre + " ya existe en la tabla: " + t.Nombre;
+                                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                    }
+                                    else
+                                    {
+                                        agregar.Add(atrs[i]);
+                                        t.Atributos.Add(atrs[i]);
+                                        agrego_atri = true;
+                                    }
+                                }
+
+                                if (agrego_atri)
+                                {
+                                    //logica para cambiar DataTable si perder registros
+                                    //Crear un DataTable temporal
+                                    //Le inserto las columnas
+                                    DataTable dt = t.Registros;
+                                    for (int i = 0; i < agregar.Count; i++)
+                                    {
+                                        //inserto columna por atributo
+                                        //para simular la tabla con sus registros
+                                        DataColumn dc = new DataColumn(agregar[i].Nombre);
+                                        dt.Columns.Add(dc);
+                                    }
+                                }
