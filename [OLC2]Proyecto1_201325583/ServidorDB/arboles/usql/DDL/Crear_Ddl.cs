@@ -183,6 +183,10 @@ namespace ServidorDB.arboles.usql.DDL
             {
                 ejecutar_usuarDb();
             }
+            else if (tipo_crear == Constante.tTABLA)
+            {
+                ejecutar_Tabla();
+            }
             return null;
         }
         
@@ -256,6 +260,8 @@ namespace ServidorDB.arboles.usql.DDL
             //realizar la peticion
             t.Line = line;
             t.Colm = colm;
+
+            Peticion.crearTabla(t);
         }
 
         /*EJECUTAR PENDIENTE*/

@@ -239,7 +239,7 @@ namespace ServidorDB.arboles.usql
             {
                 //atributo sin complemento
                 //le asignamos nulo por defecto
-                string complemento = "no nulo";
+                string complemento = "nonulo";
                 int tipo = TIPO_DATO_PR(padre.ChildNodes[0]);
 
                 Atributo atr = new Atributo(tipo, padre.ChildNodes[1].Token.Text);
@@ -253,9 +253,9 @@ namespace ServidorDB.arboles.usql
         public static object COMPLEMENTO(ParseTreeNode padre)
         {
             if(padre.ChildNodes.Count == 2)
-            {   //retornara "no nulo"
+            {   //retornara "nonulo"
                 string val = "";
-                val += padre.ChildNodes[0].Token.Text + " " + padre.ChildNodes[1].Token.Text;
+                val += padre.ChildNodes[0].Token.Text + padre.ChildNodes[1].Token.Text;
                 return val;
             }
             else if(padre.ChildNodes.Count == 3)

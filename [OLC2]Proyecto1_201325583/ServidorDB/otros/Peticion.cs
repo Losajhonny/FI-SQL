@@ -86,35 +86,61 @@ namespace ServidorDB.otros
             Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
             Maestro master = Constante.sistema_archivo;
 
-            //necesito saber si esta usando una base de datos
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
             if (Constante.usuando_db_actual)
             {
-                //como se declaro usar db entonces seguir con el proceso
-                //necesito buscar la base de datos
-                //if (master.Dbs.ContainsKey(Constante.db_actual))
-                //{
-                //    //como si existe la base de datos entonces
-                //    //colocarlo como la base actual
-                //    //pero antes verificar si el usuario tiene permiso
-                //    string usr = null;
-                //    foreach (string user in master.Dbs[nombre].Usuarios)
-                //    {
-                //        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
-                //    }
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para insertar tabla
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
 
-                //    if (usr != null)
-                //    {   //como el usuario existe en el base  de datos entonces cargar el db
-                //        Constante.usuando_db_actual = true;
-                //        Constante.db_actual = nombre;
-                //    }
-                //    else
-                //    {
-                //        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + nombre;
-                //        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
-                //    }
-
-                //    estado_aceptacion = true;
-                //}
+                    if (usr != null)
+                    {
+                        //como si tiene permiso entonces insertar la tabla en la base de datos
+                        //ahora necesito verificar si existe la tabla
+                        if (!master.Dbs[Constante.db_actual].Tablas.ContainsKey(t.Nombre))
+                        {   //Si no existe entonces agregar la tabla
+                            //antes de agregarlo debo modificar los permisos
+                            //el administrador tiene todos los permisos
+                            t.Usuarios.Add(Constante.usuario_admin);
+                            //el if es por cuestiones de pruebas
+                            //se puede quitar el if con equals ("")
+                            if (!Constante.usuario_actual.Equals("") &&
+                                !Constante.usuario_actual.Equals(Constante.usuario_admin))
+                            {
+                                t.Usuarios.Add(Constante.usuario_actual);
+                            }
+                            
+                            master.Dbs[Constante.db_actual].Tablas.Add(t.Nombre, t);
+                            Constante.db_actual = "";
+                            Constante.usuando_db_actual = false;
+                            estado_aceptacion = true;
+                        }
+                        else
+                        {
+                            string msg = "La tabla: " + t.Nombre + " ya existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", t.Line, t.Colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", t.Line, t.Colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", t.Line, t.Colm));
+                }
             }
             else
             {
@@ -122,6 +148,7 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de crear una Tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", t.Line, t.Colm));
             }
+            master.generar_xml();
             return estado_aceptacion;
         }
     }
