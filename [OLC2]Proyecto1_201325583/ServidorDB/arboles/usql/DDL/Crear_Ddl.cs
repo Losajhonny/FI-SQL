@@ -236,6 +236,15 @@ namespace ServidorDB.arboles.usql.DDL
             /*En este caso los atributos de esta son la lista de declaraciones
              que se guardaron en esta clase por lo tanto tengo que transformar
              la declaracion en atributos*/
+
+            List<Atributo> atrs = new List<Atributo>();
+            for (int i = 0; i < declaraciones.Count; i++)
+            {
+                Atributo atr = new Atributo(declaraciones[i].Tipo, declaraciones[i].Id);
+                atrs.Add(atr);
+            }
+            //ahora ya tengo los atributos para agregar a los objetos
+            obj.Parametros = atrs;
         }
     }
 }
