@@ -14,6 +14,11 @@ namespace ServidorDB.arboles.usql.DDL
 {
     class Crear_Ddl : uInstruccion
     {
+        /*La clase realiza la funcion de crear base de datos,
+         tablas, objetos, usuarios, procedimientos, funciones ademas, de
+         ejecutar la funcion usar*/
+
+
         private int tipo_crear;
         private string id;
 
@@ -219,13 +224,21 @@ namespace ServidorDB.arboles.usql.DDL
                 Resultado res = (Resultado)password.ejecutar(ent);
                 if (res != null)
                 {
-                    Usuario usr = new Usuario(id, res.Valor);
-                    bool estado = Peticion.crearUsuario(usr);
-
-                    if (!estado)
+                    if(res.Tipo == Constante.TEXT)
                     {
-                        string msg = "El usuario: " + id + " ya existe en el DBMS";
-                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, id, line, colm));
+                        Usuario usr = new Usuario(id, res.Valor);
+                        bool estado = Peticion.crearUsuario(usr);
+
+                        if (!estado)
+                        {
+                            string msg = "El usuario: " + id + " ya existe en el DBMS";
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, id, line, colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El password debe ser de tipo entero";
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, id, line, colm));
                     }
                 }
             }
@@ -277,13 +290,18 @@ namespace ServidorDB.arboles.usql.DDL
             List<Atributo> atrs = new List<Atributo>();
             for (int i = 0; i < declaraciones.Count; i++)
             {
-                Atributo atr = new Atributo(declaraciones[i].Tipo, declaraciones[i].Id);
+                //en la declaracion tengo la variable guardada en la lista
+                //posicion 0
+                Atributo atr = new Atributo(declaraciones[i].Tipo, declaraciones[i].Variables[0]);
                 atrs.Add(atr);
             }
             //ahora ya tengo los atributos para agregar a los objetos
             obj.Parametros = atrs;
+            obj.Line = line;
+            obj.Colm = colm;
 
             //hago el proceso de insertar el objeto
+            bool estado = Peticion.crearObjeto(obj);
         }
     }
 }

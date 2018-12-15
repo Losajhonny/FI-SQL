@@ -12,7 +12,7 @@ namespace ServidorDB.otros
     public class Constante
     {
         public static bool usuando_db_actual = false;
-        public static string usuario_actual = "admin";
+        public static string usuario_actual = "u1";
         public static string db_actual = "";
 
         public static string usuario_admin = "admin";
@@ -28,6 +28,9 @@ namespace ServidorDB.otros
         public const int tFUNCION = 4;
         public const int tUSUARIO = 5;
         public const int tUSAR = 6;
+        public const int tAGREGAR = 7;
+        public const int tQUITAR = 8;
+        public const int tCAMBIAR = 9;
 
         public static string LEXICO = "Lexico";
         public static string SINTACTICO = "Sintactico";

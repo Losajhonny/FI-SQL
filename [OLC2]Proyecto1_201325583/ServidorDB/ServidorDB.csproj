@@ -68,13 +68,7 @@
     <Compile Include="analizadores\xml\RegGrammar.cs" />
     <Compile Include="analizadores\xml\RowAst.cs" />
     <Compile Include="analizadores\xml\xGramatica.cs" />
-    <Compile Include="arboles\usql\DDL\Crear\BaseDatos.cs" />
-    <Compile Include="arboles\usql\DDL\Crear\Funcion.cs" />
-    <Compile Include="arboles\usql\DDL\Crear\Objeto.cs" />
-    <Compile Include="arboles\usql\DDL\Crear\Procedimiento.cs" />
-    <Compile Include="arboles\usql\DDL\Crear\Tabla.cs" />
-    <Compile Include="arboles\usql\DDL\Crear\Usar.cs" />
-    <Compile Include="arboles\usql\DDL\Crear\Usuario.cs" />
+    <Compile Include="arboles\usql\DDL\Alterar_Ddl.cs" />
     <Compile Include="arboles\usql\DDL\Crear_Ddl.cs" />
     <Compile Include="arboles\usql\Detener.cs" />
     <Compile Include="arboles\usql\Retornar.cs" />

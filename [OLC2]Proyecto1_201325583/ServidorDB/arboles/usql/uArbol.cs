@@ -1,6 +1,5 @@
 ﻿using Irony.Parsing;
 using ServidorDB.arboles.usql.DDL;
-using ServidorDB.arboles.usql.DDL.Crear;
 using ServidorDB.arboles.usql.Expresiones;
 using ServidorDB.arboles.usql.Expresiones.Aritmetica;
 using ServidorDB.arboles.usql.Expresiones.Logica;
@@ -84,11 +83,52 @@ namespace ServidorDB.arboles.usql
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("ALTER"))
             {
-
+                return ALTER(padre.ChildNodes[0]);
             }
             else
             {
 
+            }
+            return null;
+        }
+
+        public static uInstruccion ALTER(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 5)
+            {
+                int tipo_alterar = Constante.tOBJETO;
+                if (padre.ChildNodes[1].Token.Text.ToLower().Equals("tabla"))
+                {
+                    tipo_alterar = Constante.tTABLA;
+                }
+                //quitar atributos de la tabla u objeto
+                return new Alterar_Ddl(tipo_alterar, padre.ChildNodes[2].Token.Text, LISTA_ID(padre.ChildNodes[4]),
+                    padre.ChildNodes[1].Token.Location.Line, padre.ChildNodes[1].Token.Location.Column);
+            }
+            else if (padre.ChildNodes.Count == 7)
+            {
+                if (padre.ChildNodes[1].Token.Text.ToLower().Equals("tabla"))
+                {
+                    //Para agregar mas campos
+                    List<Atributo> atributos = CAMPOS_TABLA(padre.ChildNodes[5]);
+                    return new Alterar_Ddl(Constante.tTABLA, padre.ChildNodes[2].Token.Text,
+                        atributos, padre.ChildNodes[1].Token.Location.Line,
+                        padre.ChildNodes[1].Token.Location.Column);
+                }
+                else if (padre.ChildNodes[1].Token.Text.ToLower().Equals("objeto"))
+                {
+                    List<Declarar> declarars = CAMPOS_OBJETO(padre.ChildNodes[5]);
+                    return new Alterar_Ddl(Constante.tOBJETO, padre.ChildNodes[2].Token.Text,
+                        declarars, padre.ChildNodes[1].Token.Location.Line,
+                        padre.ChildNodes[1].Token.Location.Column);
+                }
+                else
+                {   //cambiar password de usuario
+                    NodoExp ne = EXPRESION(padre.ChildNodes[6]);
+                    return new Alterar_Ddl(Constante.tUSUARIO, padre.ChildNodes[2].Token.Text,
+                       ne, padre.ChildNodes[1].Token.Location.Line,
+                       padre.ChildNodes[1].Token.Location.Column);
+                }
             }
             return null;
         }
@@ -488,6 +528,17 @@ namespace ServidorDB.arboles.usql
         #endregion
 
         #region Otros
+
+        public static List<string> LISTA_ID(ParseTreeNode padre)
+        {
+            List<string> ids = new List<string>();
+            for(int i = 0; i < padre.ChildNodes.Count; i++)
+            {
+                ids.Add(padre.ChildNodes[i].Token.Text);
+            }
+            return ids;
+        }
+
         public static int TIPO_DATO(ParseTreeNode padre)
         {
             if (padre.ChildNodes[0].Term.Name.Equals("TIPO_DATO_PR"))
