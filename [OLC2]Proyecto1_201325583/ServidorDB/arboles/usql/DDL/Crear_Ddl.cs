@@ -179,6 +179,10 @@ namespace ServidorDB.arboles.usql.DDL
             {
                 ejecutar_objeto();
             }
+            else if (tipo_crear == Constante.tUSAR)
+            {
+                ejecutar_usuarDb();
+            }
             return null;
         }
         
@@ -228,6 +232,33 @@ namespace ServidorDB.arboles.usql.DDL
             }
         }
 
+        public void ejecutar_usuarDb()
+        {
+            //en este caso solo debo realizar la transaccion
+            bool estado = Peticion.usarDb(id, line, colm);
+            //debo validar si en la peticion se logro realizar
+            if (!estado)
+            {
+                string msg = "La base de datos: " + id + " no existe en el DBMS";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, id, line, colm));
+            }
+        }
+
+        public void ejecutar_Tabla()
+        {
+            //creo la tabla
+            //le coloco los atributos
+            Tabla t = new Tabla(id);
+            t.Atributos = atributos;
+            //ahora como ya lo agregue necesita
+            //actualizar el datatable de la tabla
+            t.crearDataTable();
+            //realizar la peticion
+            t.Line = line;
+            t.Colm = colm;
+        }
+
+        /*EJECUTAR PENDIENTE*/
         public void ejecutar_objeto()
         {
             //creo un nuevo objeto
@@ -245,6 +276,8 @@ namespace ServidorDB.arboles.usql.DDL
             }
             //ahora ya tengo los atributos para agregar a los objetos
             obj.Parametros = atrs;
+
+            //hago el proceso de insertar el objeto
         }
     }
 }

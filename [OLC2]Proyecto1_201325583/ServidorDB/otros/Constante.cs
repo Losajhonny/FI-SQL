@@ -11,6 +11,7 @@ namespace ServidorDB.otros
 {
     public class Constante
     {
+        public static bool usuando_db_actual = false;
         public static string usuario_actual = "admin";
         public static string db_actual = "";
 

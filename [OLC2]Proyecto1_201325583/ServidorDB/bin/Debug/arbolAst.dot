@@ -1,18 +1,16 @@
 digraph grafo{
 node [shape = egg];
-56200037[label="SENTENCIAS", style = filled, color = lightblue];
-36038289[label="SENTENCIA", style = filled, color = lightblue];
+43527150[label="SENTENCIAS", style = filled, color = lightblue];
+56200037[label="SENTENCIA", style = filled, color = lightblue];
+43527150->56200037;
+36038289[label="DDL", style = filled, color = lightblue];
 56200037->36038289;
-55909147[label="DDL", style = filled, color = lightblue];
+55909147[label="CREATE", style = filled, color = lightblue];
 36038289->55909147;
-33420276[label="CREATE", style = filled, color = lightblue];
+33420276[label="usar (Keyword)", style = filled, color = lightblue];
 55909147->33420276;
-32347029[label="crear (Keyword)", style = filled, color = lightblue];
-33420276->32347029;
-22687807[label="base_datos (Keyword)", style = filled, color = lightblue];
-33420276->22687807;
-2863675[label="db123 (id)", style = filled, color = lightblue];
-33420276->2863675;
-25773083[label="; (Key symbol)", style = filled, color = lightblue];
-33420276->25773083;
+32347029[label="db1 (id)", style = filled, color = lightblue];
+55909147->32347029;
+22687807[label="; (Key symbol)", style = filled, color = lightblue];
+55909147->22687807;
 }
