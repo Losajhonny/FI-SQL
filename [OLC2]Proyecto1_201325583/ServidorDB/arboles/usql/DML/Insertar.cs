@@ -1,4 +1,5 @@
 ﻿using ServidorDB.arboles.usql.Expresiones;
+using ServidorDB.otros;
 using ServidorDB.tabla_simbolos;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,15 @@ namespace ServidorDB.arboles.usql.DML
 {
     class Insertar : uInstruccion
     {
-        private string id;
-        private List<NodoExp> valores;
-        private List<string> ids;
-        private int line;
-        private int colm;
+        protected string id; //nombre de la tabla
+        protected List<NodoExp> valores;
+        protected List<string> ids;
+        protected int line;
+        protected int colm;
 
         public Insertar(string id, List<NodoExp> valores, int line, int colm)
         {
+            this.ids = null;
             this.line = line;
             this.colm = colm;
             this.id = id;
@@ -39,15 +41,45 @@ namespace ServidorDB.arboles.usql.DML
         public int Line { get => line; set => line = value; }
         public int Colm { get => colm; set => colm = value; }
 
-        public object ejecutar(Entorno ent)
+        public virtual object ejecutar(Entorno ent)
         {
-            /*
-             * 
-             * VOY POR AQUI
-             * 
-             * 
-             */
+            //el numero de los valores deben ser igual que el numero de atributos de la tabla
+            //para ello necesito primero obtener valores y despues validar
+            List<Resultado> resval = new List<Resultado>();
+            bool hayError = false;
+
+            for (int i = 0; i < valores.Count; i++)
+            {
+                Resultado res = (Resultado)valores[i].ejecutar(ent);
+                if(res.Tipo == Constante.ERROR)
+                {
+                    hayError = true;
+                }
+                else
+                {
+                    resval.Add(res);
+                }
+            }
+
+            if (!hayError)
+            {
+                //como no hay error al obtener resultados entonces ahora hay que realizar la peticion
+                //al dbms enviar  nombre tabla, listaresultado, line, colm
+                if(ids == null)
+                {
+                    PeticionDML.insertarNormal(id, resval, line, colm);
+                }
+                else
+                {
+                    PeticionDML.insertarEspecial(id, resval, ids, line, colm);
+                }
+            }
             return null;
+        }
+
+        public virtual object generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
         }
     }
 }

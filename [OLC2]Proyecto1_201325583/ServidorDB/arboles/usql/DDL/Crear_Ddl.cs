@@ -346,5 +346,15 @@ namespace ServidorDB.arboles.usql.DDL
                 bool estado = PeticionDDL.crearObjeto(obj);
             }
         }
+
+        public string generar_booleano(Entorno ent)
+        {
+            return "";
+        }
+
+        object uInstruccion.generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

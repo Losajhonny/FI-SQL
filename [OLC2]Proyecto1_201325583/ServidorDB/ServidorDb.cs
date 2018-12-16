@@ -233,17 +233,98 @@ namespace ServidorDB
             db3.Usuarios = urs;
 
             m.generar_xml();
+            */
+
+            DataTable dt1 = new DataTable("t1");
+            DataTable dt2 = new DataTable("t2");
+
+            DataColumn dc11 = new DataColumn("d1", System.Type.GetType("System.Int32")); //pk
+            DataColumn dc21 = new DataColumn("d2", System.Type.GetType("System.String"));//null
+            DataColumn dc31 = new DataColumn("d3", System.Type.GetType("System.Int32")); //no null
+            DataColumn dc41 = new DataColumn("d4", System.Type.GetType("System.Int32")); //autoincrementable 
+            DataColumn dc51 = new DataColumn("d5", System.Type.GetType("System.Int32")); //foreign key
+            DataColumn dc61 = new DataColumn("d6", System.Type.GetType("System.String")); //unique key
+
+            DataColumn dc12 = new DataColumn("d7", System.Type.GetType("System.Int32")); //pk
+            DataColumn dc22 = new DataColumn("d8", System.Type.GetType("System.String"));//null
+            DataColumn dc32 = new DataColumn("d9", System.Type.GetType("System.Int32")); //no null
+            DataColumn dc42 = new DataColumn("d10", System.Type.GetType("System.Int32")); //autoincrementable
+            DataColumn dc52 = new DataColumn("d11", System.Type.GetType("System.String")); //unique key
+            #region rr
+            dt1.Columns.Add(dc11); dt1.Columns.Add(dc21); dt1.Columns.Add(dc31); dt1.Columns.Add(dc41);
+            dt1.Columns.Add(dc51); dt1.Columns.Add(dc61);
+            DataColumn[] pkt1 = { dc11 };
+            //ahora los constraints
+            dt1.PrimaryKey = pkt1;
+            dc21.AllowDBNull = true;
+            dc31.AllowDBNull = false;
+            dc41.AutoIncrement = true;
+            dc41.AutoIncrementSeed = 1;
+            dc41.AutoIncrementStep = 1;
+            dc51.AllowDBNull = false;
+            dc61.Unique = true;
+
+            dt2.Columns.Add(dc12); dt2.Columns.Add(dc22); dt2.Columns.Add(dc32);
+            dt2.Columns.Add(dc42); dt2.Columns.Add(dc52);
+            DataColumn[] pkt2 = { dc12 };
+            //ahora los constraints
+            dt2.PrimaryKey = pkt2;
+            dc22.AllowDBNull = true;
+            dc32.AllowDBNull = false;
+            dc42.AutoIncrement = true;
+            dc42.AutoIncrementSeed = 1;
+            dc42.AutoIncrementStep = 1;
+            dc52.Unique = true;
+            #endregion
+            ForeignKeyConstraint fkc = new ForeignKeyConstraint("t2fk", dc12, dc51);
+            dt1.Constraints.Add(fkc);
+
+            DataRow dr = dt1.NewRow();
+            dr["d1"] = 1;
+            //d2 null
+            dr["d3"] = 1;
+            //d4 auto
+            dr["d5"] = 1;
+            dr["d6"] = "";
+            dt1.Rows.Add(dr);
+
+            DataRow dr1 = dt1.NewRow();
+            dr1["d1"] = 2;
+            //d2 null
+            dr1["d3"] = 2;
+            //d4 auto
+            dr1["d5"] = 1;
+            dr1["d6"] = 2.ToString();
+            dt1.Rows.Add(dr1);
+
+            DataRow dr2 = dt2.NewRow();
+            dr2["d7"] = 1;
+            //d8 null
+            dr2["d9"] = 1;
+            //d10 auto
+            //dr2["d11"] = "hola r1";
+            dt2.Rows.Add(dr2);
+
+            //DataRow[] con = dt1.Select("d1 where d1 = 1");
+            
+            var quiery = from dtt1 in dt1.AsEnumerable()
+                         from dtt2 in dt2.AsEnumerable()
+                         select new { dt1, dt2 };
+
+            foreach (var tt1 in quiery)
+            {
+                foreach (var row in tt1.dt1.Rows)
+                {
+                    
+                }
+            }
 
 
-            DataTable dt = new DataTable("t1");
-
-            DataColumn dc = new DataColumn("a");
-            dc.AllowDBNull = false;
-            dc.AutoIncrement = false;
-            dc.Unique = false;
-            dt.Columns.Add("a");*/
-
-
+            String date = "10-10-2018";
+            DateTime dttttt = DateTime.Parse(date);
+            DataColumn dcc = new DataColumn("b", System.Type.GetType("System.DateTime"));
+            
+            
             //Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
 
             //    string msg1 = "";

@@ -47,5 +47,35 @@ namespace ServidorDB.arboles.usql.Expresiones
                 return null;
             }
         }
+
+        public override object generar_booleano(Entorno ent)
+        {
+            if (val2 == null)
+            {
+                if(val1[0] == '@')
+                {
+                    Simbolo s = ent.getSimbolo_Entorno(val1);
+                    if (s != null)
+                    {
+                        return new Resultado(s.Tipo, s.Valor.ToString());
+                    }
+                    else
+                    {
+                        string descripcion = "No se pudo encontrar el Simbolo\nSimbolo: " + val1;
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                        return new Resultado(Constante.ERROR, "");
+                    }
+                }
+                else
+                {
+                    return new Resultado(Constante.ID, val1) ;
+                }
+            }
+            else
+            {
+                //falta el de atributos
+                return null;
+            }
+        }
     }
 }

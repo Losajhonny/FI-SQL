@@ -13,5 +13,10 @@ namespace ServidorDB.arboles.usql
         {
             return this;
         }
+
+        public object generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

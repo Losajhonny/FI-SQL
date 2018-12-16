@@ -207,5 +207,15 @@ namespace ServidorDB.arboles.usql.DDL
                 }
             }
         }
+
+        public string generar_booleano(Entorno ent)
+        {
+            return "";
+        }
+
+        object uInstruccion.generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

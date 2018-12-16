@@ -79,5 +79,15 @@ namespace ServidorDB.arboles.usql.DDL
             //solamente el administrador puede eliminar un usuario pero no asi mismo
             PeticionDDL.dropUsuario(id, line, colm);
         }
+
+        public string generar_booleano(Entorno ent)
+        {
+            return "";
+        }
+
+        object uInstruccion.generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

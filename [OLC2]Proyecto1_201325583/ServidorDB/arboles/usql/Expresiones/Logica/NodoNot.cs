@@ -50,5 +50,21 @@ namespace ServidorDB.arboles.usql.Expresiones.Logica
                 return new Resultado(Constante.ERROR, "");
             }
         }
+
+        public override object generar_booleano(Entorno ent)
+        {
+            Resultado r1 = (izq != null) ? (Resultado)izq.generar_booleano(ent) : null;
+            string cadena = "not ";
+
+            if (r1.Tipo == Constante.TEXT || r1.Tipo == Constante.DATE || r1.Tipo == Constante.DATETIME)
+            {
+                cadena += "'" + r1.Valor + "' ";
+            }
+            else
+            {
+                cadena += r1.Valor + " ";
+            }
+            return cadena;
+        }
     }
 }

@@ -82,7 +82,36 @@ namespace ServidorDB.arboles.usql
             {
                 return INSERT(padre.ChildNodes[0]);
             }
+            else if (padre.ChildNodes[0].Term.Name.Equals("UPDATE"))
+            {
+                return UPDATE(padre.ChildNodes[0]);
+            }
             return null;
+        }
+
+        public static uInstruccion UPDATE(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 12)
+            {
+                NodoExp exp = EXPRESION(padre.ChildNodes[11]);
+                List<string> ids= LISTA_ID(padre.ChildNodes[4]);
+                List<NodoExp> vals = LISTA_VALORES(padre.ChildNodes[8]);
+                string id = padre.ChildNodes[2].Token.Text;
+                int line = padre.ChildNodes[0].Token.Location.Line;
+                int colm = padre.ChildNodes[0].Token.Location.Column;
+
+                return new Actualizar(id, ids, vals, exp, line, colm);
+            }
+            else
+            {
+                List<string> ids = LISTA_ID(padre.ChildNodes[4]);
+                List<NodoExp> vals = LISTA_VALORES(padre.ChildNodes[8]);
+                string id = padre.ChildNodes[2].Token.Text;
+                int line = padre.ChildNodes[0].Token.Location.Line;
+                int colm = padre.ChildNodes[0].Token.Location.Column;
+
+                return new Actualizar(id, ids, vals, null, line, colm);
+            }
         }
 
         public static uInstruccion INSERT(ParseTreeNode padre)

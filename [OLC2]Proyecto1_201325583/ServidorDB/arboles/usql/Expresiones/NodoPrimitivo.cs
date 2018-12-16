@@ -34,5 +34,21 @@ namespace ServidorDB.arboles.usql.Expresiones
                 return new Resultado(tipo, valor);
             }
         }
+
+        public override object generar_booleano(Entorno ent)
+        {
+            if (tipo == Constante.TEXT)
+            {
+                char[] ctrim = { '\"' };
+                string nvalor = valor.Trim(ctrim);
+                nvalor = nvalor.Replace("\\n", "\n");
+                nvalor = nvalor.Replace("\\t", "\t");
+                return new Resultado(tipo, nvalor);
+            }
+            else
+            {
+                return new Resultado(tipo, valor);
+            }
+        }
     }
 }

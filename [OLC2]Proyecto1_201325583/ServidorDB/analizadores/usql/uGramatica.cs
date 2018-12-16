@@ -266,9 +266,9 @@ namespace ServidorDB.analizadores.usql
 
             /*-------------------- MODULO DE UPDATE ------------------------------*/
             UPDATE.Rule = pr_actualizar + pr_tabla + id + pari + LISTA_ID + pard + pr_valores +
-                pari + LISTA_VALORES + pard + pr_donde + EXP
-                | pr_actualizar + pr_tabla + id + pari + LISTA_ID + pard + pr_valores +
-                pari + LISTA_VALORES + pard;
+                          pari + LISTA_VALORES + pard + pr_donde + EXP
+                        | pr_actualizar + pr_tabla + id + pari + LISTA_ID + pard + pr_valores +
+                          pari + LISTA_VALORES + pard;
 
             /*--------------------- MODULO DE INSERT -----------------------------*/
             INSERT.Rule = pr_insertar + pr_en + pr_tabla + id + pari + LISTA_ID + pard + pr_valores + pari + LISTA_VALORES + pard

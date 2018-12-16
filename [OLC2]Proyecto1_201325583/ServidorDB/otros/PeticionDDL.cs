@@ -409,7 +409,7 @@ namespace ServidorDB.otros
                                 if (agrego_atri)
                                 {
                                     //logica para cambiar DataTable si perder registros
-                                    //Crear un DataTable temporal
+                                    //Solo agregar columnas
                                     //Le inserto las columnas
                                     DataTable dt = t.Registros;
                                     for (int i = 0; i < agregar.Count; i++)
@@ -417,7 +417,38 @@ namespace ServidorDB.otros
                                         //inserto columna por atributo
                                         //para simular la tabla con sus registros
                                         DataColumn dc = new DataColumn(agregar[i].Nombre);
-                                        dt.Columns.Add(dc);
+
+                                        if (agregar[i].Tipo == Constante.INTEGER)
+                                        {
+                                            dc.DataType = System.Type.GetType("System.Int32");
+                                            dt.Columns.Add(dc);
+                                        }
+                                        else if (agregar[i].Tipo == Constante.TEXT)
+                                        {
+                                            dc.DataType = System.Type.GetType("System.String");
+                                            dt.Columns.Add(dc);
+                                        }
+                                        else if (agregar[i].Tipo == Constante.BOOL)
+                                        {
+                                            dc.DataType = System.Type.GetType("System.Boolean");
+                                            dt.Columns.Add(dc);
+                                        }
+                                        else if (agregar[i].Tipo == Constante.DOUBLE)
+                                        {
+                                            dc.DataType = System.Type.GetType("System.Double");
+                                            dt.Columns.Add(dc);
+                                        }
+                                        else if (agregar[i].Tipo == Constante.DATE)
+                                        {
+                                            dc.DataType = System.Type.GetType("System.DateTime");
+                                            dt.Columns.Add(dc);
+                                        }
+                                        else if (agregar[i].Tipo == Constante.DATETIME)
+                                        {
+                                            dc.DataType = System.Type.GetType("System.DateTime");
+                                            dt.Columns.Add(dc);
+                                        }
+
                                     }
                                 }
                                 estado_aceptacion = true;

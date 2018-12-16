@@ -59,5 +59,10 @@ namespace ServidorDB.arboles.usql.Expresiones
         {
             return null;
         }
+
+        public virtual object generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

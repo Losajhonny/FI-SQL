@@ -62,5 +62,31 @@ namespace ServidorDB.arboles.usql.Expresiones.Relacional
                 return new Resultado(Constante.ERROR, "");
             }
         }
+
+        public override object generar_booleano(Entorno ent)
+        {
+            Resultado r1 = (izq != null) ? (Resultado)izq.generar_booleano(ent) : null;
+            Resultado r2 = (der != null) ? (Resultado)der.generar_booleano(ent) : null;
+            string cadena = "";
+
+            if (r1.Tipo == Constante.TEXT || r1.Tipo == Constante.DATE || r1.Tipo == Constante.DATETIME)
+            {
+                cadena += "'" + r1.Valor + "' ";
+            }
+            else
+            {
+                cadena += r1.Valor + " ";
+            }
+            cadena += "<= ";
+            if (r2.Tipo == Constante.TEXT || r2.Tipo == Constante.DATE || r2.Tipo == Constante.DATETIME)
+            {
+                cadena += "'" + r2.Valor + "' ";
+            }
+            else
+            {
+                cadena += r2.Valor + " ";
+            }
+            return cadena;
+        }
     }
 }

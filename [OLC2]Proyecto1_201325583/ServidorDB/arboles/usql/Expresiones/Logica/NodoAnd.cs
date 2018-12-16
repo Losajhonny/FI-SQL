@@ -61,5 +61,15 @@ namespace ServidorDB.arboles.usql.Expresiones.Logica
                 return new Resultado(Constante.ERROR, "");
             }
         }
+
+        public override object generar_booleano(Entorno ent)
+        {
+            string r1 = (izq != null) ? izq.generar_booleano(ent).ToString() : null;
+            string r2 = (der != null) ? der.generar_booleano(ent).ToString() : null;
+            string cadena = "";
+            
+            cadena += r1 + " and " + r2;
+            return cadena;
+        }
     }
 }

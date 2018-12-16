@@ -49,5 +49,10 @@ namespace ServidorDB.arboles.usql.DCL
             }
             return null;
         }
+
+        public object generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

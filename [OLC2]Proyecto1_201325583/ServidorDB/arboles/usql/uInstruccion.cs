@@ -10,5 +10,7 @@ namespace ServidorDB.arboles.usql
     interface uInstruccion
     {
         object ejecutar(Entorno ent);
+
+        object generar_booleano(Entorno ent);
     }
 }

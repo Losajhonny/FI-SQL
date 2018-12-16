@@ -77,5 +77,10 @@ namespace ServidorDB.arboles.usql.SSL
             }
             return null;
         }
+
+        public object generar_booleano(Entorno ent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

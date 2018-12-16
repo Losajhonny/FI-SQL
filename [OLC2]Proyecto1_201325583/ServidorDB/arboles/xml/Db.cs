@@ -253,6 +253,7 @@ namespace ServidorDB.arboles.xml
                                         t.Atributos[y].Colm));
                                 }
                             }
+                            t.crearDataTable();
                             t.cargar();
                             if (!tablas.ContainsKey(t.Nombre))
                             {

@@ -1,4 +1,5 @@
-﻿using ServidorDB.otros;
+﻿using ServidorDB.analizadores.usql;
+using ServidorDB.otros;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -50,6 +51,38 @@ namespace ServidorDB.arboles.xml
             //else no registra nada
         }
 
+        public void Especificar_constraints(DataColumn dc, Atributo atributo)
+        {
+            if(atributo.Complemento != null)
+            {
+                if (atributo.Complemento.ToLower().Equals("nonulo"))
+                {
+                    dc.AllowDBNull = false;
+                }
+                else if (atributo.Complemento.ToLower().Equals("nulo"))
+                {
+                    dc.AllowDBNull = true;
+                }
+                else if (atributo.Complemento.ToLower().Equals("autoincrementable"))
+                {
+                    dc.AutoIncrement = true;
+                    dc.AutoIncrementSeed = 1;
+                    dc.AutoIncrementStep = 1;
+                }
+                else if (atributo.Complemento.ToLower().Equals("unico"))
+                {
+                    dc.AllowDBNull = false;
+                    UniqueConstraint uc1 = new UniqueConstraint(dc);
+                    registros.Constraints.Add(uc1);
+                }
+                else
+                {
+                    DataColumn[] pk = { dc };
+                    registros.PrimaryKey = pk;
+                }
+            }
+        }
+
         public void crearDataTable()
         {
             this.registros = new DataTable(nombre);
@@ -60,8 +93,41 @@ namespace ServidorDB.arboles.xml
             {
                 //inserto columna por atributo
                 //para simular la tabla con sus registros
+
                 DataColumn dc = new DataColumn(this.atributos[i].Nombre);
+
+                /*Colocar los unicos, null, nonull etc*/
+                
                 this.registros.Columns.Add(dc);
+                Especificar_constraints(dc, this.atributos[i]);
+
+                /*realizando pruebas para insertar
+                 definiendo el tipo de dato que soporta la columna*/
+                if (atributos[i].Tipo == Constante.INTEGER)
+                {
+                    dc.DataType = System.Type.GetType("System.Int32");
+                }
+                else if (atributos[i].Tipo == Constante.TEXT)
+                {
+                    dc.DataType = System.Type.GetType("System.String");
+                }
+                else if (atributos[i].Tipo == Constante.BOOL)
+                {
+                    dc.DataType = System.Type.GetType("System.Boolean");
+                }
+                else if (atributos[i].Tipo == Constante.DOUBLE)
+                {
+                    dc.DataType = System.Type.GetType("System.Double");
+                }
+                else if (atributos[i].Tipo == Constante.DATE)
+                {
+                    dc.DataType = System.Type.GetType("System.DateTime");
+                }
+                else if (atributos[i].Tipo == Constante.DATETIME)
+                {
+                    dc.DataType = System.Type.GetType("System.DateTime");
+                }
+                /*Aqui termina el codigo de prueba*/
             }
         }
 
@@ -82,9 +148,9 @@ namespace ServidorDB.arboles.xml
                 cadena += "<row>\n";
                 for (int j = 0; j < atributos.Count; j++)
                 {
-                    cadena += "\t<" + Constante.TIPOS[atributos[j].Tipo] + ">";
+                    cadena += "\t<" + atributos[j].Nombre + ">";
                     cadena += "~" + registros.Rows[i][atributos[j].Nombre].ToString() + "~" ;
-                    cadena += "</" + Constante.TIPOS[atributos[j].Tipo] + ">\n";
+                    cadena += "</" + atributos[j].Nombre + ">\n";
                 }
                 cadena += "</row>\n";
             }
@@ -117,12 +183,15 @@ namespace ServidorDB.arboles.xml
                         //lista de atributos de la tabla
                         if(atrs.Count == atributos.Count)
                         {
+                            //me imagino que ya tiene especificado el tipo de dato en la columna
                             DataRow nr = registros.NewRow();
                             bool hayError = false;
                             for (int i = 0; i < atributos.Count; i++)
                             {
                                 //devuelve un error si los tipos no son iguales
                                 object retorno = atrs[i].cargar();
+                                //carga si es igual el tipo
+                                //en este caso el tipo realiza la funcion de nombre de la variable
 
                                 if (retorno != null)
                                 {
@@ -132,21 +201,65 @@ namespace ServidorDB.arboles.xml
                                     hayError = true;
                                     break;
                                 }
-                                else if (atrs[i].Tipo == Constante.ID)
+                                /*NO VA PORQUE SI ES ID EN ESTE CASO ES EL NOMBRE DE LA VARIABLE*/
+                                //else if (atrs[i].Tipo == Constante.ID)
+                                //{
+
+                                //    string msg = "El atributo en la tabla " + nombre + " debe ser de tipo primitivo";
+                                //    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
+                                //        xSintactico.ERRORES_XML[xSintactico.ERROR_REG] + " : " + msg, "", atrs[i].Line,
+                                //        atrs[i].Colm));
+                                //    hayError = true;
+                                //    break;
+                                //}
+
+                                try
+                                {
+                                    if (atributos[i].Tipo == Constante.INTEGER)
+                                    {
+                                        int v = Int32.Parse(atrs[i].Nombre);
+                                        nr[atributos[i].Nombre] = v;
+                                    }
+                                    else if (atributos[i].Tipo == Constante.TEXT)
+                                    {
+                                        nr[atributos[i].Nombre] = atrs[i].Nombre;
+                                    }
+                                    else if (atributos[i].Tipo == Constante.BOOL)
+                                    {
+                                        nr[atributos[i].Nombre] = Boolean.Parse(atrs[i].Nombre);
+                                    }
+                                    else if (atributos[i].Tipo == Constante.DOUBLE)
+                                    {
+                                        nr[atributos[i].Nombre] = Double.Parse(atrs[i].Nombre, System.Globalization.CultureInfo.InvariantCulture);
+                                    }
+                                    else if (atributos[i].Tipo == Constante.DATE)
+                                    {
+                                        DateTime dtt = DateTime.Parse(atrs[i].Nombre);
+                                        nr[atributos[i].Nombre] = dtt;
+                                    }
+                                    else if (atributos[i].Tipo == Constante.DATETIME)
+                                    {
+                                        DateTime dtt = DateTime.Parse(atrs[i].Nombre);
+                                        nr[atributos[i].Nombre] = dtt;
+                                    }
+                                }catch(Exception ex)
                                 {
 
-                                    string msg = "El atributo en la tabla " + nombre + " debe ser de tipo primitivo";
-                                    xSintactico.errores.Add(new analizadores.usql.uError(Constante.SEMANTICO,
-                                        xSintactico.ERRORES_XML[xSintactico.ERROR_REG] + " : " + msg, "", atrs[i].Line,
-                                        atrs[i].Colm));
-                                    hayError = true;
-                                    break;
                                 }
-                                nr[atributos[i].Nombre] = atrs[i].Nombre;
                             }
                             if (!hayError)
                             {
-                                registros.Rows.Add(nr);
+                                try
+                                {
+                                    registros.Rows.Add(nr);
+                                }
+                                catch (Exception ex)
+                                {
+                                    string msg = ex.Message;
+                                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                }
+
+                                
                             }
                         }
                         else
