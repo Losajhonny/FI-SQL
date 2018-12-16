@@ -31,8 +31,8 @@ namespace ServidorDB.analizadores.xml
                 string nombre = "";
                 string tipo = "";
                 string src = "";
-                List<Atributo> param = null;
-                List<string> usuarios = null;
+                List<Atributo> param = new List<Atributo>();
+                List<string> usuarios = new List<string>();
 
                 List<object> lfuncion = LFUNCION(padre.ChildNodes[3]);
 

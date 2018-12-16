@@ -91,8 +91,8 @@ namespace ServidorDB.analizadores.xml
         {
             string nombre = null;
             string path = null;
-            List<Atributo> rows = null;
-            List<string> usuarios = null;
+            List<Atributo> rows = new List<Atributo>();
+            List<string> usuarios = new List<string>();
             List<object> etq = ETIQUETAS(padre.ChildNodes[3]);
 
             for(int i = 0; i < etq.Count; i++)

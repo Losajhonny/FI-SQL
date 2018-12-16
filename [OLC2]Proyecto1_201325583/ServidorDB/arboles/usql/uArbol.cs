@@ -1,4 +1,5 @@
 ﻿using Irony.Parsing;
+using ServidorDB.arboles.usql.DCL;
 using ServidorDB.arboles.usql.DDL;
 using ServidorDB.arboles.usql.Expresiones;
 using ServidorDB.arboles.usql.Expresiones.Aritmetica;
@@ -40,7 +41,7 @@ namespace ServidorDB.arboles.usql
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("DCL"))
             {
-
+                return DCL(padre.ChildNodes[0]);
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("SSL"))
             {
@@ -74,6 +75,31 @@ namespace ServidorDB.arboles.usql
             return null;
         }
 
+        public static uInstruccion DCL(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count != 0)
+            {
+                int tipo_permiso = Constante.DENEGAR;
+                if (padre.ChildNodes[0].Token.Text.ToLower().Equals("otorgar"))
+                {
+                    tipo_permiso = Constante.OTORGAR;
+                }
+                string usuario = padre.ChildNodes[2].Token.Text;
+                string db = padre.ChildNodes[4].Token.Text;
+                string objeto = null;
+
+                if (!padre.ChildNodes[6].Token.Text.Equals("*"))
+                {
+                    objeto = padre.ChildNodes[6].Token.Text;
+                }
+
+                return new Permisos_Dcl(tipo_permiso, usuario, db, objeto,
+                    padre.ChildNodes[0].Token.Location.Line,
+                    padre.ChildNodes[0].Token.Location.Column);
+            }
+            return null;
+        }
+
         #region DDL
         public static uInstruccion DDL(ParseTreeNode padre)
         {
@@ -87,9 +113,43 @@ namespace ServidorDB.arboles.usql
             }
             else
             {
-
+                return DROP(padre.ChildNodes[0]);
             }
-            return null;
+        }
+
+        public static uInstruccion DROP(ParseTreeNode padre)
+        {
+            return new Eliminar_Ddl(OBJETO_USQL(padre.ChildNodes[1]),
+                padre.ChildNodes[2].Token.Text, padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Column);
+        }
+
+        public static int OBJETO_USQL(ParseTreeNode padre)
+        {
+            if (padre.ChildNodes[0].Token.Text.ToLower().Equals("tabla"))
+            {
+                return Constante.tTABLA;
+            }
+            else if (padre.ChildNodes[0].Token.Text.ToLower().Equals("base_datos"))
+            {
+                return Constante.tBASE_DATOS;
+            }
+            else if (padre.ChildNodes[0].Token.Text.ToLower().Equals("objeto"))
+            {
+                return Constante.tOBJETO;
+            }
+            else if (padre.ChildNodes[0].Token.Text.ToLower().Equals("usuario"))
+            {
+                return Constante.tUSUARIO;
+            }
+            else if (padre.ChildNodes[0].Token.Text.ToLower().Equals("procedimiento"))
+            {
+                return Constante.tPROCEDIMIENTO;
+            }
+            else
+            {
+                return Constante.tFUNCION;
+            }
         }
 
         public static uInstruccion ALTER(ParseTreeNode padre)

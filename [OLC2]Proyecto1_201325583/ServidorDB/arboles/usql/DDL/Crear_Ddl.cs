@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace ServidorDB.arboles.usql.DDL
 {
     class Crear_Ddl : uInstruccion
@@ -19,7 +18,7 @@ namespace ServidorDB.arboles.usql.DDL
          ejecutar la funcion usar*/
 
 
-        private int tipo_crear;
+        private int tipo_crear; //es un tipo usql xD tablas, proc, fun, obj, .....
         private string id;
 
         private List<Atributo> atributos;
@@ -208,7 +207,7 @@ namespace ServidorDB.arboles.usql.DDL
             {
                 db.Usuarios.Add(Constante.usuario_actual);
             }
-            bool estado = Peticion.crearDb(db);
+            bool estado = PeticionDDL.crearDb(db);
 
             if (!estado)
             {
@@ -227,7 +226,7 @@ namespace ServidorDB.arboles.usql.DDL
                     if(res.Tipo == Constante.TEXT)
                     {
                         Usuario usr = new Usuario(id, res.Valor);
-                        bool estado = Peticion.crearUsuario(usr);
+                        bool estado = PeticionDDL.crearUsuario(usr);
 
                         if (!estado)
                         {
@@ -252,7 +251,7 @@ namespace ServidorDB.arboles.usql.DDL
         public void ejecutar_usuarDb()
         {
             //en este caso solo debo realizar la transaccion
-            bool estado = Peticion.usarDb(id, line, colm);
+            bool estado = PeticionDDL.usarDb(id, line, colm);
             //debo validar si en la peticion se logro realizar
             if (!estado)
             {
@@ -273,11 +272,31 @@ namespace ServidorDB.arboles.usql.DDL
             t.Line = line;
             t.Colm = colm;
 
-            //ahora como ya lo agregue necesita
-            //actualizar el datatable de la tabla
-            t.crearDataTable();
+            bool hayError = false;
+            Dictionary<string, Atributo> tmp = new Dictionary<string, Atributo>();
 
-            Peticion.crearTabla(t);
+            foreach (Atributo atributo in t.Atributos)
+            {
+                if (tmp.ContainsKey(atributo.Nombre))
+                {
+                    string msg = "El atributo: " + atributo.Nombre + " ya existe en la tabla: " + t.Nombre;
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    hayError = true;
+                }
+                else
+                {
+                    tmp.Add(atributo.Nombre, atributo);
+                }
+            }
+
+            if (!hayError)
+            {
+                //ahora como ya lo agregue necesita
+                //actualizar el datatable de la tabla
+                t.crearDataTable();
+
+                PeticionDDL.crearTabla(t);
+            }
         }
 
         /*EJECUTAR PENDIENTE*/
@@ -298,13 +317,34 @@ namespace ServidorDB.arboles.usql.DDL
                 Atributo atr = new Atributo(declaraciones[i].Tipo, declaraciones[i].Variables[0]);
                 atrs.Add(atr);
             }
-            //ahora ya tengo los atributos para agregar a los objetos
-            obj.Parametros = atrs;
-            obj.Line = line;
-            obj.Colm = colm;
 
-            //hago el proceso de insertar el objeto
-            bool estado = Peticion.crearObjeto(obj);
+            bool hayError = false;
+            Dictionary<string, Atributo> tmp = new Dictionary<string, Atributo>();
+
+            foreach (Atributo atributo in atrs)
+            {
+                if (tmp.ContainsKey(atributo.Nombre))
+                {
+                    string msg = "El atributo: " + atributo.Nombre + " ya existe en el Objeto: " + obj.Nombre;
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    hayError = true;
+                }
+                else
+                {
+                    tmp.Add(atributo.Nombre, atributo);
+                }
+            }
+
+            if (!hayError)
+            {
+                //ahora ya tengo los atributos para agregar a los objetos
+                obj.Parametros = atrs;
+                obj.Line = line;
+                obj.Colm = colm;
+
+                //hago el proceso de insertar el objeto
+                bool estado = PeticionDDL.crearObjeto(obj);
+            }
         }
     }
 }

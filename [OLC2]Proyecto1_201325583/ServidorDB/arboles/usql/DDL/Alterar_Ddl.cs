@@ -39,7 +39,7 @@ namespace ServidorDB.arboles.usql.DDL
                          para agregar un columna Facil por que solo debo agregar
                          al final*/
 
-        private int tipo_alterar;       //objetos, tablas o usuarios
+        private int tipo_alterar;       //objetos, tablas o usuarios //es un tipo usql xD tablas, proc, fun, obj, .....
         private int tipo_alteracion;    //agregar, quitar o cambiar
         private List<Declarar> declaraciones;
         private List<Atributo> atributos;
@@ -163,17 +163,17 @@ namespace ServidorDB.arboles.usql.DDL
 
         public void quitarTabla()
         {
-            Peticion.quitarTabla(lista_id, id, line, colm);
+            PeticionDDL.quitarTabla(lista_id, id, line, colm);
         }
 
         public void agregarTabla()
         {
-            Peticion.agregarTabla(id, atributos, line, colm);
+            PeticionDDL.agregarTabla(id, atributos, line, colm);
         }
 
         public void quitarObjeto()
         {
-            Peticion.quitarObjeto(lista_id, id, line, colm);
+            PeticionDDL.quitarObjeto(lista_id, id, line, colm);
         }
 
         public void agregarObjeto()
@@ -187,7 +187,7 @@ namespace ServidorDB.arboles.usql.DDL
                 atrs.Add(a);
             }
             //2. lo realiza la peticion
-            Peticion.agregarObjeto(id, atrs, line, colm);
+            PeticionDDL.agregarObjeto(id, atrs, line, colm);
         }
 
         public void cambiarPassword(Entorno ent)
@@ -198,7 +198,7 @@ namespace ServidorDB.arboles.usql.DDL
             {
                 if(res.Tipo == Constante.TEXT)
                 {
-                    Peticion.cambiarPassword(id, res.Valor, line, colm);
+                    PeticionDDL.cambiarPassword(id, res.Valor, line, colm);
                 }
                 else
                 {

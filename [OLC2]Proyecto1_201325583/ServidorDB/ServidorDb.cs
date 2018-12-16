@@ -22,7 +22,7 @@ namespace ServidorDB
             //Tomar en cuenta para general servidorDb
             //necesito crear el usuario de administrador
             Usuario usr = new Usuario(Constante.usuario_admin, Constante.password_admin);
-            Peticion.crearUsuario(usr);
+            PeticionDDL.crearUsuario(usr);
             //Finalizando la insercion de crear usuario
             //si existe no notificar que existe
 

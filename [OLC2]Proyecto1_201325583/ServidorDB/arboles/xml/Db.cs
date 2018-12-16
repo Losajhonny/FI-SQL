@@ -25,7 +25,7 @@ namespace ServidorDB.arboles.xml
         private Dictionary<string, Funcion> funciones;
         private Dictionary<string, Procedimiento> procedimientos;
         private Dictionary<string, Objeto> objetos;
-        private List<string> usuarios;
+        private List<string> usuarios = new List<string>();
 
         private string ruta_proc;
         private string ruta_func;

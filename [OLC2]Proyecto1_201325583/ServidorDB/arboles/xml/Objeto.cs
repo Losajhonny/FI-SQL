@@ -20,7 +20,7 @@ namespace ServidorDB.arboles.xml
         protected string nombre;
         protected string ruta;
         protected List<Atributo> parametros;
-        protected List<string> usuarios;
+        protected List<string> usuarios = new List<string>();
 
         public Objeto(string nombre)
         {

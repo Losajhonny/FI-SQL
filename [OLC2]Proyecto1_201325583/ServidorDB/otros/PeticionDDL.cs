@@ -1,15 +1,17 @@
-﻿using ServidorDB.analizadores.usql;
+﻿
+using ServidorDB.analizadores.usql;
 using ServidorDB.arboles.xml;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ServidorDB.otros
 {
-    class Peticion
+    class PeticionDDL
     {
         #region CREAR DDL
         public static bool crearDb(Db db)
@@ -234,7 +236,6 @@ namespace ServidorDB.otros
         #endregion
 
         #region ALTER DDL
-
         public static bool quitarTabla(List<string> ids, string nombre, int line, int colm)
         {
             bool estado_aceptacion = false;
@@ -704,6 +705,524 @@ namespace ServidorDB.otros
                     string msg = "El usuario: " + id + " no existe en el DBMS";
                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                 }
+            }
+
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+        #endregion
+
+        #region DROP DDL
+        public static bool dropTabla(string nombre, int line, int colm)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para modificar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tengo permisos entonces buscar el objeto
+                        if (master.Dbs[Constante.db_actual].Tablas.ContainsKey(nombre))
+                        {
+                            Tabla obj = master.Dbs[Constante.db_actual].Tablas[nombre];
+                            //verificar si el objeto tiene permisos de usuario
+                            usr = null;
+                            foreach (string user in obj.Usuarios)
+                            {
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                            }
+                            //verifico si el usuario actual tiene permisos para el objeto
+                            if (usr != null || obj.Usuarios.Count == 0)
+                            {
+                                /*casos
+                                 1. si el usuario actual es el administrador entonces eliminar
+                                 
+                                 2. sino no existe usuario entonces eliminar por motivos que no 
+                                 tiene ningun usuario
+
+                                 3. sino buscar el propietario que se supone que esta en la posicion
+                                 0 de la lista si el usuario encontrado es igual al usuario actual
+                                 entonces eliminar*/
+
+                                /*PARA ELIMINAR UNA TABLA HAY QUE ELIMINAR SUS REGISTROS
+                                 para eso necesito eliminar el archivo que guarda los registros*/
+
+                                if (Constante.usuario_actual.Equals(Constante.usuario_admin))
+                                {
+                                    //como el usuario actual es el administrador entonces eliminar el objeto
+                                    master.Dbs[Constante.db_actual].Tablas.Remove(nombre);
+                                    string path = Constante.RUTA_TABLA + obj.Nombre + "." + Constante.EXTENSION;
+                                    if (File.Exists(path))
+                                    {
+                                        File.Delete(path);
+                                    }
+                                }
+                                else if (obj.Usuarios.Count == 0)
+                                {
+                                    //como por un error se elimino el administrador y no existe usuarios
+                                    master.Dbs[Constante.db_actual].Tablas.Remove(nombre);
+                                    string path = Constante.RUTA_TABLA + obj.Nombre + "." + Constante.EXTENSION;
+                                    if (File.Exists(path))
+                                    {
+                                        File.Delete(path);
+                                    }
+                                }
+                                else if (obj.Usuarios[0].Equals(Constante.usuario_actual))
+                                {
+                                    //si paso aqui es por que el usuario en la posicion [0] es el propietario
+                                    master.Dbs[Constante.db_actual].Tablas.Remove(nombre);
+                                    string path = Constante.RUTA_TABLA + obj.Nombre + "." + Constante.EXTENSION;
+                                    if (File.Exists(path))
+                                    {
+                                        File.Delete(path);
+                                    }
+                                }
+                                else
+                                {
+                                    string msg = "El usuario: " + Constante.usuario_actual + " no es el propietario. ";
+                                    msg += "Solo el propietario puede eliminar la tabla";
+                                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                }
+
+                                estado_aceptacion = true;
+                            }
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar la tabla: " + obj.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
+                        }
+                        else
+                        {
+                            string msg = "La tabla: " + nombre + " no existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de eliminar una tabla";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+            }
+            Constante.db_actual = "";
+            Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+
+        public static bool dropFuncion(string nombre, int line, int colm)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para modificar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tengo permisos entonces buscar el objeto
+                        if (master.Dbs[Constante.db_actual].Funciones.ContainsKey(nombre))
+                        {
+                            Funcion obj = master.Dbs[Constante.db_actual].Funciones[nombre];
+                            //verificar si el objeto tiene permisos de usuario
+                            usr = null;
+                            foreach (string user in obj.Usuarios)
+                            {
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                            }
+                            //verifico si el usuario actual tiene permisos para el objeto
+                            if (usr != null || obj.Usuarios.Count == 0)
+                            {
+                                /*casos
+                                 1. si el usuario actual es el administrador entonces eliminar
+                                 
+                                 2. sino no existe usuario entonces eliminar por motivos que no 
+                                 tiene ningun usuario
+
+                                 3. sino buscar el propietario que se supone que esta en la posicion
+                                 0 de la lista si el usuario encontrado es igual al usuario actual
+                                 entonces eliminar*/
+
+                                if (Constante.usuario_actual.Equals(Constante.usuario_admin))
+                                {
+                                    //como el usuario actual es el administrador entonces eliminar el objeto
+                                    master.Dbs[Constante.db_actual].Funciones.Remove(nombre);
+                                }
+                                else if (obj.Usuarios.Count == 0)
+                                {
+                                    //como por un error se elimino el administrador y no existe usuarios
+                                    master.Dbs[Constante.db_actual].Funciones.Remove(nombre);
+                                }
+                                else if (obj.Usuarios[0].Equals(Constante.usuario_actual))
+                                {
+                                    //si paso aqui es por que el usuario en la posicion [0] es el propietario
+                                    master.Dbs[Constante.db_actual].Funciones.Remove(nombre);
+                                }
+                                else
+                                {
+                                    string msg = "El usuario: " + Constante.usuario_actual + " no es el propietario. ";
+                                    msg += "Solo el propietario puede eliminar la funcion";
+                                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                }
+
+                                estado_aceptacion = true;
+                            }
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar la funcion: " + obj.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
+                        }
+                        else
+                        {
+                            string msg = "La funcion: " + nombre + " no existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de eliminar una funcion";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+            }
+            Constante.db_actual = "";
+            Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+
+        public static bool dropObjeto(string nombre, int line, int colm)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para modificar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tengo permisos entonces buscar el objeto
+                        if (master.Dbs[Constante.db_actual].Objetos.ContainsKey(nombre))
+                        {
+                            Objeto obj = master.Dbs[Constante.db_actual].Objetos[nombre];
+                            //verificar si el objeto tiene permisos de usuario
+                            usr = null;
+                            foreach (string user in obj.Usuarios)
+                            {
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                            }
+                            //verifico si el usuario actual tiene permisos para el objeto
+                            if (usr != null || obj.Usuarios.Count == 0)
+                            {
+                                /*casos
+                                 1. si el usuario actual es el administrador entonces eliminar
+                                 
+                                 2. sino no existe usuario entonces eliminar por motivos que no 
+                                 tiene ningun usuario
+
+                                 3. sino buscar el propietario que se supone que esta en la posicion
+                                 0 de la lista si el usuario encontrado es igual al usuario actual
+                                 entonces eliminar*/
+
+                                if (Constante.usuario_actual.Equals(Constante.usuario_admin))
+                                {
+                                    //como el usuario actual es el administrador entonces eliminar el objeto
+                                    master.Dbs[Constante.db_actual].Objetos.Remove(nombre);
+                                }
+                                else if (obj.Usuarios.Count == 0)
+                                {
+                                    //como por un error se elimino el administrador y no existe usuarios
+                                    master.Dbs[Constante.db_actual].Objetos.Remove(nombre);
+                                }
+                                else if (obj.Usuarios[0].Equals(Constante.usuario_actual))
+                                {
+                                    //si paso aqui es por que el usuario en la posicion [0] es el propietario
+                                    master.Dbs[Constante.db_actual].Objetos.Remove(nombre);
+                                }
+                                else
+                                {
+                                    string msg = "El usuario: " + Constante.usuario_actual + " no es el propietario. ";
+                                    msg += "Solo el propietario puede eliminar el objeto";
+                                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                }
+
+
+                                estado_aceptacion = true;
+                            }
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar el objeto: " + obj.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
+                        }
+                        else
+                        {
+                            string msg = "El objeto: " + nombre + " no existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de eliminar un objeto";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+            }
+            Constante.db_actual = "";
+            Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+
+        public static bool dropProcedimiento(string nombre, int line, int colm)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para modificar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tengo permisos entonces buscar el objeto
+                        if (master.Dbs[Constante.db_actual].Procedimientos.ContainsKey(nombre))
+                        {
+                            Procedimiento proc = master.Dbs[Constante.db_actual].Procedimientos[nombre];
+                            //verificar si el objeto tiene permisos de usuario
+                            usr = null;
+                            foreach (string user in proc.Usuarios)
+                            {
+                                if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                            }
+                            //verifico si el usuario actual tiene permisos para el objeto
+                            if (usr != null || proc.Usuarios.Count == 0)
+                            {
+                                /*casos
+                                 1. si el usuario actual es el administrador entonces eliminar
+                                 
+                                 2. sino no existe usuario entonces eliminar por motivos que no 
+                                 tiene ningun usuario
+
+                                 3. sino buscar el propietario que se supone que esta en la posicion
+                                 0 de la lista si el usuario encontrado es igual al usuario actual
+                                 entonces eliminar*/
+
+                                if (Constante.usuario_actual.Equals(Constante.usuario_admin))
+                                {
+                                    //como el usuario actual es el administrador entonces eliminar el objeto
+                                    master.Dbs[Constante.db_actual].Procedimientos.Remove(nombre);
+                                }
+                                else if (proc.Usuarios.Count == 0)
+                                {
+                                    //como por un error se elimino el administrador y no existe usuarios
+                                    master.Dbs[Constante.db_actual].Procedimientos.Remove(nombre);
+                                }
+                                else if (proc.Usuarios[0].Equals(Constante.usuario_actual))
+                                {
+                                    //si paso aqui es por que el usuario en la posicion [0] es el propietario
+                                    master.Dbs[Constante.db_actual].Procedimientos.Remove(nombre);
+                                }
+                                else
+                                {
+                                    string msg = "El usuario: " + Constante.usuario_actual + " no es el propietario. ";
+                                    msg += "Solo el propietario puede eliminar el procedimiento";
+                                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                }
+
+
+                                estado_aceptacion = true;
+                            }
+                            else
+                            {
+                                string msg = "El usuario " + Constante.usuario_actual + " no tiene permiso de modificar el procedimiento: " + proc.Nombre;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
+                        }
+                        else
+                        {
+                            string msg = "El procedimiento: " + nombre + " no existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de eliminar un procedimiento";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+            }
+            Constante.db_actual = "";
+            Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+
+        public static bool dropUsuario(string nombre, int line, int colm)
+        {
+            //como es usuario esta a nivel de la base de datos no necesito el usar
+            //necesito verificar si el usuario existe
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            if (master.Usuarios.ContainsKey(nombre))
+            {
+                //verifico si el usuario que quiero eliminar no sea el administrador
+                if (Constante.usuario_actual.Equals(Constante.usuario_admin))
+                {
+                    //si el lusuario actual es el administrador entonces puede eliminar usuarios
+
+                    //si el usuario a eliminar es el administrador reportar como error
+                    if (!nombre.Equals(Constante.usuario_admin))
+                    {
+                        master.Usuarios.Remove(nombre);
+                        estado_aceptacion = true;
+
+                        //como lo elimine debo eliminar los usuarios de este nombre en todos los objetos
+                        //de la base de datos
+                        foreach(Db db in master.Dbs.Values)
+                        {
+                            db.Usuarios.Remove(nombre);
+
+                            foreach(Procedimiento proc in db.Procedimientos.Values)
+                            {
+                                proc.Usuarios.Remove(nombre);
+                            }
+                            foreach(Funcion func in db.Funciones.Values)
+                            {
+                                func.Usuarios.Remove(nombre);
+                            }
+                            foreach(Objeto obj in db.Objetos.Values)
+                            {
+                                obj.Usuarios.Remove(nombre);
+                            }
+                            foreach(Tabla t in db.Tablas.Values)
+                            {
+                                t.Usuarios.Remove(nombre);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string msg = "No se puede eliminar al usuario administrador";
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "El usuario: " + Constante.usuario_actual + " no puede eliminar a otro usuario" +
+                        " Solo el administrador puede eliminar usuarios";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                string msg = "El usuario: " + nombre + " no existe en el DBMS";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
 
             master.generar_xml();

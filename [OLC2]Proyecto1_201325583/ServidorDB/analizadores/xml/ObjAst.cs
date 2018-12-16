@@ -26,8 +26,8 @@ namespace ServidorDB.analizadores.xml
             if(padre.ChildNodes.Count == 8)
             {
                 string nombre = "";
-                List<Atributo> attr = null;
-                List<string> usuarios = null;
+                List<Atributo> attr = new List<Atributo>();
+                List<string> usuarios = new List<string>();
 
                 List<object> lfuncion = LOBJ(padre.ChildNodes[3]);
 

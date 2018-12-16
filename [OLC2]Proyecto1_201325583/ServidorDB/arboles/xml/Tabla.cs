@@ -13,7 +13,7 @@ namespace ServidorDB.arboles.xml
         private string nombre;
         private string ruta;
         private List<Atributo> atributos;
-        private List<string> usuarios;
+        private List<string> usuarios = new List<string>();
 
         private int line;
         private int colm;

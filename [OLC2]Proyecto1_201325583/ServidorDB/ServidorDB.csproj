@@ -68,8 +68,10 @@
     <Compile Include="analizadores\xml\RegGrammar.cs" />
     <Compile Include="analizadores\xml\RowAst.cs" />
     <Compile Include="analizadores\xml\xGramatica.cs" />
+    <Compile Include="arboles\usql\DCL\Permisos_Dcl.cs" />
     <Compile Include="arboles\usql\DDL\Alterar_Ddl.cs" />
     <Compile Include="arboles\usql\DDL\Crear_Ddl.cs" />
+    <Compile Include="arboles\usql\DDL\Eliminar_Ddl.cs" />
     <Compile Include="arboles\usql\Detener.cs" />
     <Compile Include="arboles\usql\Retornar.cs" />
     <Compile Include="arboles\usql\SSL\Asignacion.cs" />
@@ -113,7 +115,8 @@
     <Compile Include="arboles\xml\Usuario.cs" />
     <Compile Include="arboles\xml\xInstruccion.cs" />
     <Compile Include="arboles\xml\xSintactico.cs" />
-    <Compile Include="otros\Peticion.cs" />
+    <Compile Include="otros\PeticionDCL.cs" />
+    <Compile Include="otros\PeticionDDL.cs" />
     <Compile Include="ServidorDb.cs">
       <SubType>Form</SubType>
     </Compile>

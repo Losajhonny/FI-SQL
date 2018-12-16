@@ -42,3 +42,27 @@
                                         dt.Columns.Add(dc);
                                     }
                                 }
+
+
+
+
+
+
+								bool hayError = false;
+            for(int i = 0; i < t.Atributos.Count; i++)
+            {
+                for(int j = 0; j < t.Atributos.Count; j++)
+                {
+                    if(i != j)
+                    {
+                        if (t.Atributos[i].Nombre.Equals(t.Atributos[j].Nombre))
+                        {
+                            string msg = "El atributo: " + t.Atributos[i].Nombre + " ya existe en la tabla: " + t.Nombre;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+
+                            hayError = true;
+                            break;
+                        }
+                    }
+                }
+            }
