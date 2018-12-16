@@ -73,6 +73,7 @@
     <Compile Include="arboles\usql\DDL\Crear_Ddl.cs" />
     <Compile Include="arboles\usql\DDL\Eliminar_Ddl.cs" />
     <Compile Include="arboles\usql\Detener.cs" />
+    <Compile Include="arboles\usql\DML\Insertar.cs" />
     <Compile Include="arboles\usql\Retornar.cs" />
     <Compile Include="arboles\usql\SSL\Asignacion.cs" />
     <Compile Include="arboles\usql\SSL\Caso.cs" />

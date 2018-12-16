@@ -88,8 +88,8 @@ namespace ServidorDB.analizadores.usql
             RegexBasedTerminal double_ = new RegexBasedTerminal("double", @"[0-9]+[\.][0-9]+");
             RegexBasedTerminal variable = new RegexBasedTerminal("variable", "@[A-Za-z][A-Za-z0-9_]*");
             IdentifierTerminal id = new IdentifierTerminal("id");
-            RegexBasedTerminal date = new RegexBasedTerminal("date", "[0-9][0-9][-][0-9][0-9][-][0-9][0-9][0-9][0-9]");
-            RegexBasedTerminal datetime = new RegexBasedTerminal("datetime", "[0-9][0-9][-][0-9][0-9][-][0-9][0-9][0-9][0-9][ ][0-9][0-9][:][0-9][0-9][:][0-9][0-9]");
+            RegexBasedTerminal date = new RegexBasedTerminal("date", "\'[0-9][0-9][-][0-9][0-9][-][0-9][0-9][0-9][0-9]\'");
+            RegexBasedTerminal datetime = new RegexBasedTerminal("datetime", "\'[0-9][0-9][-][0-9][0-9][-][0-9][0-9][0-9][0-9][ ][0-9][0-9][:][0-9][0-9][:][0-9][0-9]\'");
             #endregion
 
             #region TERMINALES

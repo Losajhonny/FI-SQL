@@ -1,6 +1,7 @@
 ﻿using Irony.Parsing;
 using ServidorDB.arboles.usql.DCL;
 using ServidorDB.arboles.usql.DDL;
+using ServidorDB.arboles.usql.DML;
 using ServidorDB.arboles.usql.Expresiones;
 using ServidorDB.arboles.usql.Expresiones.Aritmetica;
 using ServidorDB.arboles.usql.Expresiones.Logica;
@@ -37,7 +38,7 @@ namespace ServidorDB.arboles.usql
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("DML"))
             {
-
+                return DML(padre.ChildNodes[0]);
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("DCL"))
             {
@@ -71,6 +72,37 @@ namespace ServidorDB.arboles.usql
                 return new Retornar(EXPRESION(padre.ChildNodes[1]),
                     padre.ChildNodes[0].Token.Location.Line,
                     padre.ChildNodes[0].Token.Location.Column);
+            }
+            return null;
+        }
+
+        public static uInstruccion DML(ParseTreeNode padre)
+        {
+            if (padre.ChildNodes[0].Term.Name.Equals("INSERT"))
+            {
+                return INSERT(padre.ChildNodes[0]);
+            }
+            return null;
+        }
+
+        public static uInstruccion INSERT(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 7)
+            {
+                int line = padre.ChildNodes[0].Token.Location.Line;
+                int colm = padre.ChildNodes[0].Token.Location.Column;
+
+                return new Insertar(padre.ChildNodes[3].Token.Text
+                    , LISTA_VALORES(padre.ChildNodes[5]), line, colm);
+            }
+            else if (padre.ChildNodes.Count == 11)
+            {
+                int line = padre.ChildNodes[0].Token.Location.Line;
+                int colm = padre.ChildNodes[0].Token.Location.Column;
+
+                return new Insertar(padre.ChildNodes[3].Token.Text,
+                    LISTA_ID(padre.ChildNodes[5])
+                    , LISTA_VALORES(padre.ChildNodes[9]), line, colm);
             }
             return null;
         }
@@ -588,6 +620,20 @@ namespace ServidorDB.arboles.usql
         #endregion
 
         #region Otros
+
+        public static List<NodoExp> LISTA_VALORES(ParseTreeNode padre)
+        {
+            List<NodoExp> ne = new List<NodoExp>();
+            for(int i = 0; i < padre.ChildNodes.Count; i++)
+            {
+                object obj = EXPRESION(padre.ChildNodes[i]);
+                if(obj != null)
+                {
+                    ne.Add((NodoExp)obj);
+                }
+            }
+            return ne;
+        }
 
         public static List<string> LISTA_ID(ParseTreeNode padre)
         {
