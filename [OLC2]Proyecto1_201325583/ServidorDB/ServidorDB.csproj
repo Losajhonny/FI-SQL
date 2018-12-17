@@ -76,6 +76,7 @@
     <Compile Include="arboles\usql\DML\Actualizar.cs" />
     <Compile Include="arboles\usql\DML\Insertar.cs" />
     <Compile Include="arboles\usql\DML\Select.cs" />
+    <Compile Include="arboles\usql\Expresiones\Contar.cs" />
     <Compile Include="arboles\usql\Retornar.cs" />
     <Compile Include="arboles\usql\SSL\Asignacion.cs" />
     <Compile Include="arboles\usql\SSL\Caso.cs" />

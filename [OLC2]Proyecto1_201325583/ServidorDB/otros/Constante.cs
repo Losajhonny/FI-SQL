@@ -11,6 +11,10 @@ namespace ServidorDB.otros
 {
     public class Constante
     {
+        public static List<string> lista;//para nombres de tablas en el select
+        public static Dictionary<string, Tabla> tablas;//para tablas seleccionadas en tabla
+        public static List<Tabla> tablasl;
+
         public static bool usuando_db_actual = false;
         public static string usuario_actual = "admin";
         public static string db_actual = "";

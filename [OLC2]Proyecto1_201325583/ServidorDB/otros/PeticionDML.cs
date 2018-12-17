@@ -548,9 +548,281 @@ namespace ServidorDB.otros
             return estado_aceptacion;
         }
 
-        public static bool seleccionar(List<string> campos, List<string> tablas, int id_ordernar, int tordenar)
+        public static DataTable seleccionar(List<string> campos, List<string> tablas, string condicion, string id_ordernar, int tordenar, int line, int colm)
         {
-            return false;
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            if (Constante.usuando_db_actual)
+            {
+                /*Como ya estoy en un db ahora solo debo acceder por motivos de que
+                 se utilizo la funcion usar .. si entro  aqui es por que si existia
+                 la base de datos*/
+                //xD igual verifico por si las moscas jajaja 
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //bueno aqui ya debe exister
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para modificar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //preceso de realizar el query
+                        //primero debo tener una lista de tablas
+                        List<DataTable> tables = new List<DataTable>();
+                        List<Tabla> tbs = new List<Tabla>();
+
+                        /*Despues verifico si el usuario tiene permisos para acceder a las tablas*/
+                        bool hayError = false;
+                        foreach(string tab in tablas)
+                        {
+                            if (master.Dbs[Constante.db_actual].Tablas.ContainsKey(tab))
+                            {
+                                tables.Add(master.Dbs[Constante.db_actual].Tablas[tab].Registros);
+                                tbs.Add(master.Dbs[Constante.db_actual].Tablas[tab]);
+                            }
+                            else
+                            {
+                                //si no existe mas de alguna tabla detectar error y no realizar el select
+                                hayError = true;
+                                string msg = "La tabla: " + tab + " no existe en la base de datos: " + Constante.db_actual;
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                            }
+                        }
+                        //ya tengo la lista de tablas ahora
+                        if (!hayError)
+                        {
+                            //como no hay error empezar con el recorrido de las tablas
+                            DataTable nuevo = cartesianProducto(tables);
+                            DataRow[] datos = null;
+
+                            //aplicando seleccion
+                            try
+                            {
+                                //aqui realizar la ordenacion
+                                /*PARA EL ORDER BY DEBO BUSCAR EL ATRIBUTO
+                                 EN LA TODAS LAS TABLAS EL PRIMERO EN CONCIDIR OBTENGO
+                                 LA POSICION DE LA TABLA Y SE LO ASIGNO A LA VARIABLE ID
+                                 PERO REALIZAR DESPUES YA NO HAY TIEMPO XD*/
+                                if (condicion != null)
+                                {
+                                    datos = nuevo.Select(condicion);
+                                }
+                                else
+                                {
+                                    datos = nuevo.Select();
+                                }
+                            }
+                            catch(Exception ex)
+                            {
+                                //string msg = ex.Message + " debe de especificar la tabla del atributo";
+                                string msg = "No existe el atributo o no especifico la tabla en el atributo" +
+                                    " en la clausula donde";
+                                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                hayError = true;
+                            }
+                            
+                            if (!hayError)
+                            {
+                                hayError = false;
+                                DataTable dnu = null;
+                                DataView dv = null;
+
+                                try
+                                {
+                                    dnu = datos.CopyToDataTable();
+                                    dnu.TableName = "datos";
+                                    dv = new DataView();
+                                    dv.Table = dnu;
+                                }
+                                catch (Exception ex) { hayError = true; }
+
+                                if (campos != null)
+                                {
+                                    //realizar las proyecciones
+                                    //lo que necesito
+
+                                    //ya lo probe jajaj si funciona pero ahora debo de buscar sus atributos
+                                    //y asignarles el numero de identificacion
+                                    //para eso de de recorrer los campos y en cada tabla
+
+                                    string[,] A = new string[campos.Count, 2];
+
+                                    for (int x = 0; x < campos.Count; x++)
+                                    {
+                                        for (int y = 0; y < tbs.Count; y++)
+                                        {
+                                            bool salir_kzy = false;
+                                            for (int z = 0; z < tbs[y].Atributos.Count; z++)
+                                            {
+                                                bool salir_kz = false;
+                                                if (tbs[y].Atributos[z].Nombre.Equals(campos[x]))
+                                                {
+                                                    for (int k = 0; k < A.Length; k++)
+                                                    {
+                                                        if (A[k, 0] != null)
+                                                        {
+                                                            if (A[k, 0].Equals(campos[x])
+                                                                && Int32.Parse(A[k, 1]) == y)
+                                                            {
+                                                                //salir de k y z
+                                                                salir_kz = true;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            A[k, 0] = campos[x];
+                                                            A[k, 1] = y.ToString();
+                                                            //salir de k, z, y
+                                                            salir_kzy = true;
+                                                        }
+                                                        if (salir_kz) { break; }
+                                                        if (salir_kzy) { break; }
+                                                    }
+                                                }
+                                                if (salir_kz) { break; }
+                                                if (salir_kzy) { break; }
+                                            }
+                                            if (salir_kzy) { break; }
+                                        }
+                                    }
+
+                                    string[] col = new string[campos.Count];
+
+                                    int faltante = 0;
+
+                                    for (int i = 0; i < col.Length; i++)
+                                    {
+                                        if (A[i, 0] != null)
+                                        {
+                                            col[i] = A[i, 0] + A[i, 1];
+                                        }
+                                        else
+                                        {
+                                            faltante++;
+                                        }
+                                    }
+
+                                    if (faltante == 0 && !hayError)
+                                    {
+                                        //DataTable correct = dv.ToTable("datos", false, "b0", "b1");
+                                        
+                                        DataTable correct = dv.ToTable("datos", false, col);
+                                        return correct;
+                                    }
+                                    else if (faltante > 0)
+                                    {
+                                        string msg = "Algunos atributos no pertenece a la(s) Tabla(s)";
+                                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                        //retornar datatable vacio
+                                        return null;
+                                    }
+                                }
+                                else
+                                {
+                                    //como no hay proyecciones entonces solo devolver el datatable
+                                    if (!hayError)
+                                    {
+                                        return dnu;
+                                    }
+                                    else
+                                    {
+                                        return null;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de seleccionar valores de una o varias tablas";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+            }
+
+            Constante.db_actual = "";
+            Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return null;
+        }
+
+
+        public static DataTable cartesianProducto(List<DataTable> tables)
+        {
+            DataTable ant = null;
+            int noTabla = 0;
+            foreach (DataTable actual in tables)
+            {
+                if (ant == null) { ant = actual; }
+                else
+                {
+                    DataTable nuevo = new DataTable("nuevo");
+                    //agrego todos los atributos
+                    for (int i = 0; i < ant.Columns.Count; i++)
+                    {
+                        if(noTabla == 0)
+                        {
+                            nuevo.Columns.Add(new DataColumn(ant.Columns[i].ColumnName+noTabla.ToString()));
+                        }
+                        else
+                        {
+                            nuevo.Columns.Add(new DataColumn(ant.Columns[i].ColumnName));
+                        }
+                    }
+                    noTabla++;
+
+                    for (int i = 0; i < actual.Columns.Count; i++)
+                    {
+                        nuevo.Columns.Add(new DataColumn(actual.Columns[i].ColumnName + noTabla.ToString()));
+                    }
+                    noTabla++;
+
+                    //aqui ya tengo la nueva tabla con sus columnas
+                    //Ahora necesito agregar los registros de las tablas por posicion
+                    //y no por nombre debido a que modifique el nombre
+                    foreach (DataRow rr1 in ant.Rows)
+                    {
+                        foreach (DataRow rr2 in actual.Rows)
+                        {
+                            DataRow ndr = nuevo.NewRow();
+                            int noCol = 0;
+
+                            foreach (DataColumn dc in ant.Columns)
+                            {
+                                ndr[noCol] = rr1[dc];
+                                noCol++;
+                            }
+                            foreach (DataColumn dc in actual.Columns)
+                            {
+                                ndr[noCol] = rr2[dc];
+                                noCol++;
+                            }
+                            nuevo.Rows.Add(ndr);
+                        }
+                    }
+
+                    ant = nuevo;
+                }
+            }
+            return ant;
         }
     }
 }

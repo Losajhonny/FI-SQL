@@ -50,6 +50,8 @@ namespace ServidorDB.arboles.usql.Expresiones
 
         public override object generar_booleano(Entorno ent)
         {
+            //val 1 es la variable que puede venir con @
+            //val 2 es la variable despues del punto
             if (val2 == null)
             {
                 if(val1[0] == '@')
@@ -73,7 +75,29 @@ namespace ServidorDB.arboles.usql.Expresiones
             }
             else
             {
-                //falta el de atributos
+                /*como esto solo me genera el booleano de un where*/
+                //buscar la tabla
+                if(val1[0] != '@')
+                {
+
+                    if (Constante.tablas.ContainsKey(val1))
+                    {
+                        //si contiene informacion
+                        for (int i = 0; i < Constante.tablasl.Count; i++)
+                        {
+                            if (Constante.tablasl[i].Nombre.Equals(val1))
+                            {
+                                return new Resultado(Constante.ID, val2 + i.ToString());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //string descripcion = "La tabla: " + val1 + " no existe en la base de datos";
+                        //uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, descripcion, null, line, colm));
+                        return new Resultado(Constante.ID, val2);
+                    }
+                }
                 return null;
             }
         }

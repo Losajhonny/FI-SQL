@@ -1,4 +1,5 @@
 ﻿using ServidorDB.arboles.usql.Expresiones;
+using ServidorDB.arboles.xml;
 using ServidorDB.otros;
 using ServidorDB.tabla_simbolos;
 using System;
@@ -39,7 +40,52 @@ namespace ServidorDB.arboles.usql.DML
 
         public object ejecutar(Entorno ent)
         {
-            return null;
+            /*ESTO ME SIRVE PARA ESTOS SELECT
+             
+            SELECT * DE TABLA_N DONDE TABLAX.ID > TABLAX.ID || TABLAY.ID = TABLAX.ID
+            SELECT * DE TABLA DONDE ID > 19 && 19 < 19
+
+            PERO NO PARA
+
+            SELECT * DE TABLA_N DONDE ID == ID && ID < ID && VALOR > ID
+            COMO VIENE MUCHAS TABLAS DEBE ESPECIFICAR DE QUE ATRIBUTO ESTARA SELECCIONANDO
+             */
+
+            Constante.lista = tablas;
+            //ahora me voy a la generar_booleano en la parte de id. id donde
+            //el primer id != @
+            //recordando que la base de datos esta activa en el actual
+            string cond = null;
+            if (Constante.usuando_db_actual)
+            {
+                //como se uso la sentencia usar ya debio de actualizar el sistema de archivos
+                //en memoria y en archivo
+                //por lo que puedo reazliar la busquedad de tablas con el master de la constante
+                Db db = Constante.sistema_archivo.Dbs[Constante.db_actual];
+                Dictionary<string, Tabla> tabs = new Dictionary<string, Tabla>();
+                List<Tabla> ttmp = new List<Tabla>();
+                bool hayError = false;
+                foreach (string tab in tablas)
+                {
+                    if (db.Tablas.ContainsKey(tab))
+                    {
+                        ttmp.Add(db.Tablas[tab]);
+                        try { tabs.Add(tab, db.Tablas[tab]); } catch (Exception ex) { };
+                    }
+                    else
+                    {
+                        //si no existe mas de alguna tabla detectar error y no realizar el select
+                        hayError = true;
+                    }
+                }
+                if (!hayError)
+                {
+                    Constante.tablas = tabs;
+                    Constante.tablasl = ttmp;
+                    cond = (condicion != null) ? condicion.generar_booleano(ent).ToString() : null;
+                }
+            }
+            return PeticionDML.seleccionar(campos, tablas, cond, id_ordenar, tordenar, line, colm);
         }
 
         public object generar_booleano(Entorno ent)

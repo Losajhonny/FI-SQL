@@ -173,13 +173,17 @@ namespace ServidorDB.arboles.usql
             }
             else if (padre.ChildNodes.Count == 2)
             {
-                return new Select(null, null, null,
+                if (padre.ChildNodes[0].Token.Text.ToLower().Equals("donde"))
+                {
+                    return new Select(null, null, EXPRESION(padre.ChildNodes[1]),
+                       null, Constante.NONE);
+                }
+                else
+                {
+                    return new Select(null, null, null,
                         padre.ChildNodes[1].Token.Text, Constante.NONE);
-            }
-            else if (padre.ChildNodes.Count == 1)
-            {
-                return new Select(null, null, EXPRESION(padre.ChildNodes[1]),
-                        null, Constante.NONE);
+                }
+               
             }
             return null;
         }
@@ -818,6 +822,13 @@ namespace ServidorDB.arboles.usql
             }
             return lv;
         }
+
+        public static NodoExp CONTAR(ParseTreeNode padre)
+        {
+            uInstruccion seleccionar = SELECT(padre.ChildNodes[3]);
+            return new Contar(seleccionar, padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Column);
+        }
         #endregion
 
         #region EXPRESIONES
@@ -837,7 +848,7 @@ namespace ServidorDB.arboles.usql
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("FUNCIONES"))
             {
-
+                return FUNCIONES(padre.ChildNodes[0]);
             }
             else if (padre.ChildNodes[0].Term.Name.Equals("PRIMITIVOS"))
             {
@@ -851,7 +862,6 @@ namespace ServidorDB.arboles.usql
             {// ( E )
                 return EXPRESION(padre.ChildNodes[1]);
             }
-            return null;
         }
 
         public static NodoExp ARITMETICA(ParseTreeNode padre)
@@ -985,6 +995,15 @@ namespace ServidorDB.arboles.usql
                     padre.ChildNodes[0].Token.Location.Line,
                     padre.ChildNodes[0].Token.Location.Column);
             }
+        }
+
+        public static NodoExp FUNCIONES(ParseTreeNode padre)
+        {
+            if (padre.ChildNodes[0].Term.Name.Equals("CONTAR"))
+            {
+                return CONTAR(padre.ChildNodes[0]);
+            }
+            return null;
         }
         #endregion
     }
