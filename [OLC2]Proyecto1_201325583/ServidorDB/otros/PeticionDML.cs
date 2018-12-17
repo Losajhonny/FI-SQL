@@ -547,5 +547,10 @@ namespace ServidorDB.otros
             master.generar_xml();
             return estado_aceptacion;
         }
+
+        public static bool seleccionar(List<string> campos, List<string> tablas, int id_ordernar, int tordenar)
+        {
+            return false;
+        }
     }
 }

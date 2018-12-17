@@ -20,6 +20,8 @@ namespace ServidorDB.otros
 
         public static RichTextBox rtb_consola = new System.Windows.Forms.RichTextBox();
 
+        public const int ASC = 0;
+        public const int DESC = 1;
 
         public const int OTORGAR = 0;
         public const int DENEGAR = 1;
@@ -52,7 +54,7 @@ namespace ServidorDB.otros
         public const int ERROR = 6;
         public const int ID = 7; //Constante para identificar objetos
         public const int VOID = 8;
-        //public const int NONE = 9;
+        public const int NONE = 9;
 
         public const string SI = "Si";
         public const string SINO = "Sino";

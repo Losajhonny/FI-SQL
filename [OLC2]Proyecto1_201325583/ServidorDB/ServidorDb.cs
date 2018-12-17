@@ -307,18 +307,56 @@ namespace ServidorDB
 
             //DataRow[] con = dt1.Select("d1 where d1 = 1");
             
-            var quiery = from dtt1 in dt1.AsEnumerable()
+            var query = from dtt1 in dt1.AsEnumerable()
                          from dtt2 in dt2.AsEnumerable()
                          select new { dt1, dt2 };
 
-            foreach (var tt1 in quiery)
+
+            var combinedRows = from a in dt1.AsEnumerable()
+                               from b in dt2.AsEnumerable()
+                               select new {
+                                   a,
+                                   b
+                               };
+                               
+            var dt3 = new DataTable();
+
+            for(int i = 0; i < dt1.Columns.Count; i++)
             {
-                foreach (var row in tt1.dt1.Rows)
+                dt3.Columns.Add(new DataColumn(dt1.Columns[i].ColumnName));
+            }
+
+            for (int i = 0; i < dt2.Columns.Count; i++)
+            {
+                dt3.Columns.Add(new DataColumn(dt2.Columns[i].ColumnName));
+            }
+            
+            foreach(DataRow rr1 in dt1.Rows)
+            {
+                foreach(DataRow rr2 in dt2.Rows)
                 {
-                    
+                    DataRow nuevo = dt3.NewRow();
+
+                    foreach (DataColumn dc in dt1.Columns)
+                    {
+                        nuevo[dc.ColumnName] = rr1[dc];
+                    }
+
+                    foreach (DataColumn dc in dt2.Columns)
+                    {
+                        nuevo[dc.ColumnName] = rr2[dc];
+                    }
+
+                    dt3.Rows.Add(nuevo);
                 }
             }
 
+            DataSet dsnuevo = new DataSet("db");
+            dsnuevo.Tables.Add(dt1);
+            dsnuevo.Tables.Add(dt2);
+            
+
+            //dt1.Merge(dt2, false, MissingSchemaAction.Add);
 
             String date = "10-10-2018";
             DateTime dttttt = DateTime.Parse(date);

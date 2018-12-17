@@ -86,6 +86,101 @@ namespace ServidorDB.arboles.usql
             {
                 return UPDATE(padre.ChildNodes[0]);
             }
+            else if (padre.ChildNodes[0].Term.Name.Equals("SELECT"))
+            {
+                return SELECT(padre.ChildNodes[0]);
+            }
+            return null;
+        }
+
+        public static uInstruccion SELECT(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 5)
+            {
+                if (padre.ChildNodes[1].Term.Name.Equals("LISTA_ID"))
+                {
+                    Select tmp = FUNCIONES_SELECT(padre.ChildNodes[4]);
+                    tmp.Campos = LISTA_ID(padre.ChildNodes[1]);
+                    tmp.Tablas = LISTA_ID(padre.ChildNodes[3]);
+                    tmp.Line = padre.ChildNodes[0].Token.Location.Line;
+                    tmp.Colm = padre.ChildNodes[0].Token.Location.Column;
+                    return tmp;
+                }
+                else
+                {
+                    Select tmp = FUNCIONES_SELECT(padre.ChildNodes[4]);
+                    tmp.Campos = null;
+                    tmp.Tablas = LISTA_ID(padre.ChildNodes[3]);
+                    tmp.Line = padre.ChildNodes[0].Token.Location.Line;
+                    tmp.Colm = padre.ChildNodes[0].Token.Location.Column;
+                    return tmp;
+                }
+            }
+            else if (padre.ChildNodes.Count == 4)
+            {
+                if (padre.ChildNodes[1].Term.Name.Equals("LISTA_ID"))
+                {
+                    List<string> campos = LISTA_ID(padre.ChildNodes[1]);
+                    List<string>  tablas = LISTA_ID(padre.ChildNodes[3]);
+                    int line = padre.ChildNodes[0].Token.Location.Line;
+                    int colm = padre.ChildNodes[0].Token.Location.Column;
+                    return new Select(campos, tablas, null, null, Constante.NONE);
+                }
+                else
+                {
+                    List<string> campos = null;
+                    List<string> tablas = LISTA_ID(padre.ChildNodes[3]);
+                    int line = padre.ChildNodes[0].Token.Location.Line;
+                    int colm = padre.ChildNodes[0].Token.Location.Column;
+                    return new Select(campos, tablas, null, null, Constante.NONE);
+                }
+            }
+            return null;
+        }
+
+        public static Select FUNCIONES_SELECT(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 5)
+            {
+                if (padre.ChildNodes[4].Token.Text.ToLower().Equals("asc"))
+                {
+                    return new Select(null, null, EXPRESION(padre.ChildNodes[1]),
+                        padre.ChildNodes[3].Token.Text, Constante.ASC);
+                }
+                else
+                {
+                    return new Select(null, null, EXPRESION(padre.ChildNodes[1]),
+                        padre.ChildNodes[3].Token.Text, Constante.DESC);
+                }
+            }
+            else if (padre.ChildNodes.Count == 4)
+            {
+                return new Select(null, null, EXPRESION(padre.ChildNodes[1]),
+                        padre.ChildNodes[3].Token.Text, Constante.NONE);
+            }
+            else if (padre.ChildNodes.Count == 3)
+            {
+                if (padre.ChildNodes[2].Token.Text.ToLower().Equals("asc"))
+                {
+                    return new Select(null, null, null,
+                        padre.ChildNodes[3].Token.Text, Constante.ASC);
+                }
+                else
+                {
+                    return new Select(null, null, null,
+                        padre.ChildNodes[3].Token.Text, Constante.DESC);
+                }
+            }
+            else if (padre.ChildNodes.Count == 2)
+            {
+                return new Select(null, null, null,
+                        padre.ChildNodes[1].Token.Text, Constante.NONE);
+            }
+            else if (padre.ChildNodes.Count == 1)
+            {
+                return new Select(null, null, EXPRESION(padre.ChildNodes[1]),
+                        null, Constante.NONE);
+            }
             return null;
         }
 
