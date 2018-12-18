@@ -53,9 +53,10 @@ namespace ServidorDB.arboles.usql.SSL
             if (id == null)
             {//entonces solo es asignacion de variable
                 Resultado res = (Resultado) exp.ejecutar(ent);
-                Simbolo s = ent.getSimbolo_Entorno(var);
+                //Simbolo s = ent.getSimbolo_Entorno(var);
+                Simbolo s = ent.getSimbolo_Entorno(var, Simbolo.VARIABLE);
 
-                if(s != null)
+                if (s != null)
                 {
                     if(res.Tipo == s.Tipo)
                     {

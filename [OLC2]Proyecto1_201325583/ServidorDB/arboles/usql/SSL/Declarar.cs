@@ -72,7 +72,7 @@ namespace ServidorDB.arboles.usql.SSL
         public int Tipo { get => tipo; set => tipo = value; }
         public int Line { get => line; set => line = value; }
         public int Colm { get => colm; set => colm = value; }
-        internal NodoExp Exp { get => exp; set => exp = value; }
+        public NodoExp Exp { get => exp; set => exp = value; }
         public string Id { get => id; set => id = value; }
         public string Id_objeto { get => id_objeto; set => id_objeto = value; }
 
@@ -80,9 +80,12 @@ namespace ServidorDB.arboles.usql.SSL
         {
             if (tipo != Constante.ID)
             {
+                //si la declaracion no es un objeto
                 //variables normales
+                //debo ejecutar la expresion para asignar a las variables
                 Resultado res = (exp != null) ? (Resultado)exp.ejecutar(ent) : null;
                 string valor = string.Empty;
+                bool hayError = false;
                 if (res != null)
                 {
                     if (res.Tipo == tipo)
@@ -98,6 +101,7 @@ namespace ServidorDB.arboles.usql.SSL
                         }
                         else
                         {
+                            hayError = true;
                             string descripcion = "El tipo de dato bool no permite el valor " + res.Valor
                                 + " unicamente acepta 0 o 1";
                             uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
@@ -107,18 +111,21 @@ namespace ServidorDB.arboles.usql.SSL
                     {
                         if (res.Tipo != Constante.ERROR)
                         {
+                            hayError = true;
                             string descripcion = "Tipos incompatibles: " + Constante.getTipo(res.Tipo) + " no puede ser convertido a " + Constante.getTipo(tipo);
                             uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                         }
                     }
                 }
 
-                for (int i = 0; i < variables.Count; i++)
+                for (int i = 0; i < variables.Count && !hayError; i++)
                 {
-                    if (!ent.existe(variables[i]))
+                    //ver como ingresar el valor en el entorno
+                    if (!ent.existe(variables[i], Simbolo.VARIABLE))
                     {
-                        Simbolo s = new Simbolo(tipo, variables[i], valor);
-                        ent.agregar(variables[i], s);
+                        Simbolo s = new Simbolo(Simbolo.VARIABLE ,tipo, variables[i], valor);
+                        ent.agregar(s);
+                        //ent.agregar(variables[i], s);
                     }
                     else
                     {
@@ -129,27 +136,28 @@ namespace ServidorDB.arboles.usql.SSL
             }
             else
             {
+                //todavia no hago esto
                 //instancias de objeto
                 //buscar el objeto
-                Simbolo sobjeto = ent.getSimbolo_Entorno(id_objeto);
-                if (sobjeto != null)
-                {
-                    if (!ent.existe(id))
-                    {
-                        Simbolo s = new Simbolo(tipo, id, sobjeto.Valor);
-                        ent.agregar(id, s);
-                    }
-                    else
-                    {
-                        string descripcion = "Variable " + id + " ya esta definida en este ambito";
-                        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
-                    }
-                }
-                else
-                {
-                    string descripcion = "El objeto '" + id_objeto + "' no existe";
-                    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
-                }
+                //Simbolo sobjeto = ent.getSimbolo_Entorno(id_objeto);
+                //if (sobjeto != null)
+                //{
+                //    if (!ent.existe(id))
+                //    {
+                //        Simbolo s = new Simbolo(tipo, id, sobjeto.Valor);
+                //        ent.agregar(id, s);
+                //    }
+                //    else
+                //    {
+                //        string descripcion = "Variable " + id + " ya esta definida en este ambito";
+                //        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                //    }
+                //}
+                //else
+                //{
+                //    string descripcion = "El objeto '" + id_objeto + "' no existe";
+                //    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                //}
             }
             return null;
         }

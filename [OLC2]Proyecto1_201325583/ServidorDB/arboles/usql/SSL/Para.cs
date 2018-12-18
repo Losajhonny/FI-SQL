@@ -62,6 +62,9 @@ namespace ServidorDB.arboles.usql.SSL
             //bandera para ejecutar solo una vez la declaracion
             Entorno tmp = ent;
             //obtengo mi entorno actual como temporal
+
+            bool hayError = false;
+
             while (estado_condicion == 1)
             {   //iniciando ciclo
                 estado_condicion = 0;
@@ -71,7 +74,11 @@ namespace ServidorDB.arboles.usql.SSL
                     tmp = new Entorno(tmp);
                     tmp.Tent = Constante.PARA;
                     //creo mi nuevo entorno para la declaracion
-                    declarar.ejecutar(tmp);
+                    if(!ent.existe(declarar.Id, Simbolo.VARIABLE))
+                    {
+                        declarar.ejecutar(tmp);
+                    }
+                    else { hayError = true; break; }
                     //ejecutamos la declaracion solo una vez
                     bandera = 1;
                 }
@@ -81,7 +88,10 @@ namespace ServidorDB.arboles.usql.SSL
                 //como no quiero que se realicen declaraciones
                 //con la misma variable que la declaracion inicial del para
                 //entonces movemos el simbolo a el nuevo entorno
-                nuevo.agregar(declarar.Variables[0], tmp.getSimbolo_Entorno_Actual(declarar.Variables[0]));
+                ////////////////////nuevo.agregar(declarar.Variables[0], tmp.getSimbolo_Entorno_Actual(declarar.Variables[0]));
+
+                nuevo.agregar(tmp.getSimbolo_Entorno_Actual(declarar.Variables[0], Simbolo.VARIABLE));
+
                 //creo un entorno para las instruccion
                 Resultado res = (Resultado)exp.ejecutar(nuevo);
                 //ejecuto la condicion
@@ -126,6 +136,12 @@ namespace ServidorDB.arboles.usql.SSL
                         uSintactico.uerrores.Add(new uError(nuevo.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
                     }
                 }
+            }
+
+            if (hayError)
+            {
+                string descripcion = "La variable: " + declarar.Id + " no se puede declarar en este ambito por que se usa en un ambito local";
+                uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, Constante.SEMANTICO, descripcion, null, line, colm));
             }
             return null;
         }

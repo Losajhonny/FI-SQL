@@ -1,4 +1,5 @@
 ﻿using ServidorDB.arboles.xml;
+using ServidorDB.tabla_simbolos;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,15 +10,17 @@ using System.Windows.Forms;
 
 namespace ServidorDB.otros
 {
-    public class Constante
+    class Constante
     {
+        public static Entorno global = new Entorno(null);
         public static List<string> lista;//para nombres de tablas en el select
         public static Dictionary<string, Tabla> tablas;//para tablas seleccionadas en tabla
         public static List<Tabla> tablasl;
 
         public static bool usuando_db_actual = false;
         public static string usuario_actual = "admin";
-        public static string db_actual = "";
+        public static string db_actual = "";//<-- este es solo para realizar varios usar
+        public static string dbdb_actual = ""; //<-- este es para que se quede la base de datos
 
         public static string usuario_admin = "admin";
         public static string password_admin = "admin";
@@ -81,6 +84,8 @@ namespace ServidorDB.otros
         public const string RUTA_FUNCIONES = "C:\\DBMS\\FUNCIONES\\";
         public const string RUTA_OBJETO = "C:\\DBMS\\OBJETOS\\";
         public const string EXTENSION = "usac";
+
+        public const string RUTA_USQL_SCRIPT = "entrada.txt";
 
         public static Maestro sistema_archivo = new Maestro();
 

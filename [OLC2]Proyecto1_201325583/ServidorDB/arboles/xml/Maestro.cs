@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Maestro : xInstruccion
+    class Maestro : xInstruccion
     {
         /**
          * Esta clase representa la raiz del dbms es donde manejara

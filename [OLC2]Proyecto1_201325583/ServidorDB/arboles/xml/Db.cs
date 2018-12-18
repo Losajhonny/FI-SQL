@@ -1,4 +1,5 @@
-﻿using ServidorDB.otros;
+﻿using ServidorDB.arboles.usql.SSL;
+using ServidorDB.otros;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Db : xInstruccion
+    class Db : xInstruccion
     {
         /**
          * En esta clase manejara la creacion de los objetos usql como lo que son
@@ -72,16 +73,19 @@ namespace ServidorDB.arboles.xml
         {
             procedimientos.OrderBy(key => key.Key);
             string cadena = "";
-            foreach(Procedimiento proc in procedimientos.Values)
+            foreach (Procedimiento proc in procedimientos.Values)
             {
                 cadena += "<proc>\n";
                 cadena += "\t<nombre>" + proc.Nombre + "</nombre>\n";
-                cadena += "\t<params>\n";
-                foreach(Atributo attr in proc.Parametros)
+                if (proc.Decs.Count > 0)
                 {
-                    cadena += "\t\t<" + Constante.TIPOS[attr.Tipo] + ">" + attr.Nombre + "</" + Constante.TIPOS[attr.Tipo] + ">\n";
+                    cadena += "\t<params>\n";
+                    foreach (Declarar attr in proc.Decs)
+                    {
+                        cadena += "\t\t<" + Constante.TIPOS[attr.Tipo] + ">" + attr.Variables[0] + "</" + Constante.TIPOS[attr.Tipo] + ">\n";
+                    }
+                    cadena += "\t</params>\n";
                 }
-                cadena += "\t</params>\n";
                 cadena += "\t<usuarios>\n";
                 foreach(string usuario in proc.Usuarios)
                 {
@@ -104,12 +108,15 @@ namespace ServidorDB.arboles.xml
             {
                 cadena += "<fun>\n";
                 cadena += "\t<nombre>" + fun.Nombre + "</nombre>\n";
-                cadena += "\t<params>\n";
-                foreach (Atributo attr in fun.Parametros)
+                if (fun.Decs.Count > 0)
                 {
-                    cadena += "\t\t<" + Constante.TIPOS[attr.Tipo] + ">" + attr.Nombre + "</" + Constante.TIPOS[attr.Tipo] + ">\n";
+                    cadena += "\t<params>\n";
+                    foreach (Declarar attr in fun.Decs)
+                    {
+                        cadena += "\t\t<" + Constante.TIPOS[attr.Tipo] + ">" + attr.Variables[0] + "</" + Constante.TIPOS[attr.Tipo] + ">\n";
+                    }
+                    cadena += "\t</params>\n";
                 }
-                cadena += "\t</params>\n";
                 cadena += "\t<usuarios>\n";
                 foreach (string usuario in fun.Usuarios)
                 {
@@ -216,7 +223,8 @@ namespace ServidorDB.arboles.xml
                 //necesita analizar el archivo
                 string cadena = Constante.leer_archivo(ruta);
                 List<object> lob = xSintactico.analizarDb(cadena);
-                if(lob != null)
+
+                if (lob != null)
                 {   //obtener los datos de db
                     for (int i = 0; i < lob.Count; i++)
                     {
@@ -307,6 +315,7 @@ namespace ServidorDB.arboles.xml
                     for (int i = 0; i < procs.Count; i++)
                     {
                         bool banError = false;
+                        procs[i].Decs = new List<Declarar>();
                         for (int j = 0; j < procs[i].Parametros.Count; j++)
                         {
                             //cargar los atributos
@@ -327,6 +336,12 @@ namespace ServidorDB.arboles.xml
                                 banError = true;
                                 break;
                             }
+
+                            List<string> variables = new List<string>();
+                            variables.Add(procs[i].Parametros[j].Nombre);
+                            Declarar dec = new Declarar(variables, procs[i].Parametros[j].Tipo, procs[i].Line, procs[i].Colm);
+                            procs[i].Decs.Add(dec);
+
                         }
 
                         if (!banError)
@@ -334,6 +349,9 @@ namespace ServidorDB.arboles.xml
                             if (!procedimientos.ContainsKey(procs[i].Nombre))
                             {
                                 this.procedimientos.Add(procs[i].Nombre, procs[i]);
+
+
+                                
                             }
                             else
                             {
@@ -367,6 +385,8 @@ namespace ServidorDB.arboles.xml
                     for (int i = 0; i < funcs.Count; i++)
                     {
                         bool banError = false;
+                        funcs[i].Decs = new List<Declarar>();
+
                         for (int j = 0; j < funcs[i].Parametros.Count; j++)
                         {
                             //cargar los atributos
@@ -387,6 +407,10 @@ namespace ServidorDB.arboles.xml
                                 banError = true;
                                 break;
                             }
+                            List<string> variables = new List<string>();
+                            variables.Add(funcs[i].Parametros[j].Nombre);
+                            Declarar dec = new Declarar(variables, funcs[i].Parametros[j].Tipo, funcs[i].Line, funcs[i].Colm);
+                            funcs[i].Decs.Add(dec);
                         }
 
                         if (!banError)
@@ -399,6 +423,8 @@ namespace ServidorDB.arboles.xml
                                 if (!funciones.ContainsKey(funcs[i].Nombre))
                                 {
                                     this.funciones.Add(funcs[i].Nombre, funcs[i]);
+
+                                    
                                 }
                                 else
                                 {
@@ -465,6 +491,9 @@ namespace ServidorDB.arboles.xml
                             if (!objetos.ContainsKey(objs[i].Nombre))
                             {
                                 this.objetos.Add(objs[i].Nombre, objs[i]);
+
+                                
+
                             }
                             else
                             {

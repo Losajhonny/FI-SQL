@@ -25,7 +25,7 @@ namespace ServidorDB
             PeticionDDL.crearUsuario(usr);
             //Finalizando la insercion de crear usuario
             //si existe no notificar que existe
-
+            
 
 
             Constante.rtb_consola.AcceptsTab = true;
@@ -40,6 +40,7 @@ namespace ServidorDB
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Constante.crear_archivo(Constante.RUTA_USQL_SCRIPT, richTextBox1.Text);
             ParseTreeNode raiz = uSintactico.analizar(richTextBox1.Text);
             Constante.rtb_consola.Text = "";
             uSintactico.uerrores.Clear();
@@ -55,7 +56,7 @@ namespace ServidorDB
             else
             {
                 //por el momento solo ejecuto expresion suma
-                tabla_simbolos.Entorno ent = new tabla_simbolos.Entorno(null);
+                Constante.global = new tabla_simbolos.Entorno(null);
                 List<arboles.usql.uInstruccion> inst = arboles.usql.uArbol.SENTENCIAS(raiz);
 
                 //esto colocarlo en la otra pc
@@ -63,7 +64,7 @@ namespace ServidorDB
                  */
                 for (int i = 0; i < inst.Count; i++)
                 {
-                    object obj = inst[i].ejecutar(ent);
+                    object obj = inst[i].ejecutar(Constante.global);
                     if (obj is arboles.usql.Detener)
                     {
                         arboles.usql.Detener dt = (arboles.usql.Detener)obj;

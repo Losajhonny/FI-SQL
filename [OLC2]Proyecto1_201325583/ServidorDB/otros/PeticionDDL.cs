@@ -71,9 +71,33 @@ namespace ServidorDB.otros
                 {   //como el usuario existe en el base  de datos entonces cargar el db
                     Constante.usuando_db_actual = true;
                     Constante.db_actual = nombre;
+                    Constante.dbdb_actual = nombre;
+
+                    if (master.Dbs.ContainsKey(Constante.dbdb_actual))
+                    {
+                        Constante.global.deleteSimbolDB();
+                        //como ya se eliminaron proc en el entorno global entonces debo agregarlo otra vez
+                        //como estos procedimientos son unicos por motivos de que la base de datos
+                        //no permite valores repetidos entonces solo agregar
+                        Db db = master.Dbs[Constante.db_actual];
+                        foreach (Procedimiento procs in db.Procedimientos.Values)
+                        {
+                            Constante.global.agregar(new tabla_simbolos.Simbolo(tabla_simbolos.Simbolo.PROCEDIMIENTO, Constante.VOID, procs.Nombre, procs));
+                        }
+                        foreach (Funcion procs in db.Funciones.Values)
+                        {
+                            Constante.global.agregar(new tabla_simbolos.Simbolo(tabla_simbolos.Simbolo.FUNCION, Constante.VOID, procs.Nombre, procs));
+                        }
+                        foreach (Objeto procs in db.Objetos.Values)
+                        {
+                            Constante.global.agregar(new tabla_simbolos.Simbolo(tabla_simbolos.Simbolo.OBJETO, Constante.VOID, procs.Nombre, procs));
+                        }
+                    }
                 }
                 else
                 {
+                    Constante.usuando_db_actual = false;
+                    Constante.db_actual = "";
                     string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + nombre;
                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                 }
@@ -200,7 +224,6 @@ namespace ServidorDB.otros
                             obj.Usuarios.Add(Constante.usuario_admin);
 
                             master.Dbs[Constante.db_actual].Objetos.Add(obj.Nombre, obj);
-                            Constante.db_actual = "";
                             estado_aceptacion = true;
                         }
                         else
@@ -230,6 +253,150 @@ namespace ServidorDB.otros
 
             Constante.db_actual = "";
             Constante.usuando_db_actual = false;
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+
+        public static bool crearFuncion(Funcion fun)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para insertar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tiene permiso entonces insertar el objeto en la base de datos
+                        //ahora necesito verificar si existe el objeto
+                        if (!master.Dbs[Constante.db_actual].Funciones.ContainsKey(fun.Nombre))
+                        {   //Si no existe entonces agregar el objeto
+                            //antes de agregarlo debo modificar los permisos
+                            //el if es por cuestiones de pruebas
+                            //se puede quitar el if con equals ("")
+                            if (!Constante.usuario_actual.Equals("") &&
+                                !Constante.usuario_actual.Equals(Constante.usuario_admin))
+                            {
+                                fun.Usuarios.Add(Constante.usuario_actual);
+                            }
+
+                            //el administrador tiene todos los permisos
+                            //Despues coloco el admin para porteriores verificaciones
+                            fun.Usuarios.Add(Constante.usuario_admin);
+
+                            master.Dbs[Constante.db_actual].Funciones.Add(fun.Nombre, fun);
+                            estado_aceptacion = true;
+                        }
+                        else
+                        {
+                            string msg = "La Funcion: " + fun.Nombre + " ya existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de crear una Funcion";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+            }
+            master.generar_xml();
+            return estado_aceptacion;
+        }
+
+        public static bool crearProcedimiento(Procedimiento fun)
+        {
+            bool estado_aceptacion = false;
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            //ya tengo cargado el sistema de archivos
+            //necesito validar si se ejecuto la instruccion usar
+            if (Constante.usuando_db_actual)
+            {
+                //Si se ejecuto usar antes
+                //validar si existe la base de datos
+                if (master.Dbs.ContainsKey(Constante.db_actual))
+                {
+                    //Como si existe la base de datos
+                    //entonces verificar si tiene permiso para insertar el objeto
+                    string usr = null;
+                    foreach (string user in master.Dbs[Constante.db_actual].Usuarios)
+                    {
+                        if (user.Equals(Constante.usuario_actual)) { usr = user; break; }
+                    }
+
+                    if (usr != null)
+                    {
+                        //como si tiene permiso entonces insertar el objeto en la base de datos
+                        //ahora necesito verificar si existe el objeto
+                        if (!master.Dbs[Constante.db_actual].Procedimientos.ContainsKey(fun.Nombre))
+                        {   //Si no existe entonces agregar el objeto
+                            //antes de agregarlo debo modificar los permisos
+                            //el if es por cuestiones de pruebas
+                            //se puede quitar el if con equals ("")
+                            if (!Constante.usuario_actual.Equals("") &&
+                                !Constante.usuario_actual.Equals(Constante.usuario_admin))
+                            {
+                                fun.Usuarios.Add(Constante.usuario_actual);
+                            }
+
+                            //el administrador tiene todos los permisos
+                            //Despues coloco el admin para porteriores verificaciones
+                            fun.Usuarios.Add(Constante.usuario_admin);
+
+                            master.Dbs[Constante.db_actual].Procedimientos.Add(fun.Nombre, fun);
+                            estado_aceptacion = true;
+                        }
+                        else
+                        {
+                            string msg = "El procedimiento: " + fun.Nombre + " ya existe en la base de datos: " + Constante.db_actual;
+                            uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+                        }
+                    }
+                    else
+                    {
+                        string msg = "El usuario " + Constante.usuario_actual + " no tiene permisos en la base de datos " + Constante.db_actual;
+                        uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+                    }
+                }
+                else
+                {
+                    string msg = "La base de datos: " + Constante.db_actual + " no existe en el DBMS";
+                    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+                }
+            }
+            else
+            {
+                //error por no haber utilizado la instruccion usar
+                string msg = "Se debe usar la instruccion 'usar' antes de crear un procedimiento";
+                uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", fun.Line, fun.Colm));
+            }
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -863,8 +1030,6 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de eliminar una tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -970,8 +1135,6 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de eliminar una funcion";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -1078,8 +1241,6 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de eliminar un objeto";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -1186,8 +1347,6 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de eliminar un procedimiento";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }

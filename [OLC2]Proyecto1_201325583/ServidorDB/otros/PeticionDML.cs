@@ -186,9 +186,6 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de insertar valores a una Tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -379,9 +376,7 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de insertar valores a una Tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -541,9 +536,7 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de insertar valores a una Tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -757,9 +750,7 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de seleccionar valores de una o varias tablas";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            
             master.generar_xml();
             return null;
         }

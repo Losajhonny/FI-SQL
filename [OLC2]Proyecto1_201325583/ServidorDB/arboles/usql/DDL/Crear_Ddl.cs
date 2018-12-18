@@ -6,6 +6,7 @@ using ServidorDB.otros;
 using ServidorDB.tabla_simbolos;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,10 @@ namespace ServidorDB.arboles.usql.DDL
          ejecutar la funcion usar*/
 
 
+        public const int PROC_USQL = 0;
+        public const int PROC_XML = 1;
+
+        private int opcion_usql_xml;
         private int tipo_crear; //es un tipo usql xD tablas, proc, fun, obj, .....
         private string id;
 
@@ -191,7 +196,124 @@ namespace ServidorDB.arboles.usql.DDL
             {
                 ejecutar_Tabla();
             }
+            else if (tipo_crear == Constante.tPROCEDIMIENTO)
+            {
+                ejecutar_Proc();
+            }
+            else if (tipo_crear == Constante.tFUNCION)
+            {
+                ejecutar_Func(ent);
+            }
             return null;
+        }
+
+        public void ejecutar_Func(Entorno ent)
+        {
+            string cadena = "";
+            try
+            {
+                string linea_cadena = null;
+                StreamReader sr = new StreamReader(Constante.RUTA_USQL_SCRIPT);
+                int linea = 0;
+                while ((linea_cadena = sr.ReadLine()) != null)
+                {
+                    if (linea >= line_init && linea <= this.line_fint)
+                    {
+                        if (linea == line_init)
+                        {
+                            for (int i = 0; i < linea_cadena.Length; i++)
+                            {
+                                if (i >= colm_init)
+                                {
+                                    cadena += linea_cadena[i];
+                                }
+                            }
+                        }
+                        else if (linea == line_fint)
+                        {
+                            for (int i = 0; i < linea_cadena.Length; i++)
+                            {
+                                if (i <= colm_fint)
+                                {
+                                    cadena += linea_cadena[i];
+                                }
+                                else { break; }
+                            }
+                        }
+                        else
+                        {
+                            cadena += linea_cadena;
+                        }
+                    }
+                    linea++;
+                }
+                sr.Close();
+            }
+            catch (Exception ex) { }
+
+            Funcion fun = new Funcion(tipo_dato, id);
+            fun.Src = cadena;
+            fun.Line = line;
+            fun.Colm = colm;
+            fun.Decs = declaraciones;
+            //fun.ejecutar(ent);
+
+            PeticionDDL.crearFuncion(fun);
+            //realizar la peticion
+        }
+
+        public void ejecutar_Proc()
+        {
+            string cadena = "";
+            try
+            {
+                string linea_cadena = null;
+                StreamReader sr = new StreamReader(Constante.RUTA_USQL_SCRIPT);
+                int linea = 0;
+                while((linea_cadena = sr.ReadLine()) != null)
+                {
+                    if (linea >= line_init && linea <= this.line_fint)
+                    {
+                        if (linea == line_init)
+                        {
+                            for (int i = 0; i < linea_cadena.Length; i++)
+                            {
+                                if (i >= colm_init)
+                                {
+                                    cadena += linea_cadena[i];
+                                }
+                            }
+                        }
+                        else if (linea == line_fint)
+                        {
+                            for (int i = 0; i < linea_cadena.Length; i++)
+                            {
+                                if (i <= colm_fint)
+                                {
+                                    cadena += linea_cadena[i];
+                                }
+                                else { break; }
+                            }
+                        }
+                        else
+                        {
+                            cadena += linea_cadena;
+                        }
+                    }
+                    linea++;
+                }
+                sr.Close();
+            }catch(Exception ex) { }
+            //ya tengo la cadena ahora
+            Procedimiento proc = new Procedimiento(tipo_dato, id);
+            proc.Src = cadena;
+            proc.Line = line;
+            proc.Colm = colm;
+            proc.Decs = declaraciones;
+            proc.Parametros = this.atributos;
+
+            PeticionDDL.crearProcedimiento(proc);
+            //realizar la peticion dml
         }
         
         public void ejecutar_base_datos()

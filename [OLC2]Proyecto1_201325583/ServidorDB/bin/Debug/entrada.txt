@@ -1,0 +1,15 @@
+
+crear procedimiento proc3 ( integer @a , text @b ) {
+
+              Declarar @val integer = @a;
+
+             mientras ( @val > 1 ) {
+
+                         imprimir ( @b + @val + "\n" ) ;
+
+                        @val = @val -  1;
+            }
+
+          imprimir ( " Terminado " );
+
+}

@@ -1,4 +1,5 @@
 ﻿using ServidorDB.otros;
+using ServidorDB.tabla_simbolos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Procedimiento : Funcion
+    class Procedimiento : Funcion
     {
         /**
          * Herada de funcion tiene los mismos parametros, usuarios, etc
@@ -24,6 +25,11 @@ namespace ServidorDB.arboles.xml
         public Procedimiento(int tipo, string nombre, string src) : base(tipo, nombre, src)
         {
             this.ruta = Constante.RUTA_PROCEDIMIENTOS + nombre + "." + Constante.EXTENSION;
+        }
+
+        public override object ejecutar(Entorno ent)
+        {
+            return base.ejecutar(ent);
         }
     }
 }

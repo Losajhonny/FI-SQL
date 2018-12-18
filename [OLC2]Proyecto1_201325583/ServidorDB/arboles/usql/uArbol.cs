@@ -60,7 +60,7 @@ namespace ServidorDB.arboles.usql
             {
                 if (padre.ChildNodes[0].Term.Name.Equals("LLAMADA"))
                 {
-
+                    return LLAMADA1(padre.ChildNodes[0]);
                 }
                 else
                 { // detener
@@ -74,6 +74,28 @@ namespace ServidorDB.arboles.usql
                     padre.ChildNodes[0].Token.Location.Column);
             }
             return null;
+        }
+
+        public static uInstruccion LLAMADA1(ParseTreeNode padre)
+        {
+            if (padre.ChildNodes.Count == 4)
+            {
+                LLamada llama = new LLamada(null, padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Column);
+                llama.Id = padre.ChildNodes[0].Token.Text;
+                llama.Paramss = LISTA_VALORES(padre.ChildNodes[2]);
+                llama.Tipo = tabla_simbolos.Simbolo.PROCEDIMIENTO;
+                return llama;
+            }
+            else
+            {
+                LLamada llama = new LLamada(null, padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Column);
+                llama.Id = padre.ChildNodes[0].Token.Text;
+                llama.Paramss = new List<NodoExp>();
+                llama.Tipo = tabla_simbolos.Simbolo.PROCEDIMIENTO;
+                return llama;
+            }
         }
 
         public static uInstruccion DML(ParseTreeNode padre)
@@ -365,8 +387,8 @@ namespace ServidorDB.arboles.usql
                 line = padre.ChildNodes[1].Token.Location.Line;
                 colm = padre.ChildNodes[1].Token.Location.Column;
 
-                linei = padre.ChildNodes[0].Token.Location.Line;
-                colmi = padre.ChildNodes[0].Token.Location.Column;
+                linei = padre.ChildNodes[7].Token.Location.Line;
+                colmi = padre.ChildNodes[7].Token.Location.Column;
 
                 linef = padre.ChildNodes[9].Token.Location.Line;
                 colmf = padre.ChildNodes[9].Token.Location.Column;
@@ -389,8 +411,8 @@ namespace ServidorDB.arboles.usql
                 line = padre.ChildNodes[1].Token.Location.Line;
                 colm = padre.ChildNodes[1].Token.Location.Column;
 
-                linei = padre.ChildNodes[0].Token.Location.Line;
-                colmi = padre.ChildNodes[0].Token.Location.Column;
+                linei = padre.ChildNodes[6].Token.Location.Line;
+                colmi = padre.ChildNodes[6].Token.Location.Column;
 
                 linef = padre.ChildNodes[8].Token.Location.Line;
                 colmf = padre.ChildNodes[8].Token.Location.Column;
@@ -398,6 +420,7 @@ namespace ServidorDB.arboles.usql
                 Crear_Ddl cddl = new Crear_Ddl(Constante.tPROCEDIMIENTO, Constante.VOID,
                     padre.ChildNodes[2].Token.Text, paramss, inst,
                     linei, linef, colmi, colmf);
+                
                 return cddl;
             }
             else if (padre.ChildNodes.Count == 8)
@@ -1003,7 +1026,35 @@ namespace ServidorDB.arboles.usql
             {
                 return CONTAR(padre.ChildNodes[0]);
             }
+            else if (padre.ChildNodes[0].Term.Name.Equals("LLAMADA"))
+            {
+                return LLAMADA2(padre.ChildNodes[0]);
+            }
             return null;
+        }
+
+
+        //LLAMADA2 ES PARA FUNCIONES
+        public static NodoExp LLAMADA2(ParseTreeNode padre)
+        {
+            if(padre.ChildNodes.Count == 4)
+            {
+                LLamada llama = new LLamada(null, padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Column);
+                llama.Id = padre.ChildNodes[0].Token.Text;
+                llama.Paramss = LISTA_VALORES(padre.ChildNodes[2]);
+                llama.Tipo = tabla_simbolos.Simbolo.FUNCION;
+                return llama;
+            }
+            else
+            {
+                LLamada llama = new LLamada(null, padre.ChildNodes[0].Token.Location.Line,
+                padre.ChildNodes[0].Token.Location.Column);
+                llama.Id = padre.ChildNodes[0].Token.Text;
+                llama.Paramss = new List<NodoExp>();
+                llama.Tipo = tabla_simbolos.Simbolo.FUNCION;
+                return llama;
+            }
         }
         #endregion
     }

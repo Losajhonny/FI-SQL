@@ -29,7 +29,7 @@ namespace ServidorDB.arboles.usql.Expresiones
         {
             if(val2 == null)
             {
-                Simbolo s = ent.getSimbolo_Entorno(val1);
+                Simbolo s = ent.getSimbolo_Entorno(val1, Simbolo.VARIABLE);
                 if(s != null)
                 {
                     return new Resultado(s.Tipo, s.Valor.ToString());
@@ -56,7 +56,7 @@ namespace ServidorDB.arboles.usql.Expresiones
             {
                 if(val1[0] == '@')
                 {
-                    Simbolo s = ent.getSimbolo_Entorno(val1);
+                    Simbolo s = ent.getSimbolo_Entorno(val1, Simbolo.VARIABLE);
                     if (s != null)
                     {
                         return new Resultado(s.Tipo, s.Valor.ToString());

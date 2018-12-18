@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Usuario
+    class Usuario
     {
         /**
          * Solo almacena el nombre y password de un usuario

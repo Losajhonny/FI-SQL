@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Atributo : xInstruccion
+    class Atributo : xInstruccion
     {
         /**
          * No me genera nada solo hace referencia a un atributo

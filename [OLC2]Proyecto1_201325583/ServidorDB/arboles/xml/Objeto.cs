@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Objeto
+    class Objeto
     {
         /**
          * Esta clase realiza el almacenamiento a memoria de un objeto

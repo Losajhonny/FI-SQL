@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServidorDB.arboles.xml
 {
-    public class Tabla : xInstruccion
+    class Tabla : xInstruccion
     {
         private string nombre;
         private string ruta;
