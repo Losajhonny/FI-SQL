@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ServidorWeb", "[OLC2]Proyecto1_201325583\ServidorWeb.vbproj", "{AB2A80B5-D772-4FC8-BEEE-9083D7E3A496}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServidorDB", "ServidorDB\ServidorDB.csproj", "{AAD823DC-3AC5-41A0-995E-77868AC5DAA9}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AB2A80B5-D772-4FC8-BEEE-9083D7E3A496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB2A80B5-D772-4FC8-BEEE-9083D7E3A496}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB2A80B5-D772-4FC8-BEEE-9083D7E3A496}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB2A80B5-D772-4FC8-BEEE-9083D7E3A496}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAD823DC-3AC5-41A0-995E-77868AC5DAA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AAD823DC-3AC5-41A0-995E-77868AC5DAA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAD823DC-3AC5-41A0-995E-77868AC5DAA9}.Release|Any CPU.ActiveCfg = Release|Any CPU

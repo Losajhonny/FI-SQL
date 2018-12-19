@@ -1014,6 +1014,7 @@ namespace ServidorDB.arboles.usql
             }
             else
             {// id . id
+             //@var. id
                 return new NodoLVariable(padre.ChildNodes[0].Token.Text, padre.ChildNodes[2].Token.Text,
                     padre.ChildNodes[0].Token.Location.Line,
                     padre.ChildNodes[0].Token.Location.Column);

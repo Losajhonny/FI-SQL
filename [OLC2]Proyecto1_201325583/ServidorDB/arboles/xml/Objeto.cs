@@ -21,6 +21,7 @@ namespace ServidorDB.arboles.xml
         protected string ruta;
         protected List<Atributo> parametros;
         protected List<string> usuarios = new List<string>();
+        protected string[] valores;
 
         public Objeto(string nombre)
         {
@@ -36,5 +37,6 @@ namespace ServidorDB.arboles.xml
         public string Ruta { get => ruta; set => ruta = value; }
         public int Line { get => line; set => line = value; }
         public int Colm { get => colm; set => colm = value; }
+        public string[] Valores { get => valores; set => valores = value; }
     }
 }

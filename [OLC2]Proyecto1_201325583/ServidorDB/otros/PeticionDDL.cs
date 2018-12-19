@@ -90,7 +90,7 @@ namespace ServidorDB.otros
                         }
                         foreach (Objeto procs in db.Objetos.Values)
                         {
-                            Constante.global.agregar(new tabla_simbolos.Simbolo(tabla_simbolos.Simbolo.OBJETO, Constante.VOID, procs.Nombre, procs));
+                            Constante.global.agregar(new tabla_simbolos.Simbolo(tabla_simbolos.Simbolo.OBJETO, Constante.ID, procs.Nombre, procs));
                         }
                     }
                 }

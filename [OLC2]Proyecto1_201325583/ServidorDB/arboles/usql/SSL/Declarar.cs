@@ -1,5 +1,6 @@
 ﻿using ServidorDB.analizadores.usql;
 using ServidorDB.arboles.usql.Expresiones;
+using ServidorDB.arboles.xml;
 using ServidorDB.otros;
 using ServidorDB.tabla_simbolos;
 using System;
@@ -136,29 +137,98 @@ namespace ServidorDB.arboles.usql.SSL
             }
             else
             {
-                //todavia no hago esto
-                //instancias de objeto
-                //buscar el objeto
-                //Simbolo sobjeto = ent.getSimbolo_Entorno(id_objeto);
-                //if (sobjeto != null)
-                //{
-                //    if (!ent.existe(id))
-                //    {
-                //        Simbolo s = new Simbolo(tipo, id, sobjeto.Valor);
-                //        ent.agregar(id, s);
-                //    }
-                //    else
-                //    {
-                //        string descripcion = "Variable " + id + " ya esta definida en este ambito";
-                //        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
-                //    }
-                //}
-                //else
-                //{
-                //    string descripcion = "El objeto '" + id_objeto + "' no existe";
-                //    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
-                //}
+                //es un ID por lo tanto es una declaracion de un objeto
+                //necesito realizar la instancia del objeto
+
+                //el nombre sera id en la tabla de simbolo
+
+                /*DEBO BUSCAR EL OBJETO EN EL ENTORNO GLOBAL*/
+                Simbolo s = Constante.global.getSimbolo_Entorno_Actual(id_objeto, Simbolo.OBJETO);
+
+                /*Debo realizar una copia de los parametros y debo crear una lista donde iran los valores de
+                 esos parametros ---- por lo tando el tamaño de la lista debe ser el tamaño de los parametros*/
+                if(s != null)
+                {
+                    Objeto nuevo = new Objeto(s.Id);
+                    /*Como los parametros no los modifico entonces lo paso de igual forma*/
+                    nuevo.Parametros = ((Objeto)s.Valor).Parametros;
+                    nuevo.Valores = new string[nuevo.Parametros.Count];
+
+                    //le voy a colocar valores por defecto para no tener errores mas adelante
+
+                    for (int i = 0; i < nuevo.Parametros.Count; i++)
+                    {
+                        switch (nuevo.Parametros[i].Tipo)
+                        {
+                            case Constante.INTEGER:
+                                nuevo.Valores[i] = "0";
+                                break;
+                            case Constante.TEXT:
+                                nuevo.Valores[i] = "";
+                                break;
+                            case Constante.BOOL:
+                                nuevo.Valores[i] = "0";
+                                break;
+                            case Constante.DATE:
+                                nuevo.Valores[i] = "01-01-1900";
+                                break;
+                            case Constante.DATETIME:
+                                nuevo.Valores[i] = "01-01-1900 00:00:00";
+                                break;
+                            case Constante.DOUBLE:
+                                nuevo.Valores[i] = "0";
+                                break;
+                            default:
+                                nuevo.Valores[i] = "";
+                                break;
+                        }
+                    }
+
+                    //aqui ya tengo la clase objeto instanciada entonces solo debo metermo la tabla de simbolos
+                    if(!ent.existe(id, Simbolo.VARIABLE))
+                    {
+                        Simbolo sim = new Simbolo(Simbolo.VARIABLE, Constante.ID, id, nuevo);
+                        ent.agregar(sim);
+                    }
+                    else
+                    {
+                        string descripcion = "Variable " + id + " ya esta definida en este ambito";
+                        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                    }
+                }
+                else
+                {
+                    string descripcion = "No existe el objeto: " + id +" en la base de datos actual";
+                    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                }
+            
             }
+
+            //instancia de objetos
+            //todavia no hago esto
+            //instancias de objeto
+            //buscar el objeto
+            //Simbolo sobjeto = ent.getSimbolo_Entorno(id_objeto);
+            //if (sobjeto != null)
+            //{
+            //    if (!ent.existe(id))
+            //    {
+            //        Simbolo s = new Simbolo(tipo, id, sobjeto.Valor);
+            //        ent.agregar(id, s);
+            //    }
+            //    else
+            //    {
+            //        string descripcion = "Variable " + id + " ya esta definida en este ambito";
+            //        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+            //    }
+            //}
+            //else
+            //{
+            //    string descripcion = "El objeto '" + id_objeto + "' no existe";
+            //    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+            //}
+
+
             return null;
         }
 

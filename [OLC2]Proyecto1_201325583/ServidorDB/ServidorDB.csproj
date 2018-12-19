@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="analizadores\plycs\pGramatica.cs" />
+    <Compile Include="analizadores\plycs\pSintactico.cs" />
     <Compile Include="analizadores\usql\uError.cs" />
     <Compile Include="analizadores\usql\uGramatica.cs" />
     <Compile Include="analizadores\usql\uSintactico.cs" />
@@ -68,6 +70,12 @@
     <Compile Include="analizadores\xml\RegGrammar.cs" />
     <Compile Include="analizadores\xml\RowAst.cs" />
     <Compile Include="analizadores\xml\xGramatica.cs" />
+    <Compile Include="arboles\plycs\Campo.cs" />
+    <Compile Include="arboles\plycs\Ini.cs" />
+    <Compile Include="arboles\plycs\Paquete.cs" />
+    <Compile Include="arboles\plycs\pArbol.cs" />
+    <Compile Include="arboles\plycs\pInstruccion.cs" />
+    <Compile Include="arboles\plycs\PlyAst.cs" />
     <Compile Include="arboles\usql\DCL\Permisos_Dcl.cs" />
     <Compile Include="arboles\usql\DDL\Alterar_Ddl.cs" />
     <Compile Include="arboles\usql\DDL\Crear_Ddl.cs" />
@@ -120,6 +128,7 @@
     <Compile Include="arboles\xml\Usuario.cs" />
     <Compile Include="arboles\xml\xInstruccion.cs" />
     <Compile Include="arboles\xml\xSintactico.cs" />
+    <Compile Include="otros\Conexion.cs" />
     <Compile Include="otros\PeticionDCL.cs" />
     <Compile Include="otros\PeticionDDL.cs" />
     <Compile Include="otros\PeticionDML.cs" />
@@ -139,7 +148,6 @@
       <DependentUpon>ServidorWeb.cs</DependentUpon>
     </Compile>
     <Compile Include="tabla_simbolos\Entorno.cs" />
-    <Compile Include="tabla_simbolos\Key.cs" />
     <Compile Include="tabla_simbolos\Simbolo.cs" />
     <EmbeddedResource Include="ServidorDb.resx">
       <DependentUpon>ServidorDb.cs</DependentUpon>
@@ -173,5 +181,6 @@
     <Content Include="analizadores\TextFile1.txt" />
     <Content Include="arboles\xml\Readme.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ServidorDB.analizadores.usql;
+using ServidorDB.arboles.xml;
 using ServidorDB.otros;
 using ServidorDB.tabla_simbolos;
 
@@ -27,7 +28,9 @@ namespace ServidorDB.arboles.usql.Expresiones
 
         public override object ejecutar(Entorno ent)
         {
-            if(val2 == null)
+            //val 1 es la variable que puede venir con @
+            //val 2 es la variable despues del punto
+            if (val2 == null)
             {
                 Simbolo s = ent.getSimbolo_Entorno(val1, Simbolo.VARIABLE);
                 if(s != null)
@@ -43,8 +46,33 @@ namespace ServidorDB.arboles.usql.Expresiones
             }
             else
             {
-                //falta el de atributos
-                return null;
+                //es casi similar al de la asignacion
+                //busco la variable
+                Simbolo s = ent.getSimbolo_Entorno(val1, Simbolo.VARIABLE);
+                if (s != null)
+                {
+                    //obtengo el objeto
+                    Objeto obj = (Objeto)s.Valor;
+                    for (int i = 0; i < obj.Parametros.Count; i++)
+                    {
+                        //busco el atributo
+                        Atributo tmp = obj.Parametros[i];
+                        if (tmp.Nombre.Equals(val2))
+                        {   //como ya esta agregado solo retorno un resultado con el tipo y valor
+                            return new Resultado(tmp.Tipo, obj.Valores[i]);
+                        }
+                    }
+
+                    //reportar el error que no existe el atributo del objeto
+                    string descripcion = "Atributo " + val2 + " no encontrado en el objeto: " + val1;
+                    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                }
+                else
+                {
+                    string descripcion = "Variable " + val1 + " no existe";
+                    uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                }
+                return new Resultado(Constante.ERROR, "");
             }
         }
 
@@ -98,7 +126,37 @@ namespace ServidorDB.arboles.usql.Expresiones
                         return new Resultado(Constante.ID, val2);
                     }
                 }
-                return null;
+                else
+                {
+                    //es casi similar al de la asignacion
+                    //busco la variable
+                    Simbolo s = ent.getSimbolo_Entorno(val1, Simbolo.VARIABLE);
+                    if (s != null)
+                    {
+                        //obtengo el objeto
+                        Objeto obj = (Objeto)s.Valor;
+                        for (int i = 0; i < obj.Parametros.Count; i++)
+                        {
+                            //busco el atributo
+                            Atributo tmp = obj.Parametros[i];
+                            if (tmp.Nombre.Equals(val2))
+                            {   //como ya esta agregado solo retorno un resultado con el tipo y valor
+                                return new Resultado(tmp.Tipo, obj.Valores[i]);
+                            }
+                        }
+
+                        //reportar el error que no existe el atributo del objeto
+                        string descripcion = "Atributo " + val2 + " no encontrado en el objeto: " + val1;
+                        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                    }
+                    else
+                    {
+                        string descripcion = "Variable " + val1 + " no existe";
+                        uSintactico.uerrores.Add(new uError(ent.Tent, Constante.SEMANTICO, descripcion, null, line, colm));
+                    }
+                    return new Resultado(Constante.ERROR, "");
+                }
+                return new Resultado(Constante.ERROR, "");
             }
         }
     }

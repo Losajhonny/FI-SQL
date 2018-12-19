@@ -3,6 +3,7 @@ using ServidorDB.analizadores.usql;
 using ServidorDB.analizadores.xml;
 using ServidorDB.arboles.xml;
 using ServidorDB.otros;
+using ServidorDB.tabla_simbolos;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,7 +57,9 @@ namespace ServidorDB
             else
             {
                 //por el momento solo ejecuto expresion suma
-                Constante.global = new tabla_simbolos.Entorno(null);
+                //Constante.global = new tabla_simbolos.Entorno(null);
+
+                Entorno subGlobal = new Entorno(Constante.global);
                 List<arboles.usql.uInstruccion> inst = arboles.usql.uArbol.SENTENCIAS(raiz);
 
                 //esto colocarlo en la otra pc
@@ -64,7 +67,7 @@ namespace ServidorDB
                  */
                 for (int i = 0; i < inst.Count; i++)
                 {
-                    object obj = inst[i].ejecutar(Constante.global);
+                    object obj = inst[i].ejecutar(subGlobal);
                     if (obj is arboles.usql.Detener)
                     {
                         arboles.usql.Detener dt = (arboles.usql.Detener)obj;
@@ -397,5 +400,9 @@ namespace ServidorDB
             return root;
         }
 
+        private void ServidorDb_Load(object sender, EventArgs e)
+        {
+            
+        }
     }
 }
