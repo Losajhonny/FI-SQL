@@ -57,7 +57,7 @@ namespace ServidorDB
             servidor.Bind(LocalEndPoint);
             //limite de espera de un servidor
             //en este caso le dejaremos con 5 maximo de informacion por paquete
-            servidor.Listen(5);
+            servidor.Listen(10);
 
             DateTime fechahora = DateTime.Now;
             string tiempo = Convert.ToString(fechahora);
@@ -68,7 +68,7 @@ namespace ServidorDB
                  fechahora = DateTime.Now;
                  tiempo = Convert.ToString(fechahora);
 
-                //setTextConsola(">> " + tiempo + " admin [Esperando conexion...]\n", CONCATENAR);
+                setTextConsola(">> " + tiempo + " admin [Esperando conexion...]\n", CONCATENAR);
                 //en modo espera
                 Socket handler = servidor.Accept();
                 //conexion acpetada
@@ -89,7 +89,7 @@ namespace ServidorDB
 
                     //siempre me va a venir valores en pares ordenados
                     //entonces debo delimitarlos con ':'
-                    char[] delimit = { ':' };
+                    char[] delimit = { '~' };
 
                     string[] pares = dato_recivido.Split(delimit);
                     //primera posicion es la instruccion o paquete , etc
@@ -101,7 +101,10 @@ namespace ServidorDB
                     }
                     else if (pares[0].ToLower().Equals("paquete"))
                     {
-                        if (pares[1].ToLower().Equals("fin")) { break; }
+                        if (pares[1].ToLower().Equals("fin"))
+                        {
+                            break;
+                        }
                         else { paquete = pares[1]; }
 
                     }
@@ -113,6 +116,10 @@ namespace ServidorDB
                     {
                         password = pares[1];
                     }
+                    else if (pares[0].ToLower().Equals("instruccion"))
+                    {
+                        instruccion = pares[1];
+                    }
                     //solo estos subpaquetes se enviaran en el proceso media vez termine con "fin"
                     //entonces salir del bucle y realizar la transaccion
                     //setTextConsola("Text received : " + dato_recivido + "\n", CONCATENAR);
@@ -123,14 +130,8 @@ namespace ServidorDB
                 //setTextConsola("Text received : " + dato_recivido, CONCATENAR);
                 //por el momento solo quiero recibir una transaccion asi que aqui le dejo conectado = false
 
-                string respuesta = realizandoPeticiones();
-                respuesta = "[ \"validar\" : " + validar + "," + respuesta + " ]";
-
-                byte[] msg = new byte[MAX_VALUE];
-                msg = Encoding.ASCII.GetBytes(respuesta);
-                handler.Send(msg);
-
-                Thread.Sleep(100);
+                realizandoPeticiones(handler);
+                
 
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
@@ -139,7 +140,7 @@ namespace ServidorDB
             servidor.Close();
         }
 
-        public string realizandoPeticiones()
+        public void realizandoPeticiones(Socket handler)
         {
             if (paquete.ToLower().Equals("login"))
             {
@@ -147,9 +148,52 @@ namespace ServidorDB
                 //ahora a realizar la peticion de logueo
                 String fechahora = Convert.ToString(DateTime.Now);
                 Constante.rtb_consola.Text += ">> " + fechahora + " admin [Autenticacion por parte del servidor][usuario = '"+usuario+"' password = '"+password+"']\n";
-                return PeticionDDL.loguear(usr).ToString();
+                 
+
+                string respuesta = "[ \"validar\" : " + validar + "," + PeticionDDL.loguear(usr).ToString() + " ]";
+                //envio la respuesta
+                byte[] msg = new byte[MAX_VALUE];
+                msg = Encoding.ASCII.GetBytes(respuesta);
+                handler.Send(msg);
+                //intervalor de tiempo
+                Thread.Sleep(100);
+
             }
-            return "";
+            else if (paquete.ToLower().Equals("usql"))
+            {
+                //debo ejecutar el usql
+                //ahorita solo debo de ejecutar
+                //analizo la instruccion usql
+                uSintactico.analizar_usql(instruccion);
+
+
+                //debo de enviar la inforamcion de select
+                string respuesta = Constante.NOTHING;
+
+                if (!Constante.informacion_select.Equals(""))
+                {
+                    respuesta = "[ \"validar\" : " + validar + "," + Constante.informacion_select + " ]";
+                }
+
+                byte[] msg = new byte[MAX_VALUE];
+                msg = Encoding.ASCII.GetBytes(respuesta);
+                handler.Send(msg);
+                //intervalo de espera
+                Thread.Sleep(100);
+
+                respuesta = Constante.NOTHING;
+                if (!Constante.informacion_consola.Equals(""))
+                {
+                     respuesta = "[ \"validar\" : " + validar + "," + " \"paquete\" : \"usql\" , \"datos\" : [" + "~" + Constante.informacion_consola + "~" + "]" + " ]";
+                }
+
+                //ahora enviar la info de consola
+                msg = new byte[MAX_VALUE];
+                msg = Encoding.ASCII.GetBytes(respuesta);
+                handler.Send(msg);
+                //intervalo de espera
+                Thread.Sleep(100);
+            }
         }
 
         delegate void StringChangeText(string text, int tipo);
@@ -184,51 +228,6 @@ namespace ServidorDB
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Constante.crear_archivo(Constante.RUTA_USQL_SCRIPT, consola.Text);
-            ParseTreeNode raiz = uSintactico.analizar(consola.Text);
-            Constante.rtb_consola.Text = "";
-            uSintactico.uerrores.Clear();
-            if (raiz == null)
-            {
-                string msg = "<< raiz null Mostrando errores >>\n";
-                for (int i = 0; i < uSintactico.uerrores.Count; i++)
-                {
-                    msg += "Descripcion: " + uSintactico.uerrores[i].Descripcion + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
-                }
-                //richTextBox2.Text = msg;
-            }
-            else
-            {
-                //por el momento solo ejecuto expresion suma
-                //Constante.global = new tabla_simbolos.Entorno(null);
-
-                Entorno subGlobal = new Entorno(Constante.global);
-                List<arboles.usql.uInstruccion> inst = arboles.usql.uArbol.SENTENCIAS(raiz);
-
-                //esto colocarlo en la otra pc
-                /*Si estoy en el ultimo ambito en este caso necesito mostrar el error de detener
-                 */
-                for (int i = 0; i < inst.Count; i++)
-                {
-                    object obj = inst[i].ejecutar(subGlobal);
-                    if (obj is arboles.usql.Detener)
-                    {
-                        arboles.usql.Detener dt = (arboles.usql.Detener)obj;
-                        String msg = "La sentencia detener no pertenece al ambito";
-                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
-
-                    }
-                }
-
-                string msg1 = "";
-                for (int i = 0; i < uSintactico.uerrores.Count; i++)
-                {
-                    msg1 += "Descripcion: " + uSintactico.uerrores[i].Descripcion + "\n";// + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
-                }
-                //richTextBox2.Text = "\n<< Mostrando errores >>\n" + msg1;
-            }
-
-
             /*
             Maestro m = new Maestro();
             List<string> reg = new List<string>()
@@ -534,11 +533,18 @@ namespace ServidorDB
         private void ServidorDb_FormClosed(object sender, FormClosedEventArgs e)
         {
             conectado = false;
+            Application.Exit();
         }
 
         private void ServidorDb_FormClosing(object sender, FormClosingEventArgs e)
         {
             conectado = false;
+            Application.ExitThread();
+        }
+
+        private void ServidorDb_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

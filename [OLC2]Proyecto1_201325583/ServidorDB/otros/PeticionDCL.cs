@@ -32,8 +32,11 @@ namespace ServidorDB.otros
                         if (basedatos.Usuarios[i].Equals(usuario)) { ban = true; break; }
                     }
                     if (!ban) { basedatos.Usuarios.Add(usuario); }
-                    
-                    if(objeto != null)
+
+                    String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Otorgar][Permiso de usuario:"+usuario+" al objeto:" + objeto + "]\n";
+
+                    if (objeto != null)
                     {
                         bool ban2 = false; //para verificar si existe el objeto
                         /*Como no se que objeto es ya sea procedimiento, funcion, objeto, etc
@@ -180,7 +183,8 @@ namespace ServidorDB.otros
                         if (basedatos.Usuarios[i].Equals(usuario)) { ban = true; break; }
                     }
                     if (!ban) { basedatos.Usuarios.Remove(usuario); }
-
+                    String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Denegar][Denegar de usuario:" + usuario + " al objeto:" + objeto + "]\n";
                     if (objeto != null)
                     {
                         bool ban2 = false; //para verificar si existe el objeto

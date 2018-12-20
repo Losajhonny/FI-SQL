@@ -47,7 +47,7 @@ Public Class Ini
                 retorno = Package.ejecutar()
             Else
                 ''estoy enviando el validar
-                connect.Enviar("validar:" + Validar, socket)
+                connect.Enviar("validar~" + Validar, socket)
                 ''dejo que lo procese por intervalor pequeño de tiempo
                 Threading.Thread.Sleep(100)
 

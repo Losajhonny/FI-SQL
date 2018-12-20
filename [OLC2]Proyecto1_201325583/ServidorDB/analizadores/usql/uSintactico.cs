@@ -1,6 +1,10 @@
 ﻿using Irony.Parsing;
+using ServidorDB.arboles.xml;
+using ServidorDB.otros;
+using ServidorDB.tabla_simbolos;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -24,6 +28,112 @@ namespace ServidorDB.analizadores.usql
             ParseTreeNode root = arbol.Root;
             generar_grafoAST(root);
             return root;
+        }
+
+        public static void analizar_usql(string entrada)
+        {
+            //reiniciando todo
+            Constante.informacion_select = "";
+            Constante.informacion_consola = "";
+            uSintactico.uerrores.Clear();
+            xSintactico.errores.Clear();
+
+            Constante.crear_archivo(Constante.RUTA_USQL_SCRIPT, entrada);
+            ParseTreeNode raiz = uSintactico.analizar(entrada);
+
+            DateTime fechahora = DateTime.Now;
+            string tiempo = Convert.ToString(fechahora);
+            Constante.rtb_consola.Text += (">> " + tiempo + " admin [Analisis USQL]\n");
+
+            if(raiz != null)
+            {
+                //por el momento solo ejecuto expresion suma
+                //Constante.global = new tabla_simbolos.Entorno(null);
+
+                Entorno subGlobal = new Entorno(Constante.global);
+                List<arboles.usql.uInstruccion> inst = arboles.usql.uArbol.SENTENCIAS(raiz);
+
+                //esto colocarlo en la otra pc
+                /*Si estoy en el ultimo ambito en este caso necesito mostrar el error de detener
+                 */
+                object obj = null;
+                for (int i = 0; i < inst.Count; i++)
+                {
+                    obj = inst[i].ejecutar(subGlobal);
+                    if (obj is arboles.usql.Detener)
+                    {
+                        arboles.usql.Detener dt = (arboles.usql.Detener)obj;
+                        String msg = "La sentencia detener no pertenece al ambito";
+                        uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
+
+                    }
+                    //else if (obj is arboles.usql.SSL.Asignacion || obj is arboles.usql.SSL.Declarar
+                    //    || obj is arboles.usql.SSL.Mientras || obj is arboles.usql.SSL.Para || obj is arboles.usql.SSL.Si
+                    //    || obj is arboles.usql.SSL.Selecciona || obj is arboles.usql.SSL.Imprimir)
+                    //{
+                    //    String msg = "La sentencia detener no pertenece al ambito";
+                    //    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
+                    //}
+                }
+
+                if(obj != null)
+                {
+                    if(obj is DataTable)
+                    {
+                        //debo craear un string con los resultados
+                        DataTable datos = (DataTable)obj;
+                        
+                        if(datos.Rows.Count == 0)
+                        {
+                            //generando condigo plycs
+
+                            string info = " \"paquete\" : \"usql\" , \"datos\" : ";
+                            info += "[";
+                            
+                                info += "[";
+                                for (int j = 0; j < datos.Columns.Count; j++)
+                                {
+                                    // "coluna" : "valor"
+                                    info += "\"" + datos.Columns[j].ColumnName + "\" : ";
+                                    info += "\"" + "      " + "\"";
+
+                                    if (j != datos.Columns.Count - 1) { info += ","; }
+                                }
+                                info += "]";
+
+                            info += "]";
+                            Constante.informacion_select = info;
+                        }
+                        else
+                        {
+                            //generando condigo plycs
+
+                            string info = " \"paquete\" : \"usql\" , \"datos\" : ";
+                            info += "[";
+
+                            for (int i = 0; i < datos.Rows.Count; i++)
+                            {
+                                //aqui viene una fila
+                                info += "[";
+                                for (int j = 0; j < datos.Columns.Count; j++)
+                                {
+                                    // "coluna" : "valor"
+                                    info += "\"" + datos.Columns[j].ColumnName + "\" : ";
+                                    info += "\"" + datos.Rows[i][datos.Columns[j]].ToString() + "\"";
+
+                                    if(j != datos.Columns.Count - 1) { info += ","; }
+                                }
+                                info += "]";
+                                if (i != datos.Rows.Count - 1) { info += ","; }
+                            }
+                            info += "]";
+                            Constante.informacion_select = info;
+                        }
+                    }
+                    //si no hay errores
+                    //debo retornar un valor de la ultima instruccion generada
+                }
+            }
         }
 
         /**

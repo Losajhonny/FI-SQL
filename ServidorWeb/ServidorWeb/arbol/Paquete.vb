@@ -157,21 +157,30 @@ Public Class Paquete
 
         If Tipo_paquete = LOGIN Then
             ''proceso el envio del login
-            connect.Enviar("paquete:login", socket)
+            connect.Enviar("paquete~login", socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
             Threading.Thread.Sleep(100)
             ''envio el usario
-            connect.Enviar("usuario:" + Username, socket)
+            connect.Enviar("usuario~" + Username, socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
             Threading.Thread.Sleep(100)
             ''envio password
-            connect.Enviar("password:" + Username, socket)
+            connect.Enviar("password~" + Username, socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
             Threading.Thread.Sleep(100)
             ''por lo tanto se termino el envio
+        ElseIf Tipo_paquete = INST Then
+            ''proceso el envio del usql
+            connect.Enviar("paquete~usql", socket)
+            ''dejo que lo procese por intervalor pequeño de tiempo
+            Threading.Thread.Sleep(100)
+            ''proceso el envio de l instruccion
+            connect.Enviar("instruccion~" + Instruccion, socket)
+            ''dejo que lo procese por intervalor pequeño de tiempo
+            Threading.Thread.Sleep(100)
         ElseIf Tipo_paquete = FIN Then
-            ''proceso el envio del login
-            connect.Enviar("paquete:fin", socket)
+            ''proceso el envio fin
+            connect.Enviar("paquete~fin", socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
             Threading.Thread.Sleep(100)
             ''solo que aqui debo retornar el valor devuelto por el sistema
@@ -185,6 +194,31 @@ Public Class Paquete
         If Tipo_paquete = LOGIN Then
             Return Log
         End If
+
+
+
+
+
+
+
+
+
+
+
+
+        ''Aqui voy porfavor este siempre me esta devolviendo un false por que no he puesto una respuesta
+        '' ojo  devo realizar todas las respuestas de parte del servidor db
+
+
+
+
+
+
+
+
+
+
+
         Return False
     End Function
 End Class

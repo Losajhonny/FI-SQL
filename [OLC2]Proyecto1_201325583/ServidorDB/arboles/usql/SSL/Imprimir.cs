@@ -15,6 +15,7 @@ namespace ServidorDB.arboles.usql.SSL
         private NodoExp exp;
         private int line;
         private int colm;
+        private string valor_ejecutado;
 
         public Imprimir(NodoExp exp, int line, int colm)
         {
@@ -26,13 +27,17 @@ namespace ServidorDB.arboles.usql.SSL
         public NodoExp Exp { get => exp; set => exp = value; }
         public int Line { get => line; set => line = value; }
         public int Colm { get => colm; set => colm = value; }
+        public string Valor_ejecutado { get => valor_ejecutado; set => valor_ejecutado = value; }
 
         public object ejecutar(Entorno ent)
         {
             Resultado res = (Resultado)exp.ejecutar(ent);
             if(res.Tipo == Constante.TEXT)
             {
-                Constante.rtb_consola.Text += res.Valor;
+                Constante.informacion_consola += res.Valor + "\n";
+                String fechahora = Convert.ToString(DateTime.Now);
+                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Impresion consola]\n"
+                + res.Valor + "\n";
             }
             else
             {

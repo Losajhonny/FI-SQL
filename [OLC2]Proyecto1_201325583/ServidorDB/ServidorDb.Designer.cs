@@ -52,6 +52,7 @@
             this.Text = "Consola del Servidor DB";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServidorDb_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ServidorDb_FormClosed);
+            this.Load += new System.EventHandler(this.ServidorDb_Load);
             this.ResumeLayout(false);
 
         }

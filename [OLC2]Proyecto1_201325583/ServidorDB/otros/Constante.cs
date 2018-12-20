@@ -12,6 +12,9 @@ namespace ServidorDB.otros
 {
     class Constante
     {
+        public static string informacion_select = "";
+        public const string NOTHING = "_nothing_";
+        public static string informacion_consola = "";
         public static Entorno global = new Entorno(null);
         public static List<string> lista;//para nombres de tablas en el select
         public static Dictionary<string, Tabla> tablas;//para tablas seleccionadas en tabla

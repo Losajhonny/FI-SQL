@@ -137,6 +137,8 @@ namespace ServidorDB.otros
                                         try
                                         {
                                             t.Registros.Rows.Add(dr);
+                                            String fechahora = Convert.ToString(DateTime.Now);
+                                            Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion InsertarNormal][Registro tabla:" + t.Nombre+"]\n";
                                         }
                                         catch (Exception ex)
                                         {
@@ -326,6 +328,8 @@ namespace ServidorDB.otros
                                         try
                                         {
                                             t.Registros.Rows.Add(dr);
+                                            String fechahora = Convert.ToString(DateTime.Now);
+                                            Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion InsertarEspecial][Registro tabla:" + t.Nombre + "]\n";
                                         }
                                         catch (Exception ex)
                                         {
@@ -493,11 +497,14 @@ namespace ServidorDB.otros
 
                                         }
 
-                                        //if (hayError)
-                                        //{
-                                        //    string msg = "Ocurrio un error en la actualizacion de registros";
-                                        //    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
-                                        //}
+                                    String fechahora = Convert.ToString(DateTime.Now);
+                                    Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Actualizar][Registro tabla:" + t.Nombre + "]\n";
+
+                                    //if (hayError)
+                                    //{
+                                    //    string msg = "Ocurrio un error en la actualizacion de registros";
+                                    //    uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
+                                    //}
                                 }
                                 else
                                 {
@@ -723,6 +730,8 @@ namespace ServidorDB.otros
                                     //como no hay proyecciones entonces solo devolver el datatable
                                     if (!hayError)
                                     {
+                                        String fechahora = Convert.ToString(DateTime.Now);
+                                        Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Seleccionar]\n";
                                         return dnu;
                                     }
                                     else

@@ -1,0 +1,61 @@
+! Welcome to GOLD Parser Builder 5.2
+
+"Name"    = 'Jhonatan Lopez'
+"Version" = '201325583'
+"Author"  = 'Jhonatan Leonle Lopez Santos'
+
+"Case Sensitive" = 'False'
+
+!expresiones regulares
+{String Char1} = {Printable} - ["]
+{String Char2} = {Printable} - [~]
+text = '"' ({String Char1}|{Whitespace})+ '"'
+inst = '~' ({String Char2}|{Whitespace})+ '~'
+     
+integer = {digit}+
+double_ = {digit}+[.]+{digit}+
+             
+"Start Symbol" = <INI>
+               
+            <INI> ::= '['  '"validar"'  ':'  integer  ',' <PAQUETE> ']'
+                   | <>
+
+            <PAQUETE> ::= <PAQUETE_LOGIN>
+                | <PAQUETE_FIN>
+                | <PAQUETE_ERROR>
+                | <PAQUETE_INST>
+                | <PAQUETE_REPORTE>
+                
+            <PAQUETE_REPORTE>::= '"paquete"' ':' '"reporte"' ',' '"instruccion"' ':' inst
+                              | '"paquete"'  ':' '"reporte"'  ','  '"datos"'  ':'  <DATOS>
+                
+
+            <PAQUETE_ERROR> ::= '"paquete"'  ':'  '"error"'  ',' '"tipo"'  ':'  text  ',' '"msg"'  ':'  text  ',' '"datos"'  ':'  <FILAS>
+
+            <PAQUETE_LOGIN> ::= '"login"'  ':'  '[' '"username"'  ':'  text  ','  '"password"'  ':'  text  ']'
+                | '"login"'  ':'  '[' '"username"'  ':'  text  ','  '"login"'  ':'  <BOOLEANO>  ']'
+
+            <BOOLEANO> ::= 'true'
+                | 'false'
+
+            <PAQUETE_FIN> ::= '"paquete"'  ':'  '"fin"'
+
+
+            <PAQUETE_INST> ::= '"paquete"'  ':'  '"usql"'  ','  '"instruccion"'  ':'  inst
+                | '"paquete"'  ':'  '"usql"'  ','  '"datos"'  ':'  <DATOS>
+
+            <DATOS> ::= '['  <FILAS>  ']'
+                | '[' text ']'
+                | '[' inst ']' !es para reportes
+
+            <FILAS> ::= <FILAS> ',' <FILA>
+                    | <FILA>
+
+            <FILA> ::= '['  <CAMPOS>  ']'
+
+            <CAMPOS> ::= <CAMPOS> ',' <CAMPO>
+                | <CAMPO>
+
+            <CAMPO> ::= text  ':'  text
+                    | text  ':'  integer
+                    | text  ':'  double_

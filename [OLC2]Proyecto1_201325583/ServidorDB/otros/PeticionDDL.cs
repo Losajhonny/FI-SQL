@@ -24,6 +24,8 @@ namespace ServidorDB.otros
             //ahora realizar la manipulacion y modificacion
             if (!master.Dbs.ContainsKey(db.Nombre))
             {
+                String fechahora = Convert.ToString(DateTime.Now);
+                Constante.rtb_consola.Text += ">> " + fechahora + " "+Constante.usuario_actual + " [Instruccion Crear][Crea BaseDatos: " + db.Nombre+"]\n";
                 master.crear_base_datos(db.Nombre, db);
                 estado_aceptacion = true;
             }
@@ -41,6 +43,8 @@ namespace ServidorDB.otros
 
             if (!master.Usuarios.ContainsKey(usr.Nombre))
             {
+                String fechahora = Convert.ToString(DateTime.Now);
+                Constante.rtb_consola.Text += ">> " + fechahora + " admin [El admin creo el usuario: "+usr.Nombre+"]\n";
                 master.crear_usuario(usr.Nombre, usr);
                 estado_aceptacion = true;
             }
@@ -173,6 +177,8 @@ namespace ServidorDB.otros
                             //el administrador tiene todos los permisos
                             t.Usuarios.Add(Constante.usuario_admin);
 
+                            String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea tabla: " + t.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Tablas.Add(t.Nombre, t);
                             estado_aceptacion = true;
                         }
@@ -247,6 +253,8 @@ namespace ServidorDB.otros
                             //Despues coloco el admin para porteriores verificaciones
                             obj.Usuarios.Add(Constante.usuario_admin);
 
+                            String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea objeto: " + obj.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Objetos.Add(obj.Nombre, obj);
                             estado_aceptacion = true;
                         }
@@ -322,6 +330,8 @@ namespace ServidorDB.otros
                             //Despues coloco el admin para porteriores verificaciones
                             fun.Usuarios.Add(Constante.usuario_admin);
 
+                            String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea funcion: " + fun.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Funciones.Add(fun.Nombre, fun);
                             estado_aceptacion = true;
                         }
@@ -394,6 +404,8 @@ namespace ServidorDB.otros
                             //Despues coloco el admin para porteriores verificaciones
                             fun.Usuarios.Add(Constante.usuario_admin);
 
+                            String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea procedimiento: " + fun.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Procedimientos.Add(fun.Nombre, fun);
                             estado_aceptacion = true;
                         }
@@ -492,6 +504,8 @@ namespace ServidorDB.otros
                                 {
                                     t.Registros.Columns.Remove(si_existen[i]);
                                 }
+                                String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Quita atributos tabla: " + t.Nombre + "]\n";
                                 estado_aceptacion = true;
                             }
                             else
@@ -641,6 +655,8 @@ namespace ServidorDB.otros
                                         }
 
                                     }
+                                    String fechahora = Convert.ToString(DateTime.Now);
+                                    Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Agrega atributos tabla: " + t.Nombre + "]\n";
                                 }
                                 estado_aceptacion = true;
                             }
@@ -739,6 +755,8 @@ namespace ServidorDB.otros
                                         uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                     }
                                 }
+                                String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Quita atributos objeto: " + obj.Nombre + "]\n";
                                 estado_aceptacion = true;
                             }
                             else
@@ -838,6 +856,8 @@ namespace ServidorDB.otros
                                         obj.Parametros.Add(atrs[i]);
                                     }
                                 }
+                                String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Agrega atributos objeto: " + obj.Nombre + "]\n";
                                 estado_aceptacion = true;
                             }
                             else
@@ -896,6 +916,8 @@ namespace ServidorDB.otros
                 {
                     Usuario usr = master.Usuarios[id];
                     usr.Password = password;
+                    String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Cambia password al usuario: " + usr.Nombre + "]\n";
                     estado_aceptacion = true;
                 }
                 else
@@ -914,6 +936,8 @@ namespace ServidorDB.otros
                     {
                         Usuario usr = master.Usuarios[id];
                         usr.Password = password;
+                        String fechahora = Convert.ToString(DateTime.Now);
+                        Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Cambia password al usuario: " + usr.Nombre + "]\n";
                         estado_aceptacion = true;
                     }
                     else
@@ -1021,7 +1045,8 @@ namespace ServidorDB.otros
                                     msg += "Solo el propietario puede eliminar la tabla";
                                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                 }
-
+                                String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina tabla: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
                             else
@@ -1126,7 +1151,8 @@ namespace ServidorDB.otros
                                     msg += "Solo el propietario puede eliminar la funcion";
                                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                 }
-
+                                String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina funcion: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
                             else
@@ -1232,7 +1258,8 @@ namespace ServidorDB.otros
                                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                 }
 
-
+                                String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina objeto: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
                             else
@@ -1338,7 +1365,8 @@ namespace ServidorDB.otros
                                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                 }
 
-
+                                String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina procedimiento: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
                             else
@@ -1396,9 +1424,12 @@ namespace ServidorDB.otros
                         master.Usuarios.Remove(nombre);
                         estado_aceptacion = true;
 
+                        String fechahora = Convert.ToString(DateTime.Now);
+                        Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina usuario: " + nombre + "]\n";
+
                         //como lo elimine debo eliminar los usuarios de este nombre en todos los objetos
                         //de la base de datos
-                        foreach(Db db in master.Dbs.Values)
+                        foreach (Db db in master.Dbs.Values)
                         {
                             db.Usuarios.Remove(nombre);
 

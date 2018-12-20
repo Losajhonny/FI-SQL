@@ -22,8 +22,10 @@ Partial Class Form1
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.tab_inicial = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.pictureline = New System.Windows.Forms.PictureBox()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.btn_iniciar = New System.Windows.Forms.Button()
         Me.txt_password = New System.Windows.Forms.TextBox()
@@ -35,25 +37,30 @@ Partial Class Form1
         Me.TabControl2 = New System.Windows.Forms.TabControl()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
         Me.TabPage5 = New System.Windows.Forms.TabPage()
-        Me.TabControl1 = New System.Windows.Forms.TabControl()
-        Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.TabPage6 = New System.Windows.Forms.TabPage()
+        Me.TabPage7 = New System.Windows.Forms.TabPage()
+        Me.tabide = New System.Windows.Forms.TabControl()
         Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.menuBar = New System.Windows.Forms.MenuStrip()
         Me.ArchivoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btn_agregar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btn_eliminar = New System.Windows.Forms.ToolStripMenuItem()
         Me.HerramientasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoginToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AgregarTabToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.EliminarTabToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TabPage6 = New System.Windows.Forms.TabPage()
-        Me.TabPage7 = New System.Windows.Forms.TabPage()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.btn_ejescript = New System.Windows.Forms.Button()
+        Me.btn_ejecutar = New System.Windows.Forms.Button()
+        Me.RichTextBox1 = New System.Windows.Forms.RichTextBox()
         Me.tab_inicial.SuspendLayout()
         Me.TabPage1.SuspendLayout()
+        CType(Me.pictureline, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.FISQL.SuspendLayout()
         Me.TabControl2.SuspendLayout()
-        Me.TabControl1.SuspendLayout()
+        Me.TabPage4.SuspendLayout()
         Me.menuBar.SuspendLayout()
+        Me.FlowLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'tab_inicial
@@ -69,6 +76,7 @@ Partial Class Form1
         'TabPage1
         '
         Me.TabPage1.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.TabPage1.Controls.Add(Me.pictureline)
         Me.TabPage1.Controls.Add(Me.Panel1)
         Me.TabPage1.Location = New System.Drawing.Point(4, 25)
         Me.TabPage1.Name = "TabPage1"
@@ -76,6 +84,15 @@ Partial Class Form1
         Me.TabPage1.Size = New System.Drawing.Size(1330, 670)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Login"
+        '
+        'pictureline
+        '
+        Me.pictureline.Location = New System.Drawing.Point(991, 71)
+        Me.pictureline.Name = "pictureline"
+        Me.pictureline.Size = New System.Drawing.Size(264, 311)
+        Me.pictureline.TabIndex = 1
+        Me.pictureline.TabStop = False
+        Me.pictureline.Visible = False
         '
         'Panel1
         '
@@ -150,8 +167,9 @@ Partial Class Form1
         'FISQL
         '
         Me.FISQL.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.FISQL.Controls.Add(Me.FlowLayoutPanel1)
         Me.FISQL.Controls.Add(Me.TabControl2)
-        Me.FISQL.Controls.Add(Me.TabControl1)
+        Me.FISQL.Controls.Add(Me.tabide)
         Me.FISQL.Controls.Add(Me.TreeView1)
         Me.FISQL.Controls.Add(Me.menuBar)
         Me.FISQL.Location = New System.Drawing.Point(4, 25)
@@ -175,6 +193,7 @@ Partial Class Form1
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.RichTextBox1)
         Me.TabPage4.Location = New System.Drawing.Point(4, 25)
         Me.TabPage4.Name = "TabPage4"
         Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
@@ -193,35 +212,31 @@ Partial Class Form1
         Me.TabPage5.Text = "Plan Ejecucion"
         Me.TabPage5.UseVisualStyleBackColor = True
         '
-        'TabControl1
+        'TabPage6
         '
-        Me.TabControl1.Controls.Add(Me.TabPage2)
-        Me.TabControl1.Controls.Add(Me.TabPage3)
-        Me.TabControl1.Location = New System.Drawing.Point(233, 34)
-        Me.TabControl1.Name = "TabControl1"
-        Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(1091, 342)
-        Me.TabControl1.TabIndex = 2
+        Me.TabPage6.Location = New System.Drawing.Point(4, 25)
+        Me.TabPage6.Name = "TabPage6"
+        Me.TabPage6.Size = New System.Drawing.Size(1079, 252)
+        Me.TabPage6.TabIndex = 2
+        Me.TabPage6.Text = "Mensajes"
+        Me.TabPage6.UseVisualStyleBackColor = True
         '
-        'TabPage2
+        'TabPage7
         '
-        Me.TabPage2.Location = New System.Drawing.Point(4, 25)
-        Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(1083, 313)
-        Me.TabPage2.TabIndex = 0
-        Me.TabPage2.Text = "TabPage2"
-        Me.TabPage2.UseVisualStyleBackColor = True
+        Me.TabPage7.Location = New System.Drawing.Point(4, 25)
+        Me.TabPage7.Name = "TabPage7"
+        Me.TabPage7.Size = New System.Drawing.Size(1079, 252)
+        Me.TabPage7.TabIndex = 3
+        Me.TabPage7.Text = "Historial"
+        Me.TabPage7.UseVisualStyleBackColor = True
         '
-        'TabPage3
+        'tabide
         '
-        Me.TabPage3.Location = New System.Drawing.Point(4, 25)
-        Me.TabPage3.Name = "TabPage3"
-        Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(1083, 313)
-        Me.TabPage3.TabIndex = 1
-        Me.TabPage3.Text = "TabPage3"
-        Me.TabPage3.UseVisualStyleBackColor = True
+        Me.tabide.Location = New System.Drawing.Point(233, 78)
+        Me.tabide.Name = "tabide"
+        Me.tabide.SelectedIndex = 0
+        Me.tabide.Size = New System.Drawing.Size(1091, 298)
+        Me.tabide.TabIndex = 2
         '
         'TreeView1
         '
@@ -242,10 +257,22 @@ Partial Class Form1
         '
         'ArchivoToolStripMenuItem
         '
-        Me.ArchivoToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AgregarTabToolStripMenuItem, Me.EliminarTabToolStripMenuItem})
+        Me.ArchivoToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btn_agregar, Me.btn_eliminar})
         Me.ArchivoToolStripMenuItem.Name = "ArchivoToolStripMenuItem"
         Me.ArchivoToolStripMenuItem.Size = New System.Drawing.Size(71, 24)
         Me.ArchivoToolStripMenuItem.Text = "Archivo"
+        '
+        'btn_agregar
+        '
+        Me.btn_agregar.Name = "btn_agregar"
+        Me.btn_agregar.Size = New System.Drawing.Size(165, 26)
+        Me.btn_agregar.Text = "Agregar Tab"
+        '
+        'btn_eliminar
+        '
+        Me.btn_eliminar.Name = "btn_eliminar"
+        Me.btn_eliminar.Size = New System.Drawing.Size(165, 26)
+        Me.btn_eliminar.Text = "Eliminar Tab"
         '
         'HerramientasToolStripMenuItem
         '
@@ -259,35 +286,43 @@ Partial Class Form1
         Me.LoginToolStripMenuItem.Size = New System.Drawing.Size(58, 24)
         Me.LoginToolStripMenuItem.Text = "Login"
         '
-        'AgregarTabToolStripMenuItem
+        'Timer1
         '
-        Me.AgregarTabToolStripMenuItem.Name = "AgregarTabToolStripMenuItem"
-        Me.AgregarTabToolStripMenuItem.Size = New System.Drawing.Size(216, 26)
-        Me.AgregarTabToolStripMenuItem.Text = "Agregar Tab"
         '
-        'EliminarTabToolStripMenuItem
+        'FlowLayoutPanel1
         '
-        Me.EliminarTabToolStripMenuItem.Name = "EliminarTabToolStripMenuItem"
-        Me.EliminarTabToolStripMenuItem.Size = New System.Drawing.Size(216, 26)
-        Me.EliminarTabToolStripMenuItem.Text = "Eliminar Tab"
+        Me.FlowLayoutPanel1.Controls.Add(Me.btn_ejescript)
+        Me.FlowLayoutPanel1.Controls.Add(Me.btn_ejecutar)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(233, 34)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(1087, 38)
+        Me.FlowLayoutPanel1.TabIndex = 4
         '
-        'TabPage6
+        'btn_ejescript
         '
-        Me.TabPage6.Location = New System.Drawing.Point(4, 25)
-        Me.TabPage6.Name = "TabPage6"
-        Me.TabPage6.Size = New System.Drawing.Size(1079, 252)
-        Me.TabPage6.TabIndex = 2
-        Me.TabPage6.Text = "Mensajes"
-        Me.TabPage6.UseVisualStyleBackColor = True
+        Me.btn_ejescript.Location = New System.Drawing.Point(3, 3)
+        Me.btn_ejescript.Name = "btn_ejescript"
+        Me.btn_ejescript.Size = New System.Drawing.Size(111, 35)
+        Me.btn_ejescript.TabIndex = 0
+        Me.btn_ejescript.Text = "Ejecutar Script"
+        Me.btn_ejescript.UseVisualStyleBackColor = True
         '
-        'TabPage7
+        'btn_ejecutar
         '
-        Me.TabPage7.Location = New System.Drawing.Point(4, 25)
-        Me.TabPage7.Name = "TabPage7"
-        Me.TabPage7.Size = New System.Drawing.Size(1079, 252)
-        Me.TabPage7.TabIndex = 3
-        Me.TabPage7.Text = "Historial"
-        Me.TabPage7.UseVisualStyleBackColor = True
+        Me.btn_ejecutar.Location = New System.Drawing.Point(120, 3)
+        Me.btn_ejecutar.Name = "btn_ejecutar"
+        Me.btn_ejecutar.Size = New System.Drawing.Size(82, 35)
+        Me.btn_ejecutar.TabIndex = 1
+        Me.btn_ejecutar.Text = "Ejecutar"
+        Me.btn_ejecutar.UseVisualStyleBackColor = True
+        '
+        'RichTextBox1
+        '
+        Me.RichTextBox1.Location = New System.Drawing.Point(23, 6)
+        Me.RichTextBox1.Name = "RichTextBox1"
+        Me.RichTextBox1.Size = New System.Drawing.Size(784, 221)
+        Me.RichTextBox1.TabIndex = 0
+        Me.RichTextBox1.Text = ""
         '
         'Form1
         '
@@ -300,14 +335,16 @@ Partial Class Form1
         Me.Text = "ServidorWeb"
         Me.tab_inicial.ResumeLayout(False)
         Me.TabPage1.ResumeLayout(False)
+        CType(Me.pictureline, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.FISQL.ResumeLayout(False)
         Me.FISQL.PerformLayout()
         Me.TabControl2.ResumeLayout(False)
-        Me.TabControl1.ResumeLayout(False)
+        Me.TabPage4.ResumeLayout(False)
         Me.menuBar.ResumeLayout(False)
         Me.menuBar.PerformLayout()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -325,9 +362,7 @@ Partial Class Form1
     Friend WithEvents TabControl2 As TabControl
     Friend WithEvents TabPage4 As TabPage
     Friend WithEvents TabPage5 As TabPage
-    Friend WithEvents TabControl1 As TabControl
-    Friend WithEvents TabPage2 As TabPage
-    Friend WithEvents TabPage3 As TabPage
+    Friend WithEvents tabide As TabControl
     Friend WithEvents TreeView1 As TreeView
     Friend WithEvents menuBar As MenuStrip
     Friend WithEvents ArchivoToolStripMenuItem As ToolStripMenuItem
@@ -335,6 +370,12 @@ Partial Class Form1
     Friend WithEvents LoginToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TabPage6 As TabPage
     Friend WithEvents TabPage7 As TabPage
-    Friend WithEvents AgregarTabToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents EliminarTabToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents btn_agregar As ToolStripMenuItem
+    Friend WithEvents btn_eliminar As ToolStripMenuItem
+    Friend WithEvents Timer1 As Timer
+    Friend WithEvents pictureline As PictureBox
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents btn_ejescript As Button
+    Friend WithEvents btn_ejecutar As Button
+    Friend WithEvents RichTextBox1 As RichTextBox
 End Class

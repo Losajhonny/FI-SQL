@@ -1,11 +1,8 @@
+
+
 usar db1;
 
-Declarar @e1 estudiante;
-Declarar @e2 estudiante;
 
-@e1.carnet = 201513630;
-@e2.carnet = 201325583;
+imprimir ( " Valor " );
 
-
-imprimir ( "E1: " + @e1.carnet + "\n" );
-imprimir ( "E2: " + @e2.carnet + "\n" );
+imprimir ( "jajajajajaj" );
