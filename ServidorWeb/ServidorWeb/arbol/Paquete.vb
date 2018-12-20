@@ -1,7 +1,10 @@
-﻿Imports ServidorWeb
+﻿Imports System.Net.Sockets
+Imports ServidorWeb
 
 Public Class Paquete
     Implements Instruccion
+    Public connect As Conexion
+    Public socket As Socket
 
     ''constantes de la clase paquete
     Public Const LOGIN As Integer = 0
@@ -151,6 +154,37 @@ Public Class Paquete
     End Property
 
     Public Function ejecutar() As Object Implements Instruccion.ejecutar
-        Throw New NotImplementedException()
+
+        If Tipo_paquete = LOGIN Then
+            ''proceso el envio del login
+            connect.Enviar("paquete:login", socket)
+            ''dejo que lo procese por intervalor pequeño de tiempo
+            Threading.Thread.Sleep(100)
+            ''envio el usario
+            connect.Enviar("usuario:" + Username, socket)
+            ''dejo que lo procese por intervalor pequeño de tiempo
+            Threading.Thread.Sleep(100)
+            ''envio password
+            connect.Enviar("password:" + Username, socket)
+            ''dejo que lo procese por intervalor pequeño de tiempo
+            Threading.Thread.Sleep(100)
+            ''por lo tanto se termino el envio
+        ElseIf Tipo_paquete = FIN Then
+            ''proceso el envio del login
+            connect.Enviar("paquete:fin", socket)
+            ''dejo que lo procese por intervalor pequeño de tiempo
+            Threading.Thread.Sleep(100)
+            ''solo que aqui debo retornar el valor devuelto por el sistema
+            Return connect.Recibir(socket)
+        End If
+
+        Return Nothing
+    End Function
+
+    Public Function responder() As Object Implements Instruccion.responder
+        If Tipo_paquete = LOGIN Then
+            Return Log
+        End If
+        Return False
     End Function
 End Class

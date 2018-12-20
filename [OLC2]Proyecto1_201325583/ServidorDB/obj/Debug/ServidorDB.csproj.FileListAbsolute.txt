@@ -33,5 +33,4 @@ C:\Users\Jhona\Documents\GitHub\FI-SQL\[OLC2]Proyecto1_201325583\ServidorDB\obj\
 C:\Users\Jhona\Documents\GitHub\FI-SQL\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.csproj.CopyComplete
 C:\Users\Jhona\Documents\GitHub\FI-SQL\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.exe
 C:\Users\Jhona\Documents\GitHub\FI-SQL\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.pdb
-C:\Users\Jhona\Documents\GitHub\FI-SQL\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.ServidorWeb.resources
 C:\Users\jhonny\Desktop\[OLC2]Proyecto1_201325583\ServidorDB\obj\Debug\ServidorDB.ServidorWeb.resources

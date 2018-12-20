@@ -541,6 +541,7 @@ namespace ServidorDB.otros
             return estado_aceptacion;
         }
 
+
         public static DataTable seleccionar(List<string> campos, List<string> tablas, string condicion, string id_ordernar, int tordenar, int line, int colm)
         {
             bool estado_aceptacion = false;

@@ -54,32 +54,33 @@ Module MyParser
 
     Private Enum ProductionIndex
         [Ini_Lbracket_Quotevalidarquote_Colon_Integer_Comma_Rbracket] = 0 ' <INI> ::= '[' '"validar"' ':' integer ',' <PAQUETE> ']'
-        [Paquete] = 1                             ' <PAQUETE> ::= <PAQUETE_LOGIN>
-        [Paquete2] = 2                            ' <PAQUETE> ::= <PAQUETE_FIN>
-        [Paquete3] = 3                            ' <PAQUETE> ::= <PAQUETE_ERROR>
-        [Paquete4] = 4                            ' <PAQUETE> ::= <PAQUETE_INST>
-        [Paquete5] = 5                            ' <PAQUETE> ::= <PAQUETE_REPORTE>
-        [Paquete_reporte_Quotepaquetequote_Colon_Quotereportequote_Comma_Quoteinstruccionquote_Colon_Inst] = 6 ' <PAQUETE_REPORTE> ::= '"paquete"' ':' '"reporte"' ',' '"instruccion"' ':' inst
-        [Paquete_reporte_Quotepaquetequote_Colon_Quotereportequote_Comma_Quotedatosquote_Colon] = 7 ' <PAQUETE_REPORTE> ::= '"paquete"' ':' '"reporte"' ',' '"datos"' ':' <DATOS>
-        [Paquete_error_Quotepaquetequote_Colon_Quoteerrorquote_Comma_Quotetipoquote_Colon_Text_Comma_Quotemsgquote_Colon_Text_Comma_Quotedatosquote_Colon] = 8 ' <PAQUETE_ERROR> ::= '"paquete"' ':' '"error"' ',' '"tipo"' ':' text ',' '"msg"' ':' text ',' '"datos"' ':' <FILAS>
-        [Paquete_login_Quoteloginquote_Colon_Lbracket_Quoteusernamequote_Colon_Text_Comma_Quotepasswordquote_Colon_Text_Rbracket] = 9 ' <PAQUETE_LOGIN> ::= '"login"' ':' '[' '"username"' ':' text ',' '"password"' ':' text ']'
-        [Paquete_login_Quoteloginquote_Colon_Lbracket_Quoteusernamequote_Colon_Text_Comma_Quoteloginquote_Colon_Rbracket] = 10 ' <PAQUETE_LOGIN> ::= '"login"' ':' '[' '"username"' ':' text ',' '"login"' ':' <BOOLEANO> ']'
-        [Booleano_True] = 11                      ' <BOOLEANO> ::= true
-        [Booleano_False] = 12                     ' <BOOLEANO> ::= false
-        [Paquete_fin_Quotepaquetequote_Colon_Quotefinquote] = 13 ' <PAQUETE_FIN> ::= '"paquete"' ':' '"fin"'
-        [Paquete_inst_Quotepaquetequote_Colon_Quoteusqlquote_Comma_Quoteinstruccionquote_Colon_Inst] = 14 ' <PAQUETE_INST> ::= '"paquete"' ':' '"usql"' ',' '"instruccion"' ':' inst
-        [Paquete_inst_Quotepaquetequote_Colon_Quoteusqlquote_Comma_Quotedatosquote_Colon] = 15 ' <PAQUETE_INST> ::= '"paquete"' ':' '"usql"' ',' '"datos"' ':' <DATOS>
-        [Datos_Lbracket_Rbracket] = 16            ' <DATOS> ::= '[' <FILAS> ']'
-        [Datos_Lbracket_Text_Rbracket] = 17       ' <DATOS> ::= '[' text ']'
-        [Datos_Lbracket_Inst_Rbracket] = 18       ' <DATOS> ::= '[' inst ']'
-        [Filas_Comma] = 19                        ' <FILAS> ::= <FILAS> ',' <FILA>
-        [Filas] = 20                              ' <FILAS> ::= <FILA>
-        [Fila_Lbracket_Rbracket] = 21             ' <FILA> ::= '[' <CAMPOS> ']'
-        [Campos_Comma] = 22                       ' <CAMPOS> ::= <CAMPOS> ',' <CAMPO>
-        [Campos] = 23                             ' <CAMPOS> ::= <CAMPO>
-        [Campo_Text_Colon_Text] = 24              ' <CAMPO> ::= text ':' text
-        [Campo_Text_Colon_Integer] = 25           ' <CAMPO> ::= text ':' integer
-        [Campo_Text_Colon_Double_] = 26           ' <CAMPO> ::= text ':' 'double_'
+        [Ini] = 1                                 ' <INI> ::= 
+        [Paquete] = 2                             ' <PAQUETE> ::= <PAQUETE_LOGIN>
+        [Paquete2] = 3                            ' <PAQUETE> ::= <PAQUETE_FIN>
+        [Paquete3] = 4                            ' <PAQUETE> ::= <PAQUETE_ERROR>
+        [Paquete4] = 5                            ' <PAQUETE> ::= <PAQUETE_INST>
+        [Paquete5] = 6                            ' <PAQUETE> ::= <PAQUETE_REPORTE>
+        [Paquete_reporte_Quotepaquetequote_Colon_Quotereportequote_Comma_Quoteinstruccionquote_Colon_Inst] = 7 ' <PAQUETE_REPORTE> ::= '"paquete"' ':' '"reporte"' ',' '"instruccion"' ':' inst
+        [Paquete_reporte_Quotepaquetequote_Colon_Quotereportequote_Comma_Quotedatosquote_Colon] = 8 ' <PAQUETE_REPORTE> ::= '"paquete"' ':' '"reporte"' ',' '"datos"' ':' <DATOS>
+        [Paquete_error_Quotepaquetequote_Colon_Quoteerrorquote_Comma_Quotetipoquote_Colon_Text_Comma_Quotemsgquote_Colon_Text_Comma_Quotedatosquote_Colon] = 9 ' <PAQUETE_ERROR> ::= '"paquete"' ':' '"error"' ',' '"tipo"' ':' text ',' '"msg"' ':' text ',' '"datos"' ':' <FILAS>
+        [Paquete_login_Quoteloginquote_Colon_Lbracket_Quoteusernamequote_Colon_Text_Comma_Quotepasswordquote_Colon_Text_Rbracket] = 10 ' <PAQUETE_LOGIN> ::= '"login"' ':' '[' '"username"' ':' text ',' '"password"' ':' text ']'
+        [Paquete_login_Quoteloginquote_Colon_Lbracket_Quoteusernamequote_Colon_Text_Comma_Quoteloginquote_Colon_Rbracket] = 11 ' <PAQUETE_LOGIN> ::= '"login"' ':' '[' '"username"' ':' text ',' '"login"' ':' <BOOLEANO> ']'
+        [Booleano_True] = 12                      ' <BOOLEANO> ::= true
+        [Booleano_False] = 13                     ' <BOOLEANO> ::= false
+        [Paquete_fin_Quotepaquetequote_Colon_Quotefinquote] = 14 ' <PAQUETE_FIN> ::= '"paquete"' ':' '"fin"'
+        [Paquete_inst_Quotepaquetequote_Colon_Quoteusqlquote_Comma_Quoteinstruccionquote_Colon_Inst] = 15 ' <PAQUETE_INST> ::= '"paquete"' ':' '"usql"' ',' '"instruccion"' ':' inst
+        [Paquete_inst_Quotepaquetequote_Colon_Quoteusqlquote_Comma_Quotedatosquote_Colon] = 16 ' <PAQUETE_INST> ::= '"paquete"' ':' '"usql"' ',' '"datos"' ':' <DATOS>
+        [Datos_Lbracket_Rbracket] = 17            ' <DATOS> ::= '[' <FILAS> ']'
+        [Datos_Lbracket_Text_Rbracket] = 18       ' <DATOS> ::= '[' text ']'
+        [Datos_Lbracket_Inst_Rbracket] = 19       ' <DATOS> ::= '[' inst ']'
+        [Filas_Comma] = 20                        ' <FILAS> ::= <FILAS> ',' <FILA>
+        [Filas] = 21                              ' <FILAS> ::= <FILA>
+        [Fila_Lbracket_Rbracket] = 22             ' <FILA> ::= '[' <CAMPOS> ']'
+        [Campos_Comma] = 23                       ' <CAMPOS> ::= <CAMPOS> ',' <CAMPO>
+        [Campos] = 24                             ' <CAMPOS> ::= <CAMPO>
+        [Campo_Text_Colon_Text] = 25              ' <CAMPO> ::= text ':' text
+        [Campo_Text_Colon_Integer] = 26           ' <CAMPO> ::= text ':' integer
+        [Campo_Text_Colon_Double_] = 27           ' <CAMPO> ::= text ':' 'double_'
     End Enum
 
     Public Program As Object     'You might derive a specific object
@@ -90,7 +91,7 @@ Module MyParser
 
         Parser.LoadTables(Path.Combine(Application.StartupPath, "GramaticaVB.egt"))
     End Sub
-    
+
     Public Function Parse(ByVal Reader As TextReader) As Boolean
         'This procedure starts the GOLD Parser Engine and handles each of the
         'messages it returns. Each time a reduction is made, you can create new
@@ -101,7 +102,7 @@ Module MyParser
         'and will be ready to implement.
 
         Dim Response As GOLD.ParseMessage
-        Dim Done as Boolean                  'Controls when we leave the loop
+        Dim Done As Boolean                  'Controls when we leave the loop
         Dim Accepted As Boolean = False      'Was the parse successful?
 
         Accepted = False    'Unless the program is accepted by the parser
@@ -113,7 +114,7 @@ Module MyParser
         Do Until Done
             Response = Parser.Parse()
 
-            Select Case Response              
+            Select Case Response
                 Case GOLD.ParseMessage.LexicalError
                     'Cannot recognize token
                     Done = True
@@ -143,7 +144,7 @@ Module MyParser
                     'This error occurs if the CGT was not loaded.                   
                     Done = True
 
-                Case GOLD.ParseMessage.GroupError 
+                Case GOLD.ParseMessage.GroupError
                     'COMMENT ERROR! Unexpected end of file
                     Done = True
             End Select
@@ -152,15 +153,21 @@ Module MyParser
         Return Accepted
     End Function
 
-    Private Function CreateNewObject(Reduction as GOLD.Reduction) As Object
+    Private Function CreateNewObject(Reduction As GOLD.Reduction) As Object
         Dim Result As Object = Nothing
 
         With Reduction
-            Select Case .Parent.TableIndex                        
+            Select Case .Parent.TableIndex
                 Case ProductionIndex.Ini_Lbracket_Quotevalidarquote_Colon_Integer_Comma_Rbracket
                     ' <INI> ::= '[' '"validar"' ':' integer ',' <PAQUETE> ']' 
 
                     Dim init As Ini = New Ini(.Item(3).Data.ToString(), .Item(5).Data)
+                    Result = init
+
+                Case ProductionIndex.Ini
+                    ' <INI> ::=  
+
+                    Dim init As Ini = New Ini(Nothing, Nothing)
                     Result = init
 
                 Case ProductionIndex.Paquete
@@ -415,6 +422,7 @@ Module MyParser
                     Dim ncampo As Campo = New Campo(Campo.DOBLE, nombre, valor, line, colm)
 
                     Result = ncampo
+
             End Select
         End With     
 

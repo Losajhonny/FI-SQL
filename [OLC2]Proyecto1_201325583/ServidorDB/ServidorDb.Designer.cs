@@ -28,57 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.components = new System.ComponentModel.Container();
+            this.consola = new System.Windows.Forms.RichTextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // richTextBox1
+            // consola
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(12, 12);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(776, 296);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(12, 649);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 30);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Compilar";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // richTextBox2
-            // 
-            this.richTextBox2.Location = new System.Drawing.Point(12, 327);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(776, 88);
-            this.richTextBox2.TabIndex = 2;
-            this.richTextBox2.Text = "";
+            this.consola.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.consola.Location = new System.Drawing.Point(12, 12);
+            this.consola.Name = "consola";
+            this.consola.Size = new System.Drawing.Size(677, 519);
+            this.consola.TabIndex = 0;
+            this.consola.Text = "";
             // 
             // ServidorDb
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 691);
-            this.Controls.Add(this.richTextBox2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.richTextBox1);
+            this.ClientSize = new System.Drawing.Size(701, 543);
+            this.Controls.Add(this.consola);
             this.Name = "ServidorDb";
-            this.Text = "ServidorDb";
-            this.Load += new System.EventHandler(this.ServidorDb_Load);
+            this.Text = "Consola del Servidor DB";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServidorDb_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ServidorDb_FormClosed);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.RichTextBox richTextBox2;
+        private System.Windows.Forms.RichTextBox consola;
+        private System.Windows.Forms.Timer timer1;
         //private System.Windows.Forms.RichTextBox rtb_consola;
     }
 }

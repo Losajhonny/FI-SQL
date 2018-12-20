@@ -49,6 +49,30 @@ namespace ServidorDB.otros
             return estado_aceptacion;
         }
 
+        public static string loguear(Usuario usr)
+        {
+            string respuesta = "\"login\" : [ \"username\" : \"" + usr.Nombre + "\" , \"login\" : false ]";
+
+            //primero cargar todo el sistema de archivos
+            Constante.sistema_archivo = (Maestro)Constante.sistema_archivo.cargar();
+            Maestro master = Constante.sistema_archivo;
+
+            if (master.Usuarios.ContainsKey(usr.Nombre))
+            {
+                if (master.Usuarios[usr.Nombre].Password.Equals(usr.Password))
+                {
+                    Constante.usuario_actual = usr.Nombre;
+                    respuesta = "\"login\" : [ \"username\" : \""+usr.Nombre+"\" , \"login\" : true ]";
+                    String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.rtb_consola.Text += ">> " + fechahora + " admin [El usuario " + usr.Nombre + " inicio sesion]\n";
+                }
+            }
+
+            //finalizando volver a escribir la estructura
+            master.generar_xml();
+            return respuesta;
+        }
+
         public static bool usarDb(string nombre, int line, int colm)
         {
             bool estado_aceptacion = false;

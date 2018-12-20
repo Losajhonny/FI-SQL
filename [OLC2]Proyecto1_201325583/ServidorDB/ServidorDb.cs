@@ -11,13 +11,27 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Sockets;
+using System.Net;
 
 namespace ServidorDB
 {
     public partial class ServidorDb : Form
     {
+        public const int CONCATENAR = 0;
+        public const int REEMPLAZAR = 1;
+        public const int MAX_VALUE = 3072;
+        public bool conectado = true;
+
+        public string paquete = ""; //me indica en que paquete estoy
+        public string validar = ""; //me indica el numero de transaccion que estoy realizando
+        public string instruccion = "";
+        public string usuario = "";
+        public string password = "";
+
         public ServidorDb()
         {
             //Tomar en cuenta para general servidorDb
@@ -26,23 +40,152 @@ namespace ServidorDB
             PeticionDDL.crearUsuario(usr);
             //Finalizando la insercion de crear usuario
             //si existe no notificar que existe
-            
-
-
-            Constante.rtb_consola.AcceptsTab = true;
-            Constante.rtb_consola.Location = new System.Drawing.Point(12, 422);
-            Constante.rtb_consola.Name = "rtb_consola";
-            Constante.rtb_consola.Size = new System.Drawing.Size(776, 221);
-            Constante.rtb_consola.TabIndex = 3;
-            Constante.rtb_consola.Text = "";
-            this.Controls.Add(Constante.rtb_consola);
             InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
+            Constante.rtb_consola = this.consola;
+            
+            Iniciar_Servidor();
+        }
+
+        public void Conexion()
+        {
+            //Iniciando servidor
+            Socket servidor = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //Conexion mediante ipadrees y tcp usando socketes
+            IPEndPoint LocalEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 6400);
+            //asocia el ipendpoint al servidor
+            servidor.Bind(LocalEndPoint);
+            //limite de espera de un servidor
+            //en este caso le dejaremos con 5 maximo de informacion por paquete
+            servidor.Listen(5);
+
+            DateTime fechahora = DateTime.Now;
+            string tiempo = Convert.ToString(fechahora);
+            setTextConsola(">> " + tiempo + " admin [Servidor DB Conexion inicial]\n", CONCATENAR);
+
+            while (conectado)
+            {   //como siempre va a estar conextado a menos que se cierre la aplicacion
+                 fechahora = DateTime.Now;
+                 tiempo = Convert.ToString(fechahora);
+
+                //setTextConsola(">> " + tiempo + " admin [Esperando conexion...]\n", CONCATENAR);
+                //en modo espera
+                Socket handler = servidor.Accept();
+                //conexion acpetada
+
+
+                string dato_recivido = "";
+                while (conectado)
+                {
+                    byte[] info_recivido = new byte[MAX_VALUE];//Despues ver la capacidad de informacion enviada
+                                                          //cadena data para capturar los bytes recividos
+                    dato_recivido = "";
+
+                    int bytesRec = handler.Receive(info_recivido);   //aqui siempre me va a estar escuchando hasta que le llegue el paquete fin
+                    dato_recivido += Encoding.ASCII.GetString(info_recivido, 0, bytesRec);    //codificando los bytes a una cadena de caracteres
+                    
+                    fechahora = DateTime.Now;
+                    tiempo = Convert.ToString(fechahora);
+
+                    //siempre me va a venir valores en pares ordenados
+                    //entonces debo delimitarlos con ':'
+                    char[] delimit = { ':' };
+
+                    string[] pares = dato_recivido.Split(delimit);
+                    //primera posicion es la instruccion o paquete , etc
+                    //segunda posicion es el valor
+
+                    if (pares[0].ToLower().Equals("validar"))
+                    {
+                        validar = pares[1];
+                    }
+                    else if (pares[0].ToLower().Equals("paquete"))
+                    {
+                        if (pares[1].ToLower().Equals("fin")) { break; }
+                        else { paquete = pares[1]; }
+
+                    }
+                    else if (pares[0].ToLower().Equals("usuario"))
+                    {
+                        usuario = pares[1];
+                    }
+                    else if (pares[0].ToLower().Equals("password"))
+                    {
+                        password = pares[1];
+                    }
+                    //solo estos subpaquetes se enviaran en el proceso media vez termine con "fin"
+                    //entonces salir del bucle y realizar la transaccion
+                    //setTextConsola("Text received : " + dato_recivido + "\n", CONCATENAR);
+                    Thread.Sleep(100);
+                }
+
+                //aqui se realiza el proceso de la transaccion
+                //setTextConsola("Text received : " + dato_recivido, CONCATENAR);
+                //por el momento solo quiero recibir una transaccion asi que aqui le dejo conectado = false
+
+                string respuesta = realizandoPeticiones();
+                respuesta = "[ \"validar\" : " + validar + "," + respuesta + " ]";
+
+                byte[] msg = new byte[MAX_VALUE];
+                msg = Encoding.ASCII.GetBytes(respuesta);
+                handler.Send(msg);
+
+                Thread.Sleep(100);
+
+                handler.Shutdown(SocketShutdown.Both);
+                handler.Close();
+            }
+
+            servidor.Close();
+        }
+
+        public string realizandoPeticiones()
+        {
+            if (paquete.ToLower().Equals("login"))
+            {
+                Usuario usr = new Usuario(usuario, password);
+                //ahora a realizar la peticion de logueo
+                String fechahora = Convert.ToString(DateTime.Now);
+                Constante.rtb_consola.Text += ">> " + fechahora + " admin [Autenticacion por parte del servidor][usuario = '"+usuario+"' password = '"+password+"']\n";
+                return PeticionDDL.loguear(usr).ToString();
+            }
+            return "";
+        }
+
+        delegate void StringChangeText(string text, int tipo);
+
+        private void setTextConsola(string text, int tipo)
+        {
+            if (Constante.rtb_consola.InvokeRequired)
+            {
+                StringChangeText d = new StringChangeText(setTextConsola);
+                try
+                {
+                    this.Invoke(d, new object[] { text, tipo });
+                }
+                catch(Exception ex) { conectado = false; }
+                
+            }
+            else if (tipo == REEMPLAZAR)
+            {
+                Constante.rtb_consola.Text = text;
+            }
+            else
+            {
+                Constante.rtb_consola.Text += text;
+            }
+        }
+
+        public void Iniciar_Servidor()
+        {
+            Thread t = new Thread(new ThreadStart(Conexion));
+            t.Start();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Constante.crear_archivo(Constante.RUTA_USQL_SCRIPT, richTextBox1.Text);
-            ParseTreeNode raiz = uSintactico.analizar(richTextBox1.Text);
+            Constante.crear_archivo(Constante.RUTA_USQL_SCRIPT, consola.Text);
+            ParseTreeNode raiz = uSintactico.analizar(consola.Text);
             Constante.rtb_consola.Text = "";
             uSintactico.uerrores.Clear();
             if (raiz == null)
@@ -52,7 +195,7 @@ namespace ServidorDB
                 {
                     msg += "Descripcion: " + uSintactico.uerrores[i].Descripcion + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
                 }
-                richTextBox2.Text = msg;
+                //richTextBox2.Text = msg;
             }
             else
             {
@@ -82,7 +225,7 @@ namespace ServidorDB
                 {
                     msg1 += "Descripcion: " + uSintactico.uerrores[i].Descripcion + "\n";// + " Lexema: " + uSintactico.uerrores[i].Lexema + "\n";
                 }
-                richTextBox2.Text = "\n<< Mostrando errores >>\n" + msg1;
+                //richTextBox2.Text = "\n<< Mostrando errores >>\n" + msg1;
             }
 
 
@@ -387,22 +530,15 @@ namespace ServidorDB
             //    List<object> lm = DbAst.LISTA(root);
             //}
         }
-
-
-        public static ParseTreeNode analizar(string entrada)
+        
+        private void ServidorDb_FormClosed(object sender, FormClosedEventArgs e)
         {
-            DbGrammar grammar = new DbGrammar();
-            Parser parser = new Parser(grammar);
-            ParseTree arbol = parser.Parse(entrada);
-
-            //para los errores buscarlos en arbol
-            ParseTreeNode root = arbol.Root;
-            return root;
+            conectado = false;
         }
 
-        private void ServidorDb_Load(object sender, EventArgs e)
+        private void ServidorDb_FormClosing(object sender, FormClosingEventArgs e)
         {
-            
+            conectado = false;
         }
     }
 }
