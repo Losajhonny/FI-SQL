@@ -171,6 +171,8 @@ namespace ServidorDB
 
 
             string respuesta = "[ \"validar\" : " + validar + "," + PeticionDDL.loguear(usr).ToString() + " ]";
+            Constante.rtb_consola.Text += "Enviando Paquete:login\n" +
+                    respuesta + "\n";
             //envio la respuesta
             byte[] msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
@@ -241,6 +243,8 @@ namespace ServidorDB
                     "\"datos\" : " + error +
                     "]";
                 respuesta = error;
+                Constante.rtb_consola.Text += "Enviando Paquete:error\n" +
+                    respuesta + "\n";
             }
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
@@ -253,6 +257,8 @@ namespace ServidorDB
             if (!Constante.informacion_select.Equals(""))
             {
                 respuesta = "[ \"validar\" : " + validar + "," + Constante.informacion_select + " ]";
+                Constante.rtb_consola.Text += "Enviando Paquete:usql\n" +
+                    respuesta + "\n";
             }
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
@@ -266,6 +272,8 @@ namespace ServidorDB
             if (!Constante.mensaje.Equals(""))
             {
                 respuesta = "[ \"validar\" : " + validar + "," + " \"paquete\" : \"usql\" , \"datos\" : [" + "~" + Constante.mensaje + "~" + "]" + " ]";
+                Constante.rtb_consola.Text += "Enviando Paquete:usql\n" +
+                    respuesta + "\n";
             }
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
@@ -278,6 +286,8 @@ namespace ServidorDB
             if (!Constante.informacion_consola.Equals(""))
             {
                 respuesta = "[ \"validar\" : " + validar + "," + " \"paquete\" : \"usql\" , \"datos\" : [" + "~" + Constante.informacion_consola + "~" + "]" + " ]";
+                Constante.rtb_consola.Text += "Enviando Paquete:usql\n" +
+                    respuesta + "\n";
             }
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);

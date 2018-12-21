@@ -201,33 +201,40 @@ Public Class Paquete
             End If
         ElseIf Tipo_paquete = ERRORR Then
             ''aqui siempre debo de devolver un datatable
+            Return ObtenerInfo_errores()
         End If
-
-
-
-
-
-
-
-
-
-
-
 
         ''Aqui voy porfavor este siempre me esta devolviendo un false por que no he puesto una respuesta
         '' ojo  devo realizar todas las respuestas de parte del servidor db
 
-
-
-
-
-
-
-
-
-
-
         Return False
+    End Function
+
+    Public Function ObtenerInfo_errores() As Object
+        Dim dt As DataTable = New DataTable("Error")
+
+        ''en este caso debo de buscar las columnas si existe
+        For i = 0 To Filas.Count - 1
+            For j = 0 To Filas(i).Count - 1
+                ''obteniedo y creando las columnas
+                Dim dc As DataColumn = New DataColumn(Filas(i)(j).Nombre)
+                dt.Columns.Add(dc)
+            Next
+            Exit For
+        Next
+
+        ''ahora debo ingresar todas las filas
+        For i = 0 To Filas.Count - 1
+            Dim dr As DataRow = dt.NewRow()
+
+            For j = 0 To Filas(i).Count - 1
+                ''ingresando valores
+                dr(Filas(i)(j).Nombre) = Filas(i)(j).Valor
+            Next
+
+            dt.Rows.Add(dr)
+        Next
+        Return dt
     End Function
 
 

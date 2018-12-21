@@ -9,8 +9,10 @@ Public Class Logica
     Public socket As Socket
 
     Public log As String = ""
+    Public log2 As String = ""
     Public consola As String = ""
     Public tabla As DataTable
+    Public errorr As DataTable
 
     Public numAleatorio As New Random()
 
@@ -20,6 +22,7 @@ Public Class Logica
         log = ""
         consola = ""
 
+        Dim logtemp As String = ""
         Dim cadena_envio As String = ""
         Dim respuesta_error As String = Nothingg
         Dim respuesta_select As String = Nothingg
@@ -27,8 +30,10 @@ Public Class Logica
         Dim respuesta_consola As String = Nothingg
         Dim aleatorio As String = numAleatorio.Next.ToString()
         '''''''''''''''''''''''' ENVIANDO VALIDAR ''''''''''''''''''''''''''''''''''''''
+        logtemp += "Enviando Paquete:usql" + vbNewLine
         cadena_envio += "[ ""validar"": " + aleatorio + "," +
             " ""paquete"" : ""usql"" , ""instruccion"" : ~" + instrucciones + "~ ]"
+        logtemp += cadena_envio + vbNewLine + vbNewLine
 
         MyParser.Setup()
         MyParser.Parse(New StringReader(cadena_envio))
@@ -49,8 +54,9 @@ Public Class Logica
 
         '''''''''''''''''''''''' ENVIANDO FIN ''''''''''''''''''''''''''''''''''''''
         ''envio el paquete de finalizar para proceso
+        logtemp += "Enviando Paquete:fin" + vbNewLine
         cadena_envio = "[ ""validar"": " + aleatorio + "," + """paquete"" : ""fin"" ]"
-
+        logtemp += cadena_envio + vbNewLine + vbNewLine
         MyParser.Setup()
         MyParser.Parse(New StringReader(cadena_envio)).ToString()
         Dim paquete_fin As Ini = MyParser.Parser.CurrentReduction
@@ -91,8 +97,9 @@ Public Class Logica
                 MyParser.Setup()
                 MyParser.Parse(New StringReader(respuesta_error)).ToString()
                 Dim resErr As Ini = MyParser.Parser.CurrentReduction
-
-                consola = "paso aqui"
+                If Not resErr Is Nothing Then
+                    errorr = resErr.responder()
+                End If
             End If
         End If
 
@@ -205,7 +212,7 @@ Public Class Logica
 
         ''debo cerrar la conexion
         connect.Disconect(socket)
-
+        log2 += logtemp
         ''por el momento retorno resultado1 y resultado 2
         Return Nothing
     End Function
@@ -214,9 +221,11 @@ Public Class Logica
         Dim socket As Socket = connect.Connect() 'Creando una conexion
         Dim cadena_envio As String = ""          'Cadena que se utiliza para enviar
         Dim aleatorio As String = numAleatorio.Next.ToString()
-
+        Dim logtemp As String = ""
         '''''''''''''''''''''''' ENVIANDO VALIDAR ''''''''''''''''''''''''''''''''''''''
+        logtemp += "Enviando Paquete:login" + vbNewLine
         cadena_envio += "[ ""validar"": " + aleatorio + "," + """login"" : [ ""username"" : """ + usuario + """, " + """password"" : """ + password + """] ]"
+        logtemp += cadena_envio + vbNewLine + vbNewLine
 
         MyParser.Setup()
         MyParser.Parse(New StringReader(cadena_envio))
@@ -235,7 +244,9 @@ Public Class Logica
 
         '''''''''''''''''''''''' ENVIANDO FIN ''''''''''''''''''''''''''''''''''''''
         ''envio el paquete de finalizar para proceso
+        logtemp += "Enviando Paquete:fin" + vbNewLine
         cadena_envio = "[ ""validar"": " + aleatorio + "," + """paquete"" : ""fin"" ]"
+        logtemp += cadena_envio + vbNewLine + vbNewLine
 
         MyParser.Setup()
         MyParser.Parse(New StringReader(cadena_envio)).ToString()

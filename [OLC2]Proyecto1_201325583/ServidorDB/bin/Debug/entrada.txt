@@ -1,5 +1,1 @@
-
-usar db5;
-
-
-seleccionar * de estudiante ;
+seleccionar * de estudiante;
