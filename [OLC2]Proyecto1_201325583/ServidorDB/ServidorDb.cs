@@ -23,7 +23,7 @@ namespace ServidorDB
     {
         public const int CONCATENAR = 0;
         public const int REEMPLAZAR = 1;
-        public const int MAX_VALUE = 3072;
+        public const int MAX_VALUE = 4096;
         public bool conectado = true;
 
         public string paquete = ""; //me indica en que paquete estoy
@@ -144,56 +144,145 @@ namespace ServidorDB
         {
             if (paquete.ToLower().Equals("login"))
             {
-                Usuario usr = new Usuario(usuario, password);
-                //ahora a realizar la peticion de logueo
-                String fechahora = Convert.ToString(DateTime.Now);
-                Constante.rtb_consola.Text += ">> " + fechahora + " admin [Autenticacion por parte del servidor][usuario = '"+usuario+"' password = '"+password+"']\n";
-                 
-
-                string respuesta = "[ \"validar\" : " + validar + "," + PeticionDDL.loguear(usr).ToString() + " ]";
-                //envio la respuesta
-                byte[] msg = new byte[MAX_VALUE];
-                msg = Encoding.ASCII.GetBytes(respuesta);
-                handler.Send(msg);
-                //intervalor de tiempo
-                Thread.Sleep(100);
-
+                peticionLogin(handler);
             }
             else if (paquete.ToLower().Equals("usql"))
             {
-                //debo ejecutar el usql
-                //ahorita solo debo de ejecutar
-                //analizo la instruccion usql
-                uSintactico.analizar_usql(instruccion);
-
-
-                //debo de enviar la inforamcion de select
-                string respuesta = Constante.NOTHING;
-
-                if (!Constante.informacion_select.Equals(""))
-                {
-                    respuesta = "[ \"validar\" : " + validar + "," + Constante.informacion_select + " ]";
-                }
-
-                byte[] msg = new byte[MAX_VALUE];
-                msg = Encoding.ASCII.GetBytes(respuesta);
-                handler.Send(msg);
-                //intervalo de espera
-                Thread.Sleep(100);
-
-                respuesta = Constante.NOTHING;
-                if (!Constante.informacion_consola.Equals(""))
-                {
-                     respuesta = "[ \"validar\" : " + validar + "," + " \"paquete\" : \"usql\" , \"datos\" : [" + "~" + Constante.informacion_consola + "~" + "]" + " ]";
-                }
-
-                //ahora enviar la info de consola
-                msg = new byte[MAX_VALUE];
-                msg = Encoding.ASCII.GetBytes(respuesta);
-                handler.Send(msg);
-                //intervalo de espera
-                Thread.Sleep(100);
+                peticionSql(handler);
             }
+        }
+
+        public void peticionLogin(Socket handler)
+        {
+            //Paquete en entro debo enviar el paquete de salida
+            /*
+             * [
+                “validar”: 1500,
+                “login”: [
+                    "username":"nombre",
+                    "password":"pass"
+                    ]
+                ]
+             */
+
+            Usuario usr = new Usuario(usuario, password);
+            String fechahora = Convert.ToString(DateTime.Now);
+            Constante.rtb_consola.Text += ">> " + fechahora + " admin [Autenticacion por parte del servidor][usuario = '" + usuario + "' password = '" + password + "']\n";
+
+
+            string respuesta = "[ \"validar\" : " + validar + "," + PeticionDDL.loguear(usr).ToString() + " ]";
+            //envio la respuesta
+            byte[] msg = new byte[MAX_VALUE];
+            msg = Encoding.ASCII.GetBytes(respuesta);
+            handler.Send(msg);
+            //intervalor de tiempo
+            Thread.Sleep(100);
+
+
+            /*[
+                “validar”: 1500,
+                “login”: [
+                    "username":"nombre",
+                    "login":true        <- o false
+                    ]
+                ]
+             */
+        }
+
+        public void peticionSql(Socket handler)
+        {
+            byte[] msg = new byte[MAX_VALUE];
+            string respuesta = Constante.NOTHING;
+            /*Aqui ya tengo las instrucciones a ejecutar por parte
+             de servidor web*/
+            uSintactico.analizar_usql(instruccion);
+
+            /*Debo de enviar varios datos de informacion
+             1. Lista de Errores
+             2. Informacion ultimo select que se realizo
+             3. Log que se realizo
+             4. Consola de sql */
+
+            /*Enviando lista de errores--recorrer lista de uSintactico y xSintactico
+             */
+            respuesta = Constante.NOTHING;
+            string error = "";
+            for(int i = 0; i < uSintactico.uerrores.Count; i++)
+            {
+                error += "[" +
+                    "\"Tipo Error\" : \"" + uSintactico.uerrores[i].Tipo + "\" , " +
+                    "\"Descripcion\" : \"" + uSintactico.uerrores[i].Descripcion + "\" ," +
+                    "\"col\" : \"" + uSintactico.uerrores[i].Colm.ToString() + "\" ," +
+                    "\"fila\" : \"" + uSintactico.uerrores[i].Line.ToString() + "\" ," +
+                    "\"lexema\" : \"" + uSintactico.uerrores[i].Lexema + " ." + "\" ," +
+                    "\"lenguaje\" : \"Lenguaje USQL\"" +
+                    "]";
+                if (i != uSintactico.uerrores.Count - 1) { error += ","; }
+            }
+            for (int i = 0; i < xSintactico.errores.Count; i++)
+            {
+                error += "[" +
+                   "\"Tipo Error\" : \"" + xSintactico.errores[i].Tipo + "\" , " +
+                   "\"Descripcion\" : \"" + xSintactico.errores[i].Descripcion + "\" ," +
+                   "\"col\" : \"" + xSintactico.errores[i].Colm.ToString() + "\" ," +
+                   "\"fila\" : \"" + xSintactico.errores[i].Line.ToString() + "\" ," +
+                   "\"lexema\" : \"" + xSintactico.errores[i].Lexema + " ." + "\" ," +
+                   "\"lenguaje\" : \"Lenguaje XML\"" +
+                   "]";
+                if (i != xSintactico.errores.Count - 1) { error += ","; }
+            }
+            if (!error.Equals(""))
+            {
+                error = "[" +
+                    "\"validar\" : " + validar + " ," +
+                    "\"paquete\" : \"error\" ," +
+                    "\"tipo\" : \"tipotexto\" , " +
+                    "\"msg\" : \"msgtexto\" , " +
+                    "\"datos\" : " + error +
+                    "]";
+                respuesta = error;
+            }
+            msg = new byte[MAX_VALUE];
+            msg = Encoding.ASCII.GetBytes(respuesta);
+            handler.Send(msg);              // -------> ENVIANDO ARCHIVO DE ERRORES
+            Thread.Sleep(100);
+
+            /*Enviando informacion del select
+            */
+            respuesta = Constante.NOTHING;
+            if (!Constante.informacion_select.Equals(""))
+            {
+                respuesta = "[ \"validar\" : " + validar + "," + Constante.informacion_select + " ]";
+            }
+            msg = new byte[MAX_VALUE];
+            msg = Encoding.ASCII.GetBytes(respuesta);
+            handler.Send(msg);              // -------> ENVIANDO INFORMACION SELECT
+            Thread.Sleep(100);
+
+
+            /*Enviando mensaje de lo que se ha realizado
+             */
+            respuesta = Constante.NOTHING;
+            if (!Constante.mensaje.Equals(""))
+            {
+                respuesta = "[ \"validar\" : " + validar + "," + " \"paquete\" : \"usql\" , \"datos\" : [" + "~" + Constante.mensaje + "~" + "]" + " ]";
+            }
+            msg = new byte[MAX_VALUE];
+            msg = Encoding.ASCII.GetBytes(respuesta);
+            handler.Send(msg);              // --------> ENVIANDO LOG DE QUE SE REALIZO
+            Thread.Sleep(100);
+
+            /*Enviando mensaje de lo que se ha realizado
+             */
+            respuesta = Constante.NOTHING;
+            if (!Constante.informacion_consola.Equals(""))
+            {
+                respuesta = "[ \"validar\" : " + validar + "," + " \"paquete\" : \"usql\" , \"datos\" : [" + "~" + Constante.informacion_consola + "~" + "]" + " ]";
+            }
+            msg = new byte[MAX_VALUE];
+            msg = Encoding.ASCII.GetBytes(respuesta);
+            handler.Send(msg);              // --------> ENVIANDO Consola DE QUE SE REALIZO
+            Thread.Sleep(100);
         }
 
         delegate void StringChangeText(string text, int tipo);

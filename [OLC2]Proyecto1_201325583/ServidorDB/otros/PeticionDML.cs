@@ -138,6 +138,7 @@ namespace ServidorDB.otros
                                         {
                                             t.Registros.Rows.Add(dr);
                                             String fechahora = Convert.ToString(DateTime.Now);
+                                            Constante.mensaje += ">> Se ingreso un registro a la tabla " + t.Nombre + "\n";
                                             Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion InsertarNormal][Registro tabla:" + t.Nombre+"]\n";
                                         }
                                         catch (Exception ex)
@@ -329,6 +330,7 @@ namespace ServidorDB.otros
                                         {
                                             t.Registros.Rows.Add(dr);
                                             String fechahora = Convert.ToString(DateTime.Now);
+                                            Constante.mensaje += ">> Se ingreso un registro a la tabla " + t.Nombre + "\n";
                                             Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion InsertarEspecial][Registro tabla:" + t.Nombre + "]\n";
                                         }
                                         catch (Exception ex)
@@ -498,6 +500,8 @@ namespace ServidorDB.otros
                                         }
 
                                     String fechahora = Convert.ToString(DateTime.Now);
+                                    int fila_afec = (dr != null) ? dr.Length : 0;
+                                    Constante.mensaje += ">> " + fila_afec.ToString() + " filas afectadas en la tabla " + t.Nombre + "\n";
                                     Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Actualizar][Registro tabla:" + t.Nombre + "]\n";
 
                                     //if (hayError)
@@ -731,6 +735,8 @@ namespace ServidorDB.otros
                                     if (!hayError)
                                     {
                                         String fechahora = Convert.ToString(DateTime.Now);
+                                        int filas_recuperadas = (dnu != null) ? dnu.Rows.Count : 0;
+                                        Constante.mensaje += ">> " + filas_recuperadas.ToString() + " filas recuperadas \n";
                                         Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Seleccionar]\n";
                                         return dnu;
                                     }

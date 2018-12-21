@@ -1,8 +1,5 @@
 
+usar db5;
 
-usar db1;
 
-
-imprimir ( " Valor " );
-
-imprimir ( "jajajajajaj" );
+seleccionar * de estudiante ;

@@ -25,6 +25,7 @@ namespace ServidorDB.otros
             if (!master.Dbs.ContainsKey(db.Nombre))
             {
                 String fechahora = Convert.ToString(DateTime.Now);
+                Constante.mensaje += ">> Se creo la base de datos " + db.Nombre + "\n";
                 Constante.rtb_consola.Text += ">> " + fechahora + " "+Constante.usuario_actual + " [Instruccion Crear][Crea BaseDatos: " + db.Nombre+"]\n";
                 master.crear_base_datos(db.Nombre, db);
                 estado_aceptacion = true;
@@ -44,6 +45,7 @@ namespace ServidorDB.otros
             if (!master.Usuarios.ContainsKey(usr.Nombre))
             {
                 String fechahora = Convert.ToString(DateTime.Now);
+                Constante.mensaje += ">> Se creo el usuario " + usr.Nombre + "\n";
                 Constante.rtb_consola.Text += ">> " + fechahora + " admin [El admin creo el usuario: "+usr.Nombre+"]\n";
                 master.crear_usuario(usr.Nombre, usr);
                 estado_aceptacion = true;
@@ -121,6 +123,10 @@ namespace ServidorDB.otros
                             Constante.global.agregar(new tabla_simbolos.Simbolo(tabla_simbolos.Simbolo.OBJETO, Constante.ID, procs.Nombre, procs));
                         }
                     }
+
+                    Constante.mensaje += ">> Base de datos actual: " + nombre + "\n";
+                    String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Usar][Base de datos actual " + nombre + "]\n";
                 }
                 else
                 {
@@ -178,6 +184,7 @@ namespace ServidorDB.otros
                             t.Usuarios.Add(Constante.usuario_admin);
 
                             String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.mensaje += ">> Se creo la tabla " + t.Nombre + "\n";
                             Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea tabla: " + t.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Tablas.Add(t.Nombre, t);
                             estado_aceptacion = true;
@@ -206,8 +213,8 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de crear una Tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", t.Line, t.Colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            //Constante.db_actual = "";
+            //Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -254,6 +261,7 @@ namespace ServidorDB.otros
                             obj.Usuarios.Add(Constante.usuario_admin);
 
                             String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.mensaje += ">> Se creo el objeto " + obj.Nombre + "\n";
                             Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea objeto: " + obj.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Objetos.Add(obj.Nombre, obj);
                             estado_aceptacion = true;
@@ -283,8 +291,8 @@ namespace ServidorDB.otros
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", obj.Line, obj.Colm));
             }
 
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            //Constante.db_actual = "";
+            //Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -331,6 +339,7 @@ namespace ServidorDB.otros
                             fun.Usuarios.Add(Constante.usuario_admin);
 
                             String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.mensaje += ">> Se creo la funcion " + fun.Nombre + "\n";
                             Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea funcion: " + fun.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Funciones.Add(fun.Nombre, fun);
                             estado_aceptacion = true;
@@ -405,6 +414,7 @@ namespace ServidorDB.otros
                             fun.Usuarios.Add(Constante.usuario_admin);
 
                             String fechahora = Convert.ToString(DateTime.Now);
+                            Constante.mensaje += ">> Se creo un procedimiento " + fun.Nombre + "\n";
                             Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Crear][Crea procedimiento: " + fun.Nombre + "]\n";
                             master.Dbs[Constante.db_actual].Procedimientos.Add(fun.Nombre, fun);
                             estado_aceptacion = true;
@@ -505,6 +515,7 @@ namespace ServidorDB.otros
                                     t.Registros.Columns.Remove(si_existen[i]);
                                 }
                                 String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.mensaje += ">> Se modifico la tabla " + t.Nombre + "\n";
                                 Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Quita atributos tabla: " + t.Nombre + "]\n";
                                 estado_aceptacion = true;
                             }
@@ -538,8 +549,8 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de agregar atributos a una Tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            //Constante.db_actual = "";
+            //Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -656,6 +667,7 @@ namespace ServidorDB.otros
 
                                     }
                                     String fechahora = Convert.ToString(DateTime.Now);
+                                    Constante.mensaje += ">> Se modifico la tabla " + t.Nombre + "\n";
                                     Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Agrega atributos tabla: " + t.Nombre + "]\n";
                                 }
                                 estado_aceptacion = true;
@@ -690,8 +702,8 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de agregar atributos a una Tabla";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            //Constante.db_actual = "";
+            //Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -756,6 +768,7 @@ namespace ServidorDB.otros
                                     }
                                 }
                                 String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.mensaje += ">> Se modifico el objeto " + obj.Nombre + "\n";
                                 Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Quita atributos objeto: " + obj.Nombre + "]\n";
                                 estado_aceptacion = true;
                             }
@@ -789,8 +802,8 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de quitar atributos un Objeto";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            //Constante.db_actual = "";
+            //Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -857,6 +870,7 @@ namespace ServidorDB.otros
                                     }
                                 }
                                 String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.mensaje += ">> Se modifico el objeto " + obj.Nombre + "\n";
                                 Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Agrega atributos objeto: " + obj.Nombre + "]\n";
                                 estado_aceptacion = true;
                             }
@@ -890,8 +904,8 @@ namespace ServidorDB.otros
                 string msg = "Se debe usar la instruccion 'usar' antes de agregar atributos a un Objeto";
                 uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
             }
-            Constante.db_actual = "";
-            Constante.usuando_db_actual = false;
+            //Constante.db_actual = "";
+            //Constante.usuando_db_actual = false;
             master.generar_xml();
             return estado_aceptacion;
         }
@@ -917,6 +931,7 @@ namespace ServidorDB.otros
                     Usuario usr = master.Usuarios[id];
                     usr.Password = password;
                     String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.mensaje += ">> Se modifico el passwor al usuario " + usr.Nombre + "\n";
                     Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Cambia password al usuario: " + usr.Nombre + "]\n";
                     estado_aceptacion = true;
                 }
@@ -937,6 +952,7 @@ namespace ServidorDB.otros
                         Usuario usr = master.Usuarios[id];
                         usr.Password = password;
                         String fechahora = Convert.ToString(DateTime.Now);
+                        Constante.mensaje += ">> Se modifico el password " + usr.Nombre + "\n";
                         Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Alter][Cambia password al usuario: " + usr.Nombre + "]\n";
                         estado_aceptacion = true;
                     }
@@ -1046,6 +1062,7 @@ namespace ServidorDB.otros
                                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                 }
                                 String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.mensaje += ">> Se elimino la tabla " + nombre + "\n";
                                 Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina tabla: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
@@ -1152,6 +1169,7 @@ namespace ServidorDB.otros
                                     uSintactico.uerrores.Add(new uError(Constante.LOGICO, msg, "", line, colm));
                                 }
                                 String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.mensaje += ">> Se elimino la funcion " + nombre + "\n";
                                 Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina funcion: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
@@ -1259,6 +1277,7 @@ namespace ServidorDB.otros
                                 }
 
                                 String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.mensaje += ">> Se elimino el objeto " + nombre + "\n";
                                 Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina objeto: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
@@ -1366,6 +1385,7 @@ namespace ServidorDB.otros
                                 }
 
                                 String fechahora = Convert.ToString(DateTime.Now);
+                                Constante.mensaje += ">> Se elimino el procedimiento " + nombre + "\n";
                                 Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina procedimiento: " + nombre + "]\n";
                                 estado_aceptacion = true;
                             }
@@ -1425,6 +1445,7 @@ namespace ServidorDB.otros
                         estado_aceptacion = true;
 
                         String fechahora = Convert.ToString(DateTime.Now);
+                        Constante.mensaje += ">> Se elimino el usuario " + nombre + "\n";
                         Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Drop][Elimina usuario: " + nombre + "]\n";
 
                         //como lo elimine debo eliminar los usuarios de este nombre en todos los objetos

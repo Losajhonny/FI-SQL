@@ -33,6 +33,7 @@ namespace ServidorDB.analizadores.usql
         public static void analizar_usql(string entrada)
         {
             //reiniciando todo
+            Constante.mensaje = "";
             Constante.informacion_select = "";
             Constante.informacion_consola = "";
             uSintactico.uerrores.Clear();

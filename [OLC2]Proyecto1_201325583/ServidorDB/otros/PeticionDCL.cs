@@ -34,6 +34,7 @@ namespace ServidorDB.otros
                     if (!ban) { basedatos.Usuarios.Add(usuario); }
 
                     String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.mensaje += ">> Se otorgo permiso un usuario : " + usuario + " al objeto : " + objeto + "\n";
                     Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Otorgar][Permiso de usuario:"+usuario+" al objeto:" + objeto + "]\n";
 
                     if (objeto != null)
@@ -184,6 +185,7 @@ namespace ServidorDB.otros
                     }
                     if (!ban) { basedatos.Usuarios.Remove(usuario); }
                     String fechahora = Convert.ToString(DateTime.Now);
+                    Constante.mensaje += ">> Se denego un usuario : " + usuario + " al objeto : " + objeto + "\n";
                     Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Denegar][Denegar de usuario:" + usuario + " al objeto:" + objeto + "]\n";
                     if (objeto != null)
                     {

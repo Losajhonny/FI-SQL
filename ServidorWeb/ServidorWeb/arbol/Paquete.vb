@@ -184,7 +184,6 @@ Public Class Paquete
             ''dejo que lo procese por intervalor pequeño de tiempo
             Threading.Thread.Sleep(100)
             ''solo que aqui debo retornar el valor devuelto por el sistema
-            Return connect.Recibir(socket)
         End If
 
         Return Nothing
@@ -193,6 +192,15 @@ Public Class Paquete
     Public Function responder() As Object Implements Instruccion.responder
         If Tipo_paquete = LOGIN Then
             Return Log
+        ElseIf Tipo_paquete = INST Then
+            If Filas Is Nothing Then
+                Return Respuesta
+            Else
+                'padar los datos de la lista a un datatable
+                Return ObtenerInfo_Select()
+            End If
+        ElseIf Tipo_paquete = ERRORR Then
+            ''aqui siempre debo de devolver un datatable
         End If
 
 
@@ -220,5 +228,38 @@ Public Class Paquete
 
 
         Return False
+    End Function
+
+
+    Public Function ObtenerInfo_Select() As Object
+        Dim dt As DataTable = New DataTable("Tabla")
+
+        'debo buscar en la primera fila de la lista
+        'las columnas a agregar en el datatable
+        'despues ya realizar el recorrido normal
+
+        ''en esta ocasion las columnas siempre viene por lo menos 1
+
+        For i = 0 To Filas.Count - 1
+            For j = 0 To Filas(i).Count - 1
+                ''obteniedo y creando las columnas
+                Dim dc As DataColumn = New DataColumn(Filas(i)(j).Nombre)
+                dt.Columns.Add(dc)
+            Next
+            Exit For
+        Next
+
+        ''ahora debo ingresar todas las filas
+        For i = 0 To Filas.Count - 1
+            Dim dr As DataRow = dt.NewRow()
+
+            For j = 0 To Filas(i).Count - 1
+                ''ingresando valores
+                dr(Filas(i)(j).Nombre) = Filas(i)(j).Valor
+            Next
+
+            dt.Rows.Add(dr)
+        Next
+        Return dt
     End Function
 End Class

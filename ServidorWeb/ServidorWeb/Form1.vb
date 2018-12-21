@@ -137,9 +137,11 @@ Public Class Form1
         Dim cadena As String = texto.Text
 
         ''aqui realizar la peticion de instruccion
-        Dim respuesta As Object = logica.paquete_Instruccion(cadena)
+        logica.paquete_Instruccion(cadena)
 
-        Me.RichTextBox1.Text = respuesta
+        rtb_plan_ejecucion.Text = logica.log
+        rtb_mensaje.Text = logica.consola
+        ''mostrar la tabla
     End Sub
 
     Private Sub btn_ejecutar_Click(sender As Object, e As EventArgs) Handles btn_ejecutar.Click

@@ -34,10 +34,16 @@ Partial Class Form1
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.FISQL = New System.Windows.Forms.TabPage()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.btn_ejescript = New System.Windows.Forms.Button()
+        Me.btn_ejecutar = New System.Windows.Forms.Button()
         Me.TabControl2 = New System.Windows.Forms.TabControl()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.gv_salida = New System.Windows.Forms.DataGridView()
         Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.rtb_plan_ejecucion = New System.Windows.Forms.RichTextBox()
         Me.TabPage6 = New System.Windows.Forms.TabPage()
+        Me.rtb_mensaje = New System.Windows.Forms.RichTextBox()
         Me.TabPage7 = New System.Windows.Forms.TabPage()
         Me.tabide = New System.Windows.Forms.TabControl()
         Me.TreeView1 = New System.Windows.Forms.TreeView()
@@ -48,19 +54,18 @@ Partial Class Form1
         Me.HerramientasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LoginToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-        Me.btn_ejescript = New System.Windows.Forms.Button()
-        Me.btn_ejecutar = New System.Windows.Forms.Button()
-        Me.RichTextBox1 = New System.Windows.Forms.RichTextBox()
         Me.tab_inicial.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.pictureline, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel1.SuspendLayout()
         Me.FISQL.SuspendLayout()
+        Me.FlowLayoutPanel1.SuspendLayout()
         Me.TabControl2.SuspendLayout()
         Me.TabPage4.SuspendLayout()
+        CType(Me.gv_salida, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.TabPage5.SuspendLayout()
+        Me.TabPage6.SuspendLayout()
         Me.menuBar.SuspendLayout()
-        Me.FlowLayoutPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'tab_inicial
@@ -179,6 +184,33 @@ Partial Class Form1
         Me.FISQL.TabIndex = 1
         Me.FISQL.Text = "FISQL - IDE"
         '
+        'FlowLayoutPanel1
+        '
+        Me.FlowLayoutPanel1.Controls.Add(Me.btn_ejescript)
+        Me.FlowLayoutPanel1.Controls.Add(Me.btn_ejecutar)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(233, 34)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(1087, 38)
+        Me.FlowLayoutPanel1.TabIndex = 4
+        '
+        'btn_ejescript
+        '
+        Me.btn_ejescript.Location = New System.Drawing.Point(3, 3)
+        Me.btn_ejescript.Name = "btn_ejescript"
+        Me.btn_ejescript.Size = New System.Drawing.Size(111, 35)
+        Me.btn_ejescript.TabIndex = 0
+        Me.btn_ejescript.Text = "Ejecutar Script"
+        Me.btn_ejescript.UseVisualStyleBackColor = True
+        '
+        'btn_ejecutar
+        '
+        Me.btn_ejecutar.Location = New System.Drawing.Point(120, 3)
+        Me.btn_ejecutar.Name = "btn_ejecutar"
+        Me.btn_ejecutar.Size = New System.Drawing.Size(82, 35)
+        Me.btn_ejecutar.TabIndex = 1
+        Me.btn_ejecutar.Text = "Ejecutar"
+        Me.btn_ejecutar.UseVisualStyleBackColor = True
+        '
         'TabControl2
         '
         Me.TabControl2.Controls.Add(Me.TabPage4)
@@ -193,7 +225,7 @@ Partial Class Form1
         '
         'TabPage4
         '
-        Me.TabPage4.Controls.Add(Me.RichTextBox1)
+        Me.TabPage4.Controls.Add(Me.gv_salida)
         Me.TabPage4.Location = New System.Drawing.Point(4, 25)
         Me.TabPage4.Name = "TabPage4"
         Me.TabPage4.Padding = New System.Windows.Forms.Padding(3)
@@ -202,8 +234,22 @@ Partial Class Form1
         Me.TabPage4.Text = "Salida Datos"
         Me.TabPage4.UseVisualStyleBackColor = True
         '
+        'gv_salida
+        '
+        Me.gv_salida.AllowUserToAddRows = False
+        Me.gv_salida.AllowUserToDeleteRows = False
+        Me.gv_salida.BackgroundColor = System.Drawing.SystemColors.ButtonFace
+        Me.gv_salida.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.gv_salida.Location = New System.Drawing.Point(6, 6)
+        Me.gv_salida.Name = "gv_salida"
+        Me.gv_salida.ReadOnly = True
+        Me.gv_salida.RowTemplate.Height = 24
+        Me.gv_salida.Size = New System.Drawing.Size(1067, 243)
+        Me.gv_salida.TabIndex = 0
+        '
         'TabPage5
         '
+        Me.TabPage5.Controls.Add(Me.rtb_plan_ejecucion)
         Me.TabPage5.Location = New System.Drawing.Point(4, 25)
         Me.TabPage5.Name = "TabPage5"
         Me.TabPage5.Padding = New System.Windows.Forms.Padding(3)
@@ -212,8 +258,17 @@ Partial Class Form1
         Me.TabPage5.Text = "Plan Ejecucion"
         Me.TabPage5.UseVisualStyleBackColor = True
         '
+        'rtb_plan_ejecucion
+        '
+        Me.rtb_plan_ejecucion.Location = New System.Drawing.Point(3, 3)
+        Me.rtb_plan_ejecucion.Name = "rtb_plan_ejecucion"
+        Me.rtb_plan_ejecucion.Size = New System.Drawing.Size(1070, 246)
+        Me.rtb_plan_ejecucion.TabIndex = 0
+        Me.rtb_plan_ejecucion.Text = ""
+        '
         'TabPage6
         '
+        Me.TabPage6.Controls.Add(Me.rtb_mensaje)
         Me.TabPage6.Location = New System.Drawing.Point(4, 25)
         Me.TabPage6.Name = "TabPage6"
         Me.TabPage6.Size = New System.Drawing.Size(1079, 252)
@@ -221,13 +276,21 @@ Partial Class Form1
         Me.TabPage6.Text = "Mensajes"
         Me.TabPage6.UseVisualStyleBackColor = True
         '
+        'rtb_mensaje
+        '
+        Me.rtb_mensaje.Location = New System.Drawing.Point(3, 3)
+        Me.rtb_mensaje.Name = "rtb_mensaje"
+        Me.rtb_mensaje.Size = New System.Drawing.Size(1073, 246)
+        Me.rtb_mensaje.TabIndex = 0
+        Me.rtb_mensaje.Text = ""
+        '
         'TabPage7
         '
         Me.TabPage7.Location = New System.Drawing.Point(4, 25)
         Me.TabPage7.Name = "TabPage7"
         Me.TabPage7.Size = New System.Drawing.Size(1079, 252)
         Me.TabPage7.TabIndex = 3
-        Me.TabPage7.Text = "Historial"
+        Me.TabPage7.Text = "Lista Errores"
         Me.TabPage7.UseVisualStyleBackColor = True
         '
         'tabide
@@ -289,41 +352,6 @@ Partial Class Form1
         'Timer1
         '
         '
-        'FlowLayoutPanel1
-        '
-        Me.FlowLayoutPanel1.Controls.Add(Me.btn_ejescript)
-        Me.FlowLayoutPanel1.Controls.Add(Me.btn_ejecutar)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(233, 34)
-        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(1087, 38)
-        Me.FlowLayoutPanel1.TabIndex = 4
-        '
-        'btn_ejescript
-        '
-        Me.btn_ejescript.Location = New System.Drawing.Point(3, 3)
-        Me.btn_ejescript.Name = "btn_ejescript"
-        Me.btn_ejescript.Size = New System.Drawing.Size(111, 35)
-        Me.btn_ejescript.TabIndex = 0
-        Me.btn_ejescript.Text = "Ejecutar Script"
-        Me.btn_ejescript.UseVisualStyleBackColor = True
-        '
-        'btn_ejecutar
-        '
-        Me.btn_ejecutar.Location = New System.Drawing.Point(120, 3)
-        Me.btn_ejecutar.Name = "btn_ejecutar"
-        Me.btn_ejecutar.Size = New System.Drawing.Size(82, 35)
-        Me.btn_ejecutar.TabIndex = 1
-        Me.btn_ejecutar.Text = "Ejecutar"
-        Me.btn_ejecutar.UseVisualStyleBackColor = True
-        '
-        'RichTextBox1
-        '
-        Me.RichTextBox1.Location = New System.Drawing.Point(23, 6)
-        Me.RichTextBox1.Name = "RichTextBox1"
-        Me.RichTextBox1.Size = New System.Drawing.Size(784, 221)
-        Me.RichTextBox1.TabIndex = 0
-        Me.RichTextBox1.Text = ""
-        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -340,11 +368,14 @@ Partial Class Form1
         Me.Panel1.PerformLayout()
         Me.FISQL.ResumeLayout(False)
         Me.FISQL.PerformLayout()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.TabControl2.ResumeLayout(False)
         Me.TabPage4.ResumeLayout(False)
+        CType(Me.gv_salida, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.TabPage5.ResumeLayout(False)
+        Me.TabPage6.ResumeLayout(False)
         Me.menuBar.ResumeLayout(False)
         Me.menuBar.PerformLayout()
-        Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -377,5 +408,7 @@ Partial Class Form1
     Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
     Friend WithEvents btn_ejescript As Button
     Friend WithEvents btn_ejecutar As Button
-    Friend WithEvents RichTextBox1 As RichTextBox
+    Friend WithEvents rtb_plan_ejecucion As RichTextBox
+    Friend WithEvents rtb_mensaje As RichTextBox
+    Friend WithEvents gv_salida As DataGridView
 End Class

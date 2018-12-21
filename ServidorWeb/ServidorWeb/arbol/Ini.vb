@@ -32,33 +32,33 @@ Public Class Ini
         End Set
     End Property
 
+    ''SOLO ME TIENEN QUE ENVIAR INFO A LA BASE DE DATOS
     Public Function ejecutar() As Object Implements Instruccion.ejecutar
         ''aqui debo de enviar los datos por subpaquetes solamente
         ''debo enviar el validar despues miro que mas enviar
-        Dim retorno As Object = Nothing
 
-        If Not (socket Is Nothing) And Not (Package Is Nothing) And Not (Validar Is Nothing) Then
-            If Package.Tipo_paquete = Paquete.FIN Then
-                ''como me confundi el paquete fin no tiene que enviar validar para su proceso
-                ''entonces solo debo ejecutar el paquete
-                ''solo que este si retornara un valor
-                Package.connect = connect
-                Package.socket = socket
-                retorno = Package.ejecutar()
-            Else
-                ''estoy enviando el validar
-                connect.Enviar("validar~" + Validar, socket)
-                ''dejo que lo procese por intervalor pequeño de tiempo
-                Threading.Thread.Sleep(100)
+        ''debo ejecutarlo solamente si existe el socket y paquete y validar
+        'If Not (socket Is Nothing) And Not (Package Is Nothing) And Not (Validar Is Nothing) Then
+        If Package.Tipo_paquete = Paquete.FIN Then
+            ''como me confundi el paquete fin no tiene que enviar validar para su proceso
+            ''entonces solo debo ejecutar el paquete
+            Package.connect = connect
+            Package.socket = socket
+            Package.ejecutar()
+        Else
+            ''estoy enviando el validar
+            connect.Enviar("validar~" + Validar, socket)
+            ''dejo que lo procese por intervalor pequeño de tiempo
+            Threading.Thread.Sleep(100)
 
-                ''ahora debo enviar el paquete completo
-                Package.connect = connect
-                Package.socket = socket
-                Package.ejecutar()
-            End If
-
+            ''ahora debo enviar el paquete completo
+            Package.connect = connect
+            Package.socket = socket
+            Package.ejecutar()
         End If
-        Return retorno
+
+        'End If
+        Return Nothing
     End Function
 
     Public Function responder() As Object Implements Instruccion.responder

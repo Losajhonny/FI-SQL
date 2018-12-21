@@ -12,6 +12,7 @@ namespace ServidorDB.otros
 {
     class Constante
     {
+        public static string mensaje = "";
         public static string informacion_select = "";
         public const string NOTHING = "_nothing_";
         public static string informacion_consola = "";
