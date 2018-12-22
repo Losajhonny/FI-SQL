@@ -646,7 +646,7 @@ namespace ServidorDB.otros
                                     dv = new DataView();
                                     dv.Table = dnu;
                                 }
-                                catch (Exception ex) { hayError = true; }
+                                catch (Exception ex) { hayError = true; dnu = nuevo; }
 
                                 if (campos != null)
                                 {
@@ -738,11 +738,13 @@ namespace ServidorDB.otros
                                         int filas_recuperadas = (dnu != null) ? dnu.Rows.Count : 0;
                                         Constante.mensaje += ">> " + filas_recuperadas.ToString() + " filas recuperadas \n";
                                         Constante.rtb_consola.Text += ">> " + fechahora + " " + Constante.usuario_actual + " [Instruccion Seleccionar]\n";
+                                        Constante.tabla = dnu;
                                         return dnu;
                                     }
                                     else
                                     {
-                                        return null;
+                                        Constante.tabla = dnu;
+                                        return dnu;
                                     }
                                 }
                             }

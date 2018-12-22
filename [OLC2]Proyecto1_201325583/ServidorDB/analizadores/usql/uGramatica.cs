@@ -375,6 +375,7 @@ namespace ServidorDB.analizadores.usql
                            | LLAMADA + ptcoma
                            | pr_retorno + EXP + ptcoma
                            | pr_detener + ptcoma
+                           | SyntaxError + ptcoma
                            ;
             #endregion
 

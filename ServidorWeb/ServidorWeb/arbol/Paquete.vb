@@ -159,30 +159,30 @@ Public Class Paquete
             ''proceso el envio del login
             connect.Enviar("paquete~login", socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
-            Threading.Thread.Sleep(100)
+            Threading.Thread.Sleep(Conexion.DELAY)
             ''envio el usario
             connect.Enviar("usuario~" + Username, socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
-            Threading.Thread.Sleep(100)
+            Threading.Thread.Sleep(Conexion.DELAY)
             ''envio password
             connect.Enviar("password~" + Username, socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
-            Threading.Thread.Sleep(100)
+            Threading.Thread.Sleep(Conexion.DELAY)
             ''por lo tanto se termino el envio
         ElseIf Tipo_paquete = INST Then
             ''proceso el envio del usql
             connect.Enviar("paquete~usql", socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
-            Threading.Thread.Sleep(100)
+            Threading.Thread.Sleep(Conexion.DELAY)
             ''proceso el envio de l instruccion
             connect.Enviar("instruccion~" + Instruccion, socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
-            Threading.Thread.Sleep(100)
+            Threading.Thread.Sleep(Conexion.DELAY)
         ElseIf Tipo_paquete = FIN Then
             ''proceso el envio fin
             connect.Enviar("paquete~fin", socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
-            Threading.Thread.Sleep(100)
+            Threading.Thread.Sleep(Conexion.DELAY)
             ''solo que aqui debo retornar el valor devuelto por el sistema
         End If
 

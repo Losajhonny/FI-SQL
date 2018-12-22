@@ -71,6 +71,14 @@ namespace ServidorDB.otros
                     respuesta = "\"login\" : [ \"username\" : \""+usr.Nombre+"\" , \"login\" : true ]";
                     String fechahora = Convert.ToString(DateTime.Now);
                     Constante.rtb_consola.Text += ">> " + fechahora + " admin [El usuario " + usr.Nombre + " inicio sesion]\n";
+
+                    Constante.tabla = null;
+                    Constante.mensaje = "";
+                    Constante.informacion_select = "";
+        
+                    Constante.informacion_consola = "";
+                    Constante.usuando_db_actual = false;
+                    Constante.db_actual = "";//<-- este es solo para realizar varios usar
                 }
             }
 

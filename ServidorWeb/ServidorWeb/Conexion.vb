@@ -5,7 +5,8 @@ Imports System
 Imports System.Text
 
 Public Class Conexion
-    Public Const MAX_VALUE As Integer = 4096
+    Public Const MAX_VALUE As Integer = 8192
+    Public Const DELAY As Integer = 50
 
     ''' <summary>
     ''' Funcion que conecta con el servidor y le envia una cadena al servidor

@@ -62,12 +62,12 @@ namespace ServidorDB.arboles.usql
                 {
                     return LLAMADA1(padre.ChildNodes[0]);
                 }
-                else
+                else if (padre.ChildNodes[0].Term.Name.ToLower().Equals("detener"))
                 { // detener
                     return new Detener();
                 }
             }
-            else
+            else if (padre.ChildNodes[0].Term.Name.ToLower().Equals("retorno"))
             { // retorno
                 return new Retornar(EXPRESION(padre.ChildNodes[1]),
                     padre.ChildNodes[0].Token.Location.Line,

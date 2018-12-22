@@ -85,10 +85,16 @@ Module MyParser
 
     Public Program As Object     'You might derive a specific object
 
+    Public lista_error As List(Of pError)
+    Public recuperado As Boolean
+    Public ban_recuperacion As Boolean
+
     Public Sub Setup()
         'This procedure can be called to load the parse tables. The class can
         'read tables using a BinaryReader.
-
+        lista_error = New List(Of pError)
+        recuperado = False
+        ban_recuperacion = False
         Parser.LoadTables(Path.Combine(Application.StartupPath, "GramaticaVB.egt"))
     End Sub
 
@@ -118,10 +124,26 @@ Module MyParser
                 Case GOLD.ParseMessage.LexicalError
                     'Cannot recognize token
                     Done = True
+                    'If Not ban_recuperacion Then
+                    Dim line As Integer = Parser.CurrentPosition.Line
+                    Dim colm As Integer = Parser.CurrentPosition.Column
+                        Dim lex As String = Parser.DiscardCurrentToken().Data.ToString()
+
+                        Dim er As pError = New pError("Lexico", "", lex, line, colm)
+                    lista_error.Add(er)
+
+                    'End If
 
                 Case GOLD.ParseMessage.SyntaxError
                     'Expecting a different token
                     Done = True
+
+                    Dim line As Integer = Parser.CurrentPosition.Line
+                    Dim colm As Integer = Parser.CurrentPosition.Column
+                    Dim lex As String = "Se esperaba : " + Parser.DiscardCurrentToken().Data.ToString()
+
+                    Dim er As pError = New pError("Sintactico", lex, "", line, colm)
+                    lista_error.Add(er)
 
                 Case GOLD.ParseMessage.Reduction
                     'Create a customized object to store the reduction

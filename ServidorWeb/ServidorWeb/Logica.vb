@@ -14,6 +14,16 @@ Public Class Logica
     Public tabla As DataTable
     Public errorr As DataTable
 
+    Public Sub New()
+        errorr = New DataTable()
+        errorr.Columns.Add("Tipo Error")
+        errorr.Columns.Add("Descripcion")
+        errorr.Columns.Add("col")
+        errorr.Columns.Add("fila")
+        errorr.Columns.Add("lexema")
+        errorr.Columns.Add("lenguaje")
+    End Sub
+
     Public numAleatorio As New Random()
 
     Public Function paquete_Instruccion(ByVal instrucciones As String) As Object
@@ -77,16 +87,16 @@ Public Class Logica
 
         ''''''''''''''''''''''''' RECIBIENDO VALORES ''''''''''''''''''''''''''''''''
         respuesta_error = connect.Recibir(socket)
-        Thread.Sleep(100)
+        Threading.Thread.Sleep(Conexion.DELAY)
 
         respuesta_select = connect.Recibir(socket)
-        Thread.Sleep(100)
+        Threading.Thread.Sleep(Conexion.DELAY)
 
         respuesta_log = connect.Recibir(socket)
-        Thread.Sleep(100)
+        Threading.Thread.Sleep(Conexion.DELAY)
 
         respuesta_consola = connect.Recibir(socket)
-        Thread.Sleep(100)
+        Threading.Thread.Sleep(Conexion.DELAY)
 
 
         ' LAS RESPUESTAS ME VIENEN EN FORMATO PLYCS DEBO EJECUTARLO EN EL ANALIZADOR PARA OBTENER RESULTAOS
@@ -98,7 +108,11 @@ Public Class Logica
                 MyParser.Parse(New StringReader(respuesta_error)).ToString()
                 Dim resErr As Ini = MyParser.Parser.CurrentReduction
                 If Not resErr Is Nothing Then
-                    errorr = resErr.responder()
+                    Dim obj As Object = resErr.responder()
+
+                    If TypeOf obj Is DataTable Then
+                        errorr = resErr.responder()
+                    End If
                 End If
             End If
         End If
@@ -110,8 +124,12 @@ Public Class Logica
                 MyParser.Parse(New StringReader(respuesta_select)).ToString()
                 Dim resSel As Ini = MyParser.Parser.CurrentReduction
 
+
                 If Not resSel Is Nothing Then
-                    tabla = resSel.responder()
+                    Dim obj As Object = resSel.responder()
+                    If TypeOf obj Is DataTable Then
+                        tabla = resSel.responder()
+                    End If
                 End If
             End If
         End If
@@ -264,7 +282,7 @@ Public Class Logica
         '''''''''''''''''''''''' RETORNANDO RESPUESTA ''''''''''''''''''''''''''''''''''''''
         Dim resultado As String = Me.Nothingg
         resultado = connect.Recibir(socket)     ''obteniendo la respuesta del servidor db
-        Thread.Sleep(100)
+        Threading.Thread.Sleep(Conexion.DELAY)
 
         Dim aceptado As Boolean = False
 

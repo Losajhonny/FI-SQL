@@ -1,1 +1,4 @@
-seleccionar * de estudiante;
+
+usar db5;
+
+Seleccion@ar * de estudiante;

@@ -23,7 +23,8 @@ namespace ServidorDB
     {
         public const int CONCATENAR = 0;
         public const int REEMPLAZAR = 1;
-        public const int MAX_VALUE = 4096;
+        public const int MAX_VALUE = 8192;
+        public const int DELAY = 50;
         public bool conectado = true;
 
         public string paquete = ""; //me indica en que paquete estoy
@@ -43,7 +44,15 @@ namespace ServidorDB
             InitializeComponent();
             Control.CheckForIllegalCrossThreadCalls = false;
             Constante.rtb_consola = this.consola;
-            
+
+
+            //string prueba = "@ident = 10+2*2^2+2-1+1*2^2^2*1;\n";
+            //prueba += "@ident = 1010101\n";
+            //prueba += "@ident = 1010101;\n";
+            //prueba += "@ident = 1010101;\n";
+            //prueba += "@ident = 1010101;\n";
+            //uSintactico.analizar(prueba);
+
             Iniciar_Servidor();
         }
 
@@ -123,7 +132,7 @@ namespace ServidorDB
                     //solo estos subpaquetes se enviaran en el proceso media vez termine con "fin"
                     //entonces salir del bucle y realizar la transaccion
                     //setTextConsola("Text received : " + dato_recivido + "\n", CONCATENAR);
-                    Thread.Sleep(100);
+                    Thread.Sleep(DELAY);
                 }
 
                 //aqui se realiza el proceso de la transaccion
@@ -178,7 +187,7 @@ namespace ServidorDB
             msg = Encoding.ASCII.GetBytes(respuesta);
             handler.Send(msg);
             //intervalor de tiempo
-            Thread.Sleep(100);
+            Thread.Sleep(DELAY);
 
 
             /*[
@@ -214,8 +223,9 @@ namespace ServidorDB
                 error += "[" +
                     "\"Tipo Error\" : \"" + uSintactico.uerrores[i].Tipo + "\" , " +
                     "\"Descripcion\" : \"" + uSintactico.uerrores[i].Descripcion + "\" ," +
-                    "\"col\" : \"" + uSintactico.uerrores[i].Colm.ToString() + "\" ," +
+                    
                     "\"fila\" : \"" + uSintactico.uerrores[i].Line.ToString() + "\" ," +
+                    "\"col\" : \"" + uSintactico.uerrores[i].Colm.ToString() + "\" ," +
                     "\"lexema\" : \"" + uSintactico.uerrores[i].Lexema + " ." + "\" ," +
                     "\"lenguaje\" : \"Lenguaje USQL\"" +
                     "]";
@@ -226,8 +236,9 @@ namespace ServidorDB
                 error += "[" +
                    "\"Tipo Error\" : \"" + xSintactico.errores[i].Tipo + "\" , " +
                    "\"Descripcion\" : \"" + xSintactico.errores[i].Descripcion + "\" ," +
-                   "\"col\" : \"" + xSintactico.errores[i].Colm.ToString() + "\" ," +
+                   
                    "\"fila\" : \"" + xSintactico.errores[i].Line.ToString() + "\" ," +
+                   "\"col\" : \"" + xSintactico.errores[i].Colm.ToString() + "\" ," +
                    "\"lexema\" : \"" + xSintactico.errores[i].Lexema + " ." + "\" ," +
                    "\"lenguaje\" : \"Lenguaje XML\"" +
                    "]";
@@ -249,7 +260,7 @@ namespace ServidorDB
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
             handler.Send(msg);              // -------> ENVIANDO ARCHIVO DE ERRORES
-            Thread.Sleep(100);
+            Thread.Sleep(DELAY);
 
             /*Enviando informacion del select
             */
@@ -263,7 +274,7 @@ namespace ServidorDB
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
             handler.Send(msg);              // -------> ENVIANDO INFORMACION SELECT
-            Thread.Sleep(100);
+            Thread.Sleep(DELAY);
 
 
             /*Enviando mensaje de lo que se ha realizado
@@ -278,7 +289,7 @@ namespace ServidorDB
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
             handler.Send(msg);              // --------> ENVIANDO LOG DE QUE SE REALIZO
-            Thread.Sleep(100);
+            Thread.Sleep(DELAY);
 
             /*Enviando mensaje de lo que se ha realizado
              */
@@ -292,7 +303,7 @@ namespace ServidorDB
             msg = new byte[MAX_VALUE];
             msg = Encoding.ASCII.GetBytes(respuesta);
             handler.Send(msg);              // --------> ENVIANDO Consola DE QUE SE REALIZO
-            Thread.Sleep(100);
+            Thread.Sleep(DELAY);
         }
 
         delegate void StringChangeText(string text, int tipo);

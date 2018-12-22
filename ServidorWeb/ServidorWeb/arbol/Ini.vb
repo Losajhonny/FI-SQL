@@ -49,7 +49,7 @@ Public Class Ini
             ''estoy enviando el validar
             connect.Enviar("validar~" + Validar, socket)
             ''dejo que lo procese por intervalor pequeño de tiempo
-            Threading.Thread.Sleep(100)
+            Threading.Thread.Sleep(Conexion.DELAY)
 
             ''ahora debo enviar el paquete completo
             Package.connect = connect

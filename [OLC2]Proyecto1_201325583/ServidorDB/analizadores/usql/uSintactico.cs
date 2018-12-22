@@ -26,6 +26,23 @@ namespace ServidorDB.analizadores.usql
 
             //para los errores buscarlos en arbol
             ParseTreeNode root = arbol.Root;
+            List<arboles.usql.uInstruccion> inst = null;
+            if(root != null)
+            {
+                inst = arboles.usql.uArbol.SENTENCIAS(root);
+            }
+
+            for(int i = 0; i < arbol.ParserMessages.Count; i++)
+            {
+                string tipo = "Sintactico/Lexico";
+                int line = arbol.ParserMessages[i].Location.Line;
+                int colm = arbol.ParserMessages[i].Location.Column;
+                string descripcion = arbol.ParserMessages[i].Message;
+                string lexema = "";
+                uError er = new uError(tipo, descripcion, lexema, line, colm);
+                uerrores.Add(er);
+            }
+
             generar_grafoAST(root);
             return root;
         }
@@ -33,6 +50,7 @@ namespace ServidorDB.analizadores.usql
         public static void analizar_usql(string entrada)
         {
             //reiniciando todo
+            Constante.tabla = null;
             Constante.mensaje = "";
             Constante.informacion_select = "";
             Constante.informacion_consola = "";
@@ -40,12 +58,12 @@ namespace ServidorDB.analizadores.usql
             xSintactico.errores.Clear();
 
             Constante.crear_archivo(Constante.RUTA_USQL_SCRIPT, entrada);
-            ParseTreeNode raiz = uSintactico.analizar(entrada);
+            ParseTreeNode raiz = analizar(entrada);
 
             DateTime fechahora = DateTime.Now;
             string tiempo = Convert.ToString(fechahora);
             Constante.rtb_consola.Text += (">> " + tiempo + " admin [Analisis USQL]\n");
-
+            
             if(raiz != null)
             {
                 //por el momento solo ejecuto expresion suma
@@ -60,29 +78,34 @@ namespace ServidorDB.analizadores.usql
                 object obj = null;
                 for (int i = 0; i < inst.Count; i++)
                 {
-                    obj = inst[i].ejecutar(subGlobal);
-                    if (obj is arboles.usql.Detener)
+
+                    if (inst[i] is arboles.usql.SSL.Asignacion || inst[i] is arboles.usql.SSL.Declarar
+                        || inst[i] is arboles.usql.SSL.Mientras || inst[i] is arboles.usql.SSL.Para || obj is arboles.usql.SSL.Si
+                        || inst[i] is arboles.usql.SSL.Selecciona || inst[i] is arboles.usql.SSL.Imprimir)
                     {
-                        arboles.usql.Detener dt = (arboles.usql.Detener)obj;
-                        String msg = "La sentencia detener no pertenece al ambito";
+                        String msg = "Las sentencia SSL no pertenece a este ambito";
                         uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
+                    }
+                    else
+                    {
+
+                        obj = inst[i].ejecutar(subGlobal);
+                        if (obj is arboles.usql.Detener)
+                        {
+                            arboles.usql.Detener dt = (arboles.usql.Detener)obj;
+                            String msg = "La sentencia detener no pertenece al ambito";
+                            uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
+
+                        }
 
                     }
-                    //else if (obj is arboles.usql.SSL.Asignacion || obj is arboles.usql.SSL.Declarar
-                    //    || obj is arboles.usql.SSL.Mientras || obj is arboles.usql.SSL.Para || obj is arboles.usql.SSL.Si
-                    //    || obj is arboles.usql.SSL.Selecciona || obj is arboles.usql.SSL.Imprimir)
-                    //{
-                    //    String msg = "La sentencia detener no pertenece al ambito";
-                    //    uSintactico.uerrores.Add(new uError(Constante.SEMANTICO, msg, "", 0, 0));
-                    //}
+
                 }
 
-                if(obj != null)
+                if(Constante.tabla != null)
                 {
-                    if(obj is DataTable)
-                    {
-                        //debo craear un string con los resultados
-                        DataTable datos = (DataTable)obj;
+                    //debo craear un string con los resultados
+                        DataTable datos = Constante.tabla;
                         
                         if(datos.Rows.Count == 0)
                         {
@@ -131,10 +154,8 @@ namespace ServidorDB.analizadores.usql
                             Constante.informacion_select = info;
                         }
                     }
-                    //si no hay errores
-                    //debo retornar un valor de la ultima instruccion generada
-                }
             }
+            
         }
 
         /**

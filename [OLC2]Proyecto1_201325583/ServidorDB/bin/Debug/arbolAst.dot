@@ -1,22 +1,2 @@
 digraph grafo{
-node [shape = egg];
-3927761[label="SENTENCIAS", style = filled, color = lightblue];
-66771947[label="SENTENCIA", style = filled, color = lightblue];
-3927761->66771947;
-61381290[label="DML", style = filled, color = lightblue];
-66771947->61381290;
-36848977[label="SELECT", style = filled, color = lightblue];
-61381290->36848977;
-22452836[label="seleccionar (Keyword)", style = filled, color = lightblue];
-36848977->22452836;
-46153895[label="* (Key symbol)", style = filled, color = lightblue];
-36848977->46153895;
-46418718[label="de (Keyword)", style = filled, color = lightblue];
-36848977->46418718;
-50920718[label="LISTA_ID", style = filled, color = lightblue];
-36848977->50920718;
-60345850[label="estudiante (id)", style = filled, color = lightblue];
-50920718->60345850;
-19246503[label="; (Key symbol)", style = filled, color = lightblue];
-61381290->19246503;
 }

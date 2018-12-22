@@ -80,6 +80,7 @@
     <Compile Include="arbol\Ini.vb" />
     <Compile Include="arbol\Instruccion.vb" />
     <Compile Include="arbol\Paquete.vb" />
+    <Compile Include="arbol\pError.vb" />
     <Compile Include="Conexion.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
@@ -129,8 +130,20 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="resource\" />
+    <Content Include="resource\icons8-agregar-archivo-48.png" />
+    <Content Include="resource\icons8-borrar-48.png" />
+    <Content Include="resource\icons8-carpeta-48.png" />
+    <Content Include="resource\icons8-cerrar-sesión-48.png" />
+    <Content Include="resource\icons8-eliminar-archivo-48.png" />
+    <Content Include="resource\icons8-guardar-cerrar-48.png" />
+    <Content Include="resource\icons8-guardar-todo-48.png" />
+    <Content Include="resource\icons8-herramientas-del-administrador-48.png" />
+    <Content Include="resource\icons8-play-48.png" />
+    <Content Include="resource\icons8-voluta-48.png" />
+    <Content Include="resource\script.png" />
+    <Content Include="resource\script_.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

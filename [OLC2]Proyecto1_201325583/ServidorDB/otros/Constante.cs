@@ -2,6 +2,7 @@
 using ServidorDB.tabla_simbolos;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace ServidorDB.otros
 {
     class Constante
     {
+        public static DataTable tabla = null;
         public static string mensaje = "";
         public static string informacion_select = "";
         public const string NOTHING = "_nothing_";

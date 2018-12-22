@@ -11,7 +11,7 @@ Public Class Form1
     Private Sub btn_iniciar_Click(sender As Object, e As EventArgs) Handles btn_iniciar.Click
         If Not (txt_usuario.Text.Equals("") And txt_password.Text.Equals("")) Then
             ''realizar la peticion
-            Dim resultado As Boolean = logica.inicio_sesion(txt_usuario.Text, txt_password.Text)
+            Dim resultado As Boolean = logica.inicio_sesion(txt_usuario.Text.ToLower(), txt_password.Text)
             ''ahora debo de analizar el resultado
             ''ya recibi la peticion
 
@@ -27,6 +27,8 @@ Public Class Form1
                 tab_inicial.SelectedIndex = 0
 
                 rtb_log.Text = logica.log2
+            Else
+                MessageBox.Show("El usuario no existe", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
 
 
@@ -38,7 +40,6 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Timer1.Interval = 10 'ACTUALIZACION  PICTUREBOX
         Timer1.Start()
-
 
         Dim val As String = Convert.ToString(DateTime.Today - DateTime.Now)
 
@@ -65,6 +66,8 @@ Public Class Form1
         End If
 
         Dim pb As PictureBox = New PictureBox()
+        AddHandler pb.Paint, AddressOf PictureBox1_Paint
+
         pb.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         pb.BackColor = System.Drawing.Color.LightGray
@@ -72,8 +75,6 @@ Public Class Form1
         pb.Size = New System.Drawing.Size(53, 587)
         pb.TabIndex = 2
         pb.TabStop = False
-
-
 
         'pb.Paint += New System.Windows.Forms.PaintEventHandler(Me.PictureBox1_Paint)
 
@@ -94,7 +95,7 @@ Public Class Form1
         rt.ScrollBars = RichTextBoxScrollBars.Both
         rt.SetBounds(pb.Width, 0, 150, 100)
         rt.AcceptsTab = True
-        '//rt.TextChanged += New System.EventHandler(rich_TextChanged);
+        ''rt.TextChanged += New System.EventHandler(rich_TextChanged);
         '//rt.MouseEnter += New System.EventHandler(rich_MouseEnter);
 
         tp.Controls.Add(pb) '' //pos 0 es ListBox
@@ -125,12 +126,12 @@ Public Class Form1
 
             If rich.Lines.Length > 0 Then 'SI HAY ALGUNA LINEA LAS RECORRERA TODAS Y ESCRIBIRA SU NUMERO AL LADO DEL PRIMER CARACTER DE LA LINEA
                 For I = 0 To rich.Lines.Length - 1
-                    e.Graphics.DrawString(I + 1, rich.Font, Brushes.Blue, picture.Width - (e.Graphics.MeasureString(I + 1, rich.Font).Width + 10), ALTURA)
+                    e.Graphics.DrawString(I, rich.Font, Brushes.Blue, picture.Width - (e.Graphics.MeasureString(I, rich.Font).Width + 10), ALTURA)
                     CARACTER += rich.Lines(I).Length + 1 'INDICE DEL PRIMER CARACTER DE LA LINEA SIGUIENTE
                     ALTURA = rich.GetPositionFromCharIndex(CARACTER).Y 'POSICION EN Y DEL PRIMER CARACTER DE LA LINEA SIGUIENTE
                 Next
             Else 'PARA QUE SE INICIE CON UN 1 EN EL PICTUREBOX
-                e.Graphics.DrawString(1, rich.Font, Brushes.Blue, picture.Width - (e.Graphics.MeasureString(1, rich.Font).Width + 10), ALTURA)
+                e.Graphics.DrawString(0, rich.Font, Brushes.Blue, picture.Width - (e.Graphics.MeasureString(1, rich.Font).Width + 10), ALTURA)
             End If
 
         Catch ex As Exception
@@ -171,6 +172,14 @@ Public Class Form1
 
     Private Sub ejecutarCodigo(ByVal cadena As String)
         ''aqui realizar la peticion de instruccion
+        logica.tabla = Nothing
+        logica.errorr = Nothing
+        gv_errores.DataSource = Nothing
+        gv_errores.Refresh()
+
+        gv_salida.DataSource = Nothing
+        gv_salida.Refresh()
+
         logica.paquete_Instruccion(cadena)
 
         rtb_log.Text = logica.log2
@@ -182,15 +191,42 @@ Public Class Form1
         End If
 
         If Not logica.errorr Is Nothing Then
+
+            ''debo agregar los errores del lenguaje plys
+
+            Dim dt As DataTable = logica.errorr
+
+            ''ahora debo ingresar todas las filas
+            Dim lista As List(Of pError) = MyParser.lista_error
+
+            Dim i As Integer = 0
+
+            While i < lista.Count
+                Dim dr As DataRow = dt.NewRow()
+                Dim pper As pError = lista(i)
+
+                dr(0) = pper.Tipo
+                dr(1) = pper.Descripcion
+                dr(2) = pper.Line.ToString()
+                dr(3) = pper.Colm.ToString()
+                dr(4) = pper.Lexema
+                dr(5) = "Lenguaje PLYCS"
+
+                dt.Rows.Add(dr)
+                i = i + 1
+            End While
+
             gv_errores.DataSource = logica.errorr
 
-            For i = 0 To logica.errorr.Columns.Count - 1
+            i = 0
+            While i < logica.errorr.Columns.Count
                 If gv_errores.Columns(i).Name.Equals("fila") Or gv_errores.Columns(i).Name.Equals("col") Or gv_errores.Columns(i).Name.Equals("lexema") Then
                     gv_errores.Columns(i).Width = 60
                 ElseIf gv_errores.Columns(i).Name.Equals("Descripcion") Then
                     gv_errores.Columns(i).Width = 400
                 End If
-            Next
+                i = i + 1
+            End While
         End If
     End Sub
 
@@ -440,5 +476,9 @@ Public Class Form1
         Dim rtbTemp As RichTextBox = tabide.SelectedTab.Controls(1)
         rtbTemp.Text += vbNewLine + "seleccionar ( <<atr1, atr2, atrn>> | * ) de <<tabla1, tabla2, tablan>>" + vbNewLine
         rtbTemp.Text += vbNewLine + "donde <<CONDICION>>;" + vbNewLine
+    End Sub
+
+    Private Sub LimpiarLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LimpiarLogToolStripMenuItem.Click
+        rtb_log.Text = ""
     End Sub
 End Class
